@@ -5,7 +5,7 @@
 #SBATCH --partition=general
 #SBATCH --qos=general
 #SBATCH --mail-type=ALL
-#SBATCH --mem=80G
+#SBATCH --mem=90G
 #SBATCH --mail-user=meg.smith@ubc.ca
 #SBATCH -o index_%j.out
 #SBATCH -e index_%j.err 
