@@ -1,0 +1,122 @@
+#!/bin/bash
+#SBATCH --job-name=scaffold
+#SBATCH --partition=himem2
+#SBATCH --qos=himem
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=36
+#SBATCH --mem=950G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=meg.smith@ubc.ca
+#SBATCH -o scaffold_%j.out
+#SBATCH -e scaffold_%j.err
+
+echo `hostname`
+module load samtools/1.20
+module load bwa/0.7.17
+module load picard/2.23.9
+
+home=/home/FCAM/msmith
+hic=${home}/hiC_data
+bwa_outdir=${home}/yahs/bams
+contigs=${home}/yahs/contigs/intDF011.asm.hic.p_ctg.fasta
+
+#align reads and convert SAM to BAM
+bwa mem $contigs $hic/allhiC_R1.fastq.gz $hic/allhiC_R2.fastq.gz \
+-t 18 -R '@RG\tID:1\tSM:482stagleap\tPL:illumina'| \
+samtools view -bh -o /dev/stdout -q 10 | \
+samtools sort -@ 18 -T /scratch/msmith/ -n > ${bwa_outdir}/aligned_hic_sorted.bam #sort BAM files by name (recommended by yahs)
+
+if [ $? -eq 0 ] ; then 
+echo 'bwa mem success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: bwa mem'
+else
+echo 'error non-1: bwa mem'
+fi
+
+#mark duplicates (also recommended by yahs)
+java -jar $PICARD MarkDuplicates \
+I=${bwa_outdir}/aligned_hic_sorted.bam \
+O=${bwa_outdir}/aligned_hic_sorted_markdup.bam \
+M=${bwa_outdir}/markdup_metrics.txt
+
+if [ $? -eq 0 ] ; then
+echo 'MarkDups success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: MarkDups'
+else
+echo 'error non-1: MarkDups'
+fi
+
+############ -----
+
+module load YaHS/1.2.2
+module load juicer/1.8.9
+
+#script is modified from run_yahs.sh which is included in the YaHS downloadable
+
+juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
+juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"a
+bam=${home}/yahs/bams/aligned_hic_sorted_markdup.bam
+core=/core/projects/EBP/smith
+outdir=${core}/scaffold
+out="intDF011"
+
+##run yahs scaffolding 
+yahs -o ${outdir}/${out} ${contigs} ${bam} 
+
+if [ $? -eq 0 ] ; then
+echo 'Yahs success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: Yahs'
+else
+echo 'error non-1: Yahs'
+fi
+
+##input files for juicer_tools
+($juicer_pre ${outdir}/${out}.bin ${outdir}/${out}_scaffolds_final.agp ${contigs}.fai 2>${outdir}/tmp_juicer_pre.log | LC_ALL=C sort -k2,2d -k6,6d -T ${outdir} --parallel=36 -S500G | awk 'NF' > ${outdir}/alignments_sorted.txt.part) && (mv ${outdir}/alignments_sorted.txt.part ${outdir}/alignments_sorted.txt)
+
+if [ $? -eq 0 ] ; then
+echo 'juicer pre success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: juicer pre'
+else
+echo 'error non-1: juicer pre'
+fi
+
+##chromosome size file
+cat ${outdir}/tmp_juicer_pre.log | grep "PRE_C_SIZE" | cut -d' ' -f2- > ${outdir}/${out}_scaffolds_final.chrom.sizes
+
+if [ $? -eq 0 ] ; then
+echo 'chrom size file success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: chrom size file'
+else
+echo 'error non-1: chrom size file'
+fi
+
+##juicer_tools hic map
+($juicer_tools_pre ${outdir}/alignments_sorted.txt ${outdir}/${out}.hic.part ${outdir}/${out}_scaffolds_final.chrom.sizes) && {mv ${outdir}/${out}.hic.part ${outdir}/${out}.hic)
+
+if [ $? -eq 0 ] ; then
+echo 'juicer_tools success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: juicer_tools'
+else
+echo 'error non-1: juicer_tools'
+fi
+
+##juicer_tools JBAT mode
+$juicer_pre -a -o ${outdir}/${out}_JBAT ${outdir}/${out}.bin ${outdir}/${out}_scaffolds_final.agp ${contigs}.fai 2> ${outdir}/tmp_juicer_pre_JBAT.log
+cat ${outdir}/tmp_juicer_pre_JBAT.log | grep "PRE_C_SIZE" | cut -d' ' -f2- > ${outdir}/${out}_JBAT.chrom.sizes
+($juicer_tools_pre ${outdir}/${out}_JBAT.txt ${outdir}/${out}_JBAT.hic.part ${outdir}/${out}_JBAT.chrom.sizes) && (mv ${outdir}/${out}_JBAT.hic.part ${outdir}/${out}_JBAT.hic)
+
+if [ $? -eq 0 ] ; then
+echo 'JBAT mode success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: JBAT mode'
+else
+echo 'error non-1: JBAT mode'
+fi
+
+#next steps involve manual curation with Juicebox, which is a GUI, so gonna do that in a later step
