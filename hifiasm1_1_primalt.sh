@@ -2,10 +2,10 @@
 #SBATCH --job-name=hifiasm1_1_primalt
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=36
-#SBATCH --partition=himem
+#SBATCH --partition=himem2
 #SBATCH --qos=himem
 #SBATCH --mail-type=ALL
-#SBATCH --mem=500G
+#SBATCH --mem=800G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o hifiasm1_1_primalt.%j.out
 #SBATCH -e hifiasm1_1_primalt.%j.err
