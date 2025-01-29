@@ -73,6 +73,17 @@ else
 echo 'error non-1: Yahs'
 fi
 
+#agp_to_fasta
+agp_to_fasta ${outdir}/${out}_scaffolds_final.agp ${contigs} -o ${outdir}/${out}.fasta
+
+if [ $? -eq 0 ] ; then
+echo 'agp_to_fasta success'
+elif [ $? -eq 1 ] ; then
+echo 'error 1: agp_to_fasta'
+else
+echo 'error non-1: agp_to_fasta'
+fi
+
 ##input files for juicer_tools
 ($juicer_pre ${outdir}/${out}.bin ${outdir}/${out}_scaffolds_final.agp ${contigs}.fai 2>${outdir}/tmp_juicer_pre.log | LC_ALL=C sort -k2,2d -k6,6d -T ${outdir} --parallel=36 -S500G | awk 'NF' > ${outdir}/alignments_sorted.txt.part) && (mv ${outdir}/alignments_sorted.txt.part ${outdir}/alignments_sorted.txt)
 
