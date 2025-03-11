@@ -1,0 +1,22 @@
+#!/bin/bash
+
+##LOAD MODULES
+module load Hifiasm/0.24.0
+export PATH="/core/projects/EBP/smith/bin/minigraph:$PATH"
+export PATH="/core/projects/EBP/smith/bin/gfatools:$PATH"
+
+##VARIABLES
+home=/home/FCAM/msmith
+core=/core/projects/EBP/smith
+scratch=/scratch/msmith
+hifiasm_out=${core}/hifiasm_out/phasing
+h1=${home}/hiC_data/allhiC_R1.fastq.gz
+h2=${home}/hiC_data/allhiC_R2.fastq.gz
+pb=/seqdata/EBP/plant/Pseudotsuga_menziesii/intDF_allhifi_trim.fastq.gz
+primary=${core}/CBP_assemblyfiles/interior_primary_final.fa
+alternate=${core}/CBP_assemblyfiles/interior_alternate_final.fa
+
+hifiasm -o ${hifiasm_out}/interior_dougfir_phased.asm -t36 --h1 $h1 --h2 $h2 $pb
+
+minigraph -cxggs -t36  
+

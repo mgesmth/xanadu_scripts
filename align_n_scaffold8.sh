@@ -12,20 +12,23 @@
 
 echo `hostname`
 module load samtools/1.20
-module load bwa/0.7.17
 module load picard/2.23.9
 
-home=/home/FCAM/msmith
 scratch=/scratch/msmith
+home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 hic=${home}/hiC_data
 bwa_outdir=${home}/yahs/bams
 contigs=${home}/yahs/contigs/intDF011.asm.hic.p_ctg.fasta
+juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
+juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
 outdir=${core}/scaffold
+bam=${outdir}/aligned_hic_sorted_dedup.bam
+out="intDF011"
 
 #mark duplicates - also recommended by yahs
-java -jar $PICARD MarkDuplicates \
--I ${scratch}/aligned_hic_sorted.bam -O ${outdir}/aligned_hic_sorted_dedup.bam -M ${outdir}/markdups_metrics.txt \
+java -XX:ParallelGCThreads=5 -jar $PICARD MarkDuplicates \
+-I ${bwa_outdir}/aligned_hic_sorted.bam -O ${scratch}/aligned_hic_sorted_dedup.bam -M ${outdir}/markdups_metrics.txt \
 --TMP_DIR ${scratch} --REMOVE_DUPLICATES true --ASSUME_SORT_ORDER queryname
 
 ############ -----
@@ -34,11 +37,7 @@ module load YaHS/1.2.2
 module load juicer/1.8.9
 
 #script is modified from run_yahs.sh which is included in the YaHS downloadable
-
-juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre"
-juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
-bam=${outdir}/aligned_hic_sorted_dedup.bam
-out="intDF011"
+bam=${scratch}/aligned_hic_sorted_dedup.bam
 
 ##run yahs scaffolding 
 yahs -o ${outdir}/${out} ${contigs} ${bam} 
@@ -63,7 +62,7 @@ echo 'error non-1: agp_to_fasta'
 fi
 
 ##input files for juicer_tools
-$juicer_pre ${outdir}/${out}.bin ${outdir}/${out}_scaffolds_final.agp ${contigs}.fai 2>${outdir}/tmp_juicer_pre.log | LC_ALL=C sort -k2,2d -k6,6d -T ${outdir} --parallel=36 -S900G | awk 'NF' > ${outdir}/alignments_sorted.txt.part && mv ${outdir}/alignments_sorted.txt.part ${outdir}/alignments_sorted.txt
+$juicer_pre ${outdir}/${out}.bin ${outdir}/${out}_scaffolds_final.agp ${contigs}.fai 2>${outdir}/tmp_juicer_pre.log | LC_ALL=C sort -k2,2d -k6,6d -T ${outdir} --parallel=36 -S500G | awk 'NF' > ${outdir}/alignments_sorted.txt.part && mv ${outdir}/alignments_sorted.txt.part ${outdir}/alignments_sorted.txt
 
 if [ $? -eq 0 ] ; then
 echo 'juicer pre success'
@@ -85,7 +84,7 @@ echo 'error non-1: chrom size file'
 fi
 
 ##juicer_tools hic map
-$juicer_tools_pre ${outdir}/alignments_sorted.txt ${outdir}/${out}.hic.part ${outdir}/${out}_scaffolds_final.chrom.sizes && mv ${outdir}/${out}.hic.part ${outdir}/${out}.hic
+$juicer_tools_pre ${outdir}/alignments_sorted.txt ${outdir}/${out}.hic.part ${outdir}/${out}_scaffolds_final.chrom.sizes && {mv ${outdir}/${out}.hic.part ${outdir}/${out}.hic
 
 if [ $? -eq 0 ] ; then
 echo 'juicer_tools success'

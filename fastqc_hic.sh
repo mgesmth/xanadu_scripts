@@ -17,6 +17,6 @@ scratch=/scratch/msmith
 
 cd /home/FCAM/msmith/fastqc_out
 
-fastqc -o ./ -t 12 -d /scratch/msmith ${hiC_dir}/allhiC_R1.fastq.gz ${hiC_dir}/allhiC_R2.fastq.gz
+fastqc -o ./ -t 12 -d ${hiC_dir}/allhiC_R1.fastq.gz ${hiC_dir}/allhiC_R2.fastq.gz
 multiqc .
 

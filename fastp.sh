@@ -11,8 +11,10 @@
 module load fastp/0.23.2
 
 home=/home/FCAM/msmith
-scratch=/scratch/msmith
-adapters=${home}/pacbio_adapters.fa
-hifi=${home}/hifi_data
+core=/core/projects/EBP/smith
+indir=${core}/hiC_data
+outdir=${home}/hiC_trim
 
-fastp -V -G --adapter_fasta $adapters -i $hifi -o ${scratch}/intDF_allhifi_trim.fastq.gz
+fastp -i ${indir}/allhiC_R1.fastq.gz -I ${indir}/allhiC_R2.fastq.gz \
+-o ${outdir}/allhiC_R1_trim.fastq.gz -O ${outdir}/allhiC_R2_trim.fastq.gz \
+--adapter_sequence CTGTCTCTTATACACATCT --thread 36 --html

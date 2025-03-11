@@ -4,9 +4,9 @@
 #SBATCH --qos=himem
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=36
-#SBATCH --mem=950G
+#SBATCH --mem=1000G
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=meg.smith@ubc.ca
+#SBATCH --mail-user=meg@student.ubc.ca
 #SBATCH -o scaffold_%j.out
 #SBATCH -e scaffold_%j.err
 
@@ -14,39 +14,42 @@ echo `hostname`
 module load samtools/1.20
 module load bwa/0.7.17
 module load picard/2.23.9
+module load purge_dups/1.2.6
 
+scratch=/scratch/msmith
 home=/home/FCAM/msmith
-hic=${home}/hiC_data
+core=/core/projects/EBP/smith
+hic=${core}/hiC_data
 bwa_outdir=${home}/yahs/bams
-contigs=${home}/yahs/contigs/intDF011.asm.hic.p_ctg.fasta
+contigs=${home}/yahs/contigs/intDF011.asm.hic.p_ctg_purged.fa
+juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
+juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
+pd_scripts=/isg/shared/apps/purge_dups/1.2.6/scripts
+pd_bin=/isg/shared/apps/purge_dups/1.2.6/bin
+bam=${home}/yahs/bams/aligned_hic_sorted_markdup.bam
+outdir=${core}/scaffold
+out="intDF011"
+
+##Purge_dups ----
+
+${pd_scripts}/run_purge_dups.py -p bash ${home}/yahs/contigs/intDF011_config.json ${pd_bin} intDF011
 
 #align reads and convert SAM to BAM
 bwa mem $contigs $hic/allhiC_R1.fastq.gz $hic/allhiC_R2.fastq.gz \
--t 18 -R '@RG\tID:1\tSM:482stagleap\tPL:illumina'| \
-samtools view -bh -o /dev/stdout -q 10 | \
-samtools sort -@ 18 -T /scratch/msmith/ -n > ${bwa_outdir}/aligned_hic_sorted.bam #sort BAM files by name (recommended by yahs)
-
-if [ $? -eq 0 ] ; then 
-echo 'bwa mem success'
-elif [ $? -eq 1 ] ; then
-echo 'error 1: bwa mem'
-else
-echo 'error non-1: bwa mem'
-fi
-
-#mark duplicates (also recommended by yahs)
-java -jar $PICARD MarkDuplicates \
-I=${bwa_outdir}/aligned_hic_sorted.bam \
-O=${bwa_outdir}/aligned_hic_sorted_markdup.bam \
-M=${bwa_outdir}/markdup_metrics.txt
-
+-t 36 -R '@RG\tID:1\tSM:482stagleap\tPL:illumina'| \
+samtools view -bh -q 10 -o aligned_hic_unsorted.bam
+samtools sort -n -@ 36 -T ${scratch} -o ${scratch}/aligned_hic_sorted.bam
 if [ $? -eq 0 ] ; then
-echo 'MarkDups success'
-elif [ $? -eq 1 ] ; then
-echo 'error 1: MarkDups'
+rm ${scratch}/aligned_hic_unsorted.bam
+mv ${scratch}/aligned_hic_sorted.bam ${bwa_outdir}/
 else
-echo 'error non-1: MarkDups'
+exit 1
 fi
+
+#mark duplicates - also recommended by yahs
+java -Xmx800G -jar $PICARD MarkDuplicates \
+-I ${bwa_outdir}/aligned_hic_sorted.bam -O ${outdir}/aligned_hic_sorted_dedup.bam -M ${outdir}/markdups_metrics.txt \
+--TMP_DIR ${scratch} --REMOVE_DUPLICATES true --ASSUME_SORT_ORDER queryname
 
 ############ -----
 
@@ -54,13 +57,6 @@ module load YaHS/1.2.2
 module load juicer/1.8.9
 
 #script is modified from run_yahs.sh which is included in the YaHS downloadable
-
-juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
-juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"a
-bam=${home}/yahs/bams/aligned_hic_sorted_markdup.bam
-core=/core/projects/EBP/smith
-outdir=${core}/scaffold
-out="intDF011"
 
 ##run yahs scaffolding 
 yahs -o ${outdir}/${out} ${contigs} ${bam} 
