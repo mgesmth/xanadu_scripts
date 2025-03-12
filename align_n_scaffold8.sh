@@ -84,7 +84,8 @@ echo 'error non-1: chrom size file'
 fi
 
 ##juicer_tools hic map
-$juicer_tools_pre ${outdir}/alignments_sorted.txt ${outdir}/${out}.hic.part ${outdir}/${out}_scaffolds_final.chrom.sizes && {mv ${outdir}/${out}.hic.part ${outdir}/${out}.hic
+$juicer_tools_pre ${outdir}/alignments_sorted.txt ${outdir}/${out}.hic.part ${outdir}/${out}_scaffolds_final.chrom.sizes \
+&& mv ${outdir}/${out}.hic.part ${outdir}/${out}.hic
 
 if [ $? -eq 0 ] ; then
 echo 'juicer_tools success'
