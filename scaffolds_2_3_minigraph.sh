@@ -6,8 +6,8 @@
 #SBATCH --mem=90G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
-#SBATCH -o scaffolds_11_13.out
-#SBATCH -e scaffolds_11_13.err
+#SBATCH -o scaffolds_2_3.%j.out
+#SBATCH -e scaffolds_2_3.%j.err
 
 core=/core/projects/EBP/smith
 home=/home/FCAM/msmith
