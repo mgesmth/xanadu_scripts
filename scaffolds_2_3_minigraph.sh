@@ -3,7 +3,7 @@
 #SBATCH --partition=general
 #SBATCH --qos=general
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=90G
+#SBATCH --mem=170G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o scaffolds_2_3.%j.out
