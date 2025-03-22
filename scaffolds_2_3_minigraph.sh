@@ -3,18 +3,18 @@
 #SBATCH --partition=general
 #SBATCH --qos=general
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=170G
+#SBATCH --mem=150G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
-#SBATCH -o scaffolds_2_3.%j.out
-#SBATCH -e scaffolds_2_3.%j.err
+#SBATCH -o scaffolds_1.%j.out
+#SBATCH -e scaffolds_1.%j.err
 
 core=/core/projects/EBP/smith
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
-primary=${core}/CBP_assemblyfiles/interior_primary_2_3.fa
-alternate=${core}/CBP_assemblyfiles/interior_alternate_2_3.fa
-out_prefix=${home}/minigraph_out/interior_2_3
+primary=${core}/CBP_assemblyfiles/interior_primary_scaffold1.fa
+alternate=${core}/CBP_assemblyfiles/interior_alternate_scaffold1.fa
+out_prefix=${home}/minigraph_out/interior_1
 
 export PATH="${core}/bin/minigraph:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
