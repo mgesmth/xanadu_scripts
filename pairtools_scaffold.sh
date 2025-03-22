@@ -33,15 +33,15 @@ NODUPS_PAIRS_PATH=${OUTPREFIX}.nodups.pairs
 DUPS_SAM_PATH=${OUTPREFIX}.dups.bam
 DUPS_PAIRS_PATH=${OUTPREFIX}.dups.pairs
 
-bwa mem -SP5 -t 12 "${INDEX}" "${FASTQ1}" "${FASTQ2}" | {
-pairtools parse --chroms-path "${CHROM_SIZES}"
-} | {
-pairtools sort --nproc 12 --memory 200G --tmpdir ${scratch}
-} | {
-pairtools dedup
-} | {
-pairtools split --output-pairs ${NODUPS_PAIRS_PATH} --output-sam ${NODUPS_SAM_PATH}
-}
+#bwa mem -SP5 -t 12 "${INDEX}" "${FASTQ1}" "${FASTQ2}" | {
+#pairtools parse --chroms-path "${CHROM_SIZES}"
+#} | {
+#pairtools sort --nproc 12 --memory 200G --tmpdir ${scratch}
+#} | {
+#pairtools dedup
+#} | {
+#pairtools split --output-pairs ${NODUPS_PAIRS_PATH} --output-sam ${NODUPS_SAM_PATH}
+#}
 
 out="intDF011"
 outdir=${core}/scaffold
@@ -49,9 +49,9 @@ bam="${NODUPS_SAM_PATH}"
 juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
 juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
 
-yahs -o ${outdir}/${out} ${contigs} ${bam}
+yahs -o ${outdir}/${out} ${INDEX} ${bam}
 
-agp_to_fasta ${outdir}/${out}_scaffolds_final.agp ${contigs} -o ${outdir}/${out}.fasta
+agp_to_fasta ${outdir}/${out}_scaffolds_final.agp ${INDEX} -o ${outdir}/${out}.fasta
 
 ##input files for juicer_tools
 #$juicer_pre ${outdir}/${out}.bin ${outdir}/${out}_scaffolds_final.agp ${contigs}.fai \
