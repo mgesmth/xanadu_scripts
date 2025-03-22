@@ -1,10 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
-#SBATCH --partition=himem2
+#SBATCH --partition=himem
 #SBATCH --qos=himem
 #SBATCH --mail-type=ALL
 #SBATCH --mem=200G
+#SBATCH --dependency afterok:8963074
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o quast1_2.%j.out
 #SBATCH -e quast1_2.%j.err
