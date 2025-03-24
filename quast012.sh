@@ -13,10 +13,10 @@
 module load quast/5.2.0
 
 indir=/core/projects/EBP/smith/scaffold
-outdir=/home/FCAM/msmith/quast_out/1_2
+outdir=/home/FCAM/msmith/quast_out/1_3
 quast=/isg/shared/apps/quast/5.2.0/quast.py
 
-python3 $quast -t 12 --split-scaffolds --large -o $outdir ${indir}/intDF011_scaffolds_final.fa
+python3 $quast -t 12 --split-scaffolds --large -o $outdir ${indir}/withpairtools_noerrorcorrect/intDF011_scaffolds_final.fa
 
 
 
