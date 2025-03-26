@@ -22,9 +22,8 @@ bwa_outdir=${home}/yahs/bams
 contigs=${home}/yahs/contigs/intDF011.asm.hic.p_ctg.fasta
 juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
 juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
-outdir=${core}/scaffold
-bam=${outdir}/aligned_hic_sorted_dedup.bam
-out="intDF011"
+outdir=${core}/scaffold/withpicard
+out="intDF011_picard"
 
 #mark duplicates - also recommended by yahs
 java -XX:ParallelGCThreads=5 -jar $PICARD MarkDuplicates \
@@ -40,7 +39,7 @@ module load juicer/1.8.9
 bam=${scratch}/aligned_hic_sorted_dedup.bam
 
 ##run yahs scaffolding 
-yahs -o ${outdir}/${out} ${contigs} ${bam} 
+yahs --no-contig-ec --no-mem-check -l 10 -e GATC,GANTC -o ${outdir}/${out} ${contigs} ${bam}
 
 if [ $? -eq 0 ] ; then
 echo 'Yahs success'

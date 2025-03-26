@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=minigraph
-#SBATCH --partition=himem
+#SBATCH --partition=himem2
 #SBATCH --qos=himem
 #SBATCH --cpus-per-task=24
-#SBATCH --mem=500G
+#SBATCH --mem=1000G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o minigraph_interior.%j.out
@@ -28,7 +28,7 @@ out=${home}/minigraph_out/interior_primalt
 #EXEC
 module load zlib/1.2.11
 export PATH="${core}/bin/minigraph-0.21:$PATH"
-#export PATH="${core}/bin/gfatools:$PATH"
+export PATH="${core}/bin/gfatools-0.5:$PATH"
 
 #test real variables - succeeded
 #ls ${prim}
@@ -36,8 +36,8 @@ export PATH="${core}/bin/minigraph-0.21:$PATH"
 #echo ${out}
 
 #test command
-minigraph -cxggs -l 10k ${test_gfa} ${human} ${chimp} ${orang} > "${test_out}.gfa"
-gfatools bubble "${test_out}.gfa" > "${test_out}.bed"
+#minigraph -cxggs -l 10k ${test_gfa} ${human} ${chimp} ${orang} > "${test_out}.gfa"
+#gfatools bubble "${test_out}.gfa" > "${test_out}.bed"
 
 minigraph -cxggs -t 24 -U 10,50 ${prim} ${alt} > "${out}.gfa"
 gfatools bubble "${out}.gfa" > "${out}.bed"
