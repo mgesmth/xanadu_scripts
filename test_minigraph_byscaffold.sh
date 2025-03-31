@@ -20,8 +20,8 @@ out_bubble=${home}/minigraph_out/int_scaffold1_bubble.bed
 out_call=${home}/minigraph_out/int_scaffold1_call.bed
 
 module load zlib/1.2.11
-export PATH="${core}/bin/minigraph:$PATH"
-export PATH="${core}/bin/gfatools:$PATH"
+export PATH="${core}/bin/minigraph-0.21:$PATH"
+export PATH="${core}/bin/gfatools-0.5:$PATH"
 
 minigraph -cxggs -t 24 ${reference} ${scaffold} > ${out_gfa}
 gfatools bubble ${out_gfa} > ${out_bubble}
