@@ -13,13 +13,13 @@ echo `hostname`
 
 #Define variables ---
 juicedir=/scratch/msmith/juicetest
+juicescripts=${juicetest}/scripts
 reference=${juicedir}/references/Homo_sapiens_assembly19.fasta
-juicescripts=${juicedir}/scripts
 site="Arima"
 genomeid="test"
 threads="4"
 shortpart="general"
-longpart="himem2"
+longpart="himem"
 
 #Executables ----
 module load bwa/0.7.17
