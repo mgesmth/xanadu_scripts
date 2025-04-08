@@ -17,7 +17,7 @@ home=/home/FCAM/msmith
 scratch=/scratch/msmith
 juicedir=${core}/juicedir
 scripts=${juicedir}/scripts
-assembly=${juicedir}/references/interior_primary_final.fa
+assembly=${
 enzyme="Arima"
 
 module load bwa/0.7.17
