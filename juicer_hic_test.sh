@@ -18,8 +18,6 @@ reference=${juicedir}/references/Homo_sapiens_assembly19.fasta
 site="Arima"
 genomeid="test"
 threads="4"
-shortpart="general"
-longpart="himem"
 
 #Executables ----
 module load bwa/0.7.17
@@ -33,6 +31,4 @@ test_contact_maps.sh \
     -g ${genomeid} \
     -z ${reference} \
     -D ${juicescripts} \
-    -t ${threads} \
-    -q "${shortpart}" \
-    -l "${longpart}"
+    -t ${threads}

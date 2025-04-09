@@ -2,7 +2,7 @@
 
 if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
-    echo "Usage: ./make_contact_maps.sh -d <TOPDIR> -s <SITE> -g <GENOMEID> -z <GENOMEPATH> -D <SCRIPTS> -t <THREADS> -q <PARTITION> -l <PARTITION>"
+    echo "Usage: ./make_contact_maps.sh -d <TOPDIR> -s <SITE> -g <GENOMEID> -z <GENOMEPATH> -D <SCRIPTS> -t <THREADS>"
     echo ""
     echo "Build contact maps from unprocessed Hi-C data."
     echo ""
@@ -22,14 +22,12 @@ then
     echo "-z <GENOMEPATH>  Path to the reference genome."
     echo "-D <SCRIPTS>     Path to the juicer scripts."
     echo "-t <THREADS>     Number of threads for BWA alignment."
-    echo "-q <PARTITION>   Partition to submit shorter jobs to."
-    echo "-l <PARTITION>   Partition to submit longer jobs to."
     echo ""
     echo ""
 	exit 0
 fi
 
-OPTSTRING="t:d:s:g:p:y:z:D:q:l:"
+OPTSTRING="t:d:s:g:p:y:z:D:"
 while getopts ${OPTSTRING} opt
 do
     case ${opt} in
@@ -47,10 +45,6 @@ do
 	 ref=${OPTARG};;
 	D)
 	 scripts=${OPTARG};;
-	q)
-	 shortpart=${OPTARG};;
-	l)
-	 longpart=${OPTARG};;
         :)
          echo "option ${OPTARG} requires an argument."
          exit 1
@@ -75,6 +69,4 @@ ${scripts}/juicer.sh \
 -p "${chromsizes}" \
 -y "${sitefile}" \
 -z "${ref}" \
--t "${threads}"	\
--q "${shortpart}" \
--l "${longpart}"
+-t "${threads}"
