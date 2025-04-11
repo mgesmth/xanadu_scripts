@@ -11,7 +11,6 @@ then
     echo "    bwa"
     echo "    python3"
     echo "    juicer"
-    echo "    juicebox"
     echo ""
     echo "Requires at least 4 cores and 64GB RAM."
     echo ""
@@ -102,4 +101,4 @@ else
 fi
 
 #make the .hic file ----
-java -jar $JUICEBOX -v -f "${sitefile}" "${contacts}" "${output}.hic" "${chromsizes}"
+java -jar $JUICER pre -v -f "${sitefile}" "${contacts}" "${output}.hic" "${chromsizes}"

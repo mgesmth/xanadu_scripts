@@ -62,11 +62,12 @@ chromsizes="${topdir}/references/${genome_id}.chrom.sizes"
 #Run Juicer -----
 cd ${topdir}
 
-${scripts}/juicer.sh \
+"${scripts}"/juicer.sh \
 -g "${genome_id}" \
 -d "${topdir}" \
 -s "${site}" \
 -p "${chromsizes}" \
+-D "${scripts}" \
 -y "${sitefile}" \
 -z "${ref}" \
 -t "${threads}"

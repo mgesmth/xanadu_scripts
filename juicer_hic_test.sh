@@ -13,7 +13,7 @@ echo `hostname`
 
 #Define variables ---
 juicedir=/scratch/msmith/juicetest
-juicescripts=${juicetest}/scripts
+juicescripts=${juicedir}/scripts
 reference=${juicedir}/references/Homo_sapiens_assembly19.fasta
 site="Arima"
 genomeid="test"
