@@ -1,4 +1,4 @@
-#!/bin/bash
+\#!/bin/bash
 
 if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
@@ -24,6 +24,7 @@ then
     echo "-z <GENOMEPATH>  Path to the reference genome."
     echo "-p <CHROMSIZES>  Path to chromosome size file (optional)."    
     echo "-o <OUTPUT>      Prefix for output files."
+    echo "-x <TMPDIR>      Path to temporary directory for temp files (optional)."
     echo ""
     echo "PLEASE NOTE: some files produced by this script will be very large. Please ensure you have adequate disk space."
     echo ""
@@ -32,8 +33,9 @@ then
 fi
 
 chromsizes=""
+tmpdir="."
 
-OPTSTRING="t:d:c:s:g:py:z:o:"
+OPTSTRING="t:d:c:s:g:p:y:z:o:x:"
 while getopts ${OPTSTRING} opt
 do
     case ${opt} in
@@ -53,6 +55,8 @@ do
 	 ref=${OPTARG};;
 	o)
 	 output=${OPTARG};;
+	x)
+	 tmpdir=${OPTARG};;
         :)
          echo "option ${OPTARG} requires an argument."
          exit 1
@@ -98,6 +102,38 @@ if [ -z "$chromsizes" ]; then
         fi
 else
 	echo "Chromosome size file supplied."
+fi
+
+#Checking to make sure the pairs file has the right number of lines
+fieldcheck=`grep "#columns" "${contacts}" | head -n1 | awk '{print NF}'`
+if [[ "${fieldcheck}" != 10 ]] ; then
+	contacts_prefix=`echo "${contacts}" | sed 's/.pairs//g'`
+	awk '
+	BEGIN { OFS = "\t" }
+	/^#/ {
+    	if ($0 ~ /^#columns:/) {
+        	sub(/pair_type/, "frag1\tfrag2");
+        	print;
+    	} else {
+        	print;
+    	}
+    	next;
+	}
+	{
+    	# Build a list of fields from $1 to $(NF-1)
+    		out = $1;
+    		for (i = 2; i < NF; i++) {
+        		out = out OFS $i;
+    	}
+    	print out, 0, 1;  # This uses OFS="\t" correctly
+	}' "${contacts_prefix}.pairs" > "${tmpdir}/${contacts_prefix}_corrected.pairs" 
+	#reset contacts
+	contacts="${tmpdir}/${contacts_prefix}_corrected.pairs"
+elif [[ "${fieldcheck}" < 7 ]] ; then
+	echo "Contacts file does not comply with .pairs format. Exiting."
+	exit 1
+else
+	echo "Contacts file has correct number of fields."
 fi
 
 #make the .hic file ----

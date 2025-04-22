@@ -28,4 +28,5 @@ make_contact_maps_juiceboxtools.sh \
 	-s "${site}" \
 	-g "${gid}" \
 	-z "${gpath}" \
+	-x "/scratch/msmith" \
 	-o "${output}"
