@@ -1,4 +1,4 @@
-\#!/bin/bash
+#!/bin/bash
 
 if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
@@ -68,23 +68,26 @@ do
     esac
 done
 
+set errexit
 
 if [ ! -f "${ref}.bwt" ]; then
-    echo "BWA index not found. Beginning indexing..."
+    echo "-> BWA index not found. Beginning indexing..."
     bwa index ${ref}
+    echo "-> Done."
 else
-    echo "BWA index found."
+    echo "-> BWA index found."
 fi
 
 
 #Generate restriction site files -----
 if [ ! -f "${topdir}/restriction_sites/${genome_id}_${site}.txt" ]; then
-    echo "Restriction site file not found. Running generate_site_positions.py...."
+    echo "-> Restriction site file not found. Running generate_site_positions.py...."
     cd ${topdir}/restriction_sites
     python ${topdir}/scripts/generate_site_positions.py "${site}" "${genome_id}" "${ref}"
     sitefile="${topdir}/restriction_sites/${genome_id}_${site}.txt"
+    echo "-> Done."
 else
-    echo "Restriction site file found. Moving on..."
+    echo "-> Restriction site file supplied."
     sitefile="${topdir}/restriction_sites/${genome_id}_${site}.txt"
 fi
 
@@ -94,19 +97,22 @@ cd ${topdir}/references
 
 if [ -z "$chromsizes" ]; then
 	if [ -f "${sitefile}" ]; then
-                awk 'BEGIN{OFS="\t"}{print $1, $NF}' "${sitefile}" > "${genome_id}.chrom.sizes"
+                echo "-> Chromosome size file note supplied. Creating..."
+		awk 'BEGIN{OFS="\t"}{print $1, $NF}' "${sitefile}" > "${genome_id}.chrom.sizes"
                 chromsizes="${topdir}/references/${genome_id}.chrom.sizes"
+		echo "-> Done."
         else
             	echo "Error: Restriction site file ${sitefile} not found."
                 exit 1
         fi
 else
-	echo "Chromosome size file supplied."
+	echo "-> Chromosome size file supplied."
 fi
 
-#Checking to make sure the pairs file has the right number of lines
-fieldcheck=`grep "#columns" "${contacts}" | head -n1 | awk '{print NF}'`
-if [[ "${fieldcheck}" != 10 ]] ; then
+fieldcheck=`awk '/^#/ {print $0} !/^#/ {exit}' "${contacts}" | grep "columns" | grep "frag1"`
+if [ -z "$fieldcheck" ] ; then
+	#Reformatting pairs file to remove pairs_type, add dummy fragment values
+	echo "-> Beginning .pairs file reformatting..."
 	contacts_prefix=`echo "${contacts}" | sed 's/.pairs//g'`
 	awk '
 	BEGIN { OFS = "\t" }
@@ -117,24 +123,24 @@ if [[ "${fieldcheck}" != 10 ]] ; then
     	} else {
         	print;
     	}
-    	next;
+    	 next;
 	}
 	{
-    	# Build a list of fields from $1 to $(NF-1)
-    		out = $1;
-    		for (i = 2; i < NF; i++) {
-        		out = out OFS $i;
+    	    # Build a list of fields from $1 to $(NF-1)
+    	    out = $1;
+    	    for (i = 2; i < NF; i++) {
+        	out = out OFS $i;
     	}
     	print out, 0, 1;  # This uses OFS="\t" correctly
-	}' "${contacts_prefix}.pairs" > "${tmpdir}/${contacts_prefix}_corrected.pairs" 
+	}' "${contacts_prefix}.pairs" > "${tmpdir}/contacts_corrected.pairs" 
 	#reset contacts
-	contacts="${tmpdir}/${contacts_prefix}_corrected.pairs"
-elif [[ "${fieldcheck}" < 7 ]] ; then
-	echo "Contacts file does not comply with .pairs format. Exiting."
-	exit 1
+	contacts="${tmpdir}/contacts_corrected.pairs"
+	echo "-> Done."
 else
-	echo "Contacts file has correct number of fields."
+	echo "-> Pairs file assumed correctly formatted."
 fi
 
 #make the .hic file ----
+echo "-> Beginning .hic file creation."
 java -jar $JUICER pre -v -f "${sitefile}" "${contacts}" "${output}.hic" "${chromsizes}"
+rm "${contacts}"

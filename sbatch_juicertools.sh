@@ -15,7 +15,7 @@ module load bwa/0.7.17
 module load juicer/1.22.01
 export PATH="/home/FCAM/msmith/scripts:$PATH"
 topdir=/core/projects/EBP/smith/juicer_intDF011
-pairs=${topdir}/intDF011.nodups.pairs
+pairs=/scratch/msmith/contacts_corrected.pairs
 site="Arima"
 gid="intDF011"
 gpath=${topdir}/references/intDF011_scaffolds_final.fa
