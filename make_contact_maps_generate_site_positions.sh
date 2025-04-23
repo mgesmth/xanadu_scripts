@@ -106,7 +106,7 @@ if [ ! -f "${topdir}/restriction_sites/${genome_id}_${site}.bed" ]; then
         	print chrom "\t" start "\t" end "\t" frag_id;
     	    }
 	}' "${sitefile}" > "${topdir}/restriction_sites/${genome_id}_${site}.bed"
-	bedsitefile="${topdir}/restriction_sites/${genome_id}_${site}.txt"
+	bedsitefile="${topdir}/restriction_sites/${genome_id}_${site}.bed"
     	echo "-> Done."
     else
 	echo "[E]: No restriction site file found to manipulate. Exiting."
