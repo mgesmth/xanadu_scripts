@@ -111,28 +111,32 @@ fi
 
 fieldcheck=`awk '/^#/ {print $0} !/^#/ {exit}' "${contacts}" | grep "columns" | grep "frag1"`
 if [ -z "$fieldcheck" ] ; then
-	#Reformatting pairs file to remove pairs_type, add dummy fragment values
-	echo "-> Beginning .pairs file reformatting..."
-	contacts_prefix=`echo "${contacts}" | sed 's/.pairs//g'`
-	awk '
-	BEGIN { OFS = "\t" }
-	/^#/ {
-    	if ($0 ~ /^#columns:/) {
-        	sub(/pair_type/, "frag1\tfrag2");
-        	print;
-    	} else {
-        	print;
-    	}
-    	 next;
-	}
-	{
-    	    # Build a list of fields from $1 to $(NF-1)
-    	    out = $1;
-    	    for (i = 2; i < NF; i++) {
-        	out = out OFS $i;
-    	}
-    	print out, 0, 1;  # This uses OFS="\t" correctly
-	}' "${contacts_prefix}.pairs" > "${tmpdir}/contacts_corrected.pairs" 
+awk '
+BEGIN { OFS = "\t" }
+/^#/ {
+    if ($0 ~ /^#columns:/) {
+        sub(/pair_type/, "frag1\tfrag2");
+        print;
+    } else {
+        print;
+    }
+    next;
+}
+{
+    # Convert + to 0 and - to 1 in fields 6 and 7
+    if ($6 == "+") $6 = 0;
+    else if ($6 == "-") $6 = 1;
+
+    if ($7 == "+") $7 = 0;
+    else if ($7 == "-") $7 = 1;
+
+    # Build a list of fields from $1 to $(NF-1)
+    out = $1;
+    for (i = 2; i < NF; i++) {
+        out = out OFS $i;
+    }
+    print out, 0, 1;  # This uses OFS="\t" correctly
+}' "${contacts}" > "${tmpdir}/contacts_corrected.pairs"
 	#reset contacts
 	contacts="${tmpdir}/contacts_corrected.pairs"
 	echo "-> Done."
@@ -142,5 +146,5 @@ fi
 
 #make the .hic file ----
 echo "-> Beginning .hic file creation."
-java -jar $JUICER pre -v -f "${sitefile}" "${contacts}" "${output}.hic" "${chromsizes}"
+java -jar $JUICER pre -v -t "${tmpdir}" "${contacts}" "${output}.hic" "${chromsizes}"
 rm "${contacts}"

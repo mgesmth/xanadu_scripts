@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH -p himem
-#SBATCH -q himem
-#SBATCH -c 24
-#SBATCH --mem=150G
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 8
+#SBATCH --mem=40G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
-#SBATCH -o juicebox_tools.%j.out
-#SBATCH -e juicebox_tools.%j.err
+#SBATCH -o juicer_tools_test.%j.out
+#SBATCH -e juicer_tools_test.%j.err
 
 echo `hostname`
 
@@ -15,18 +15,18 @@ module load bwa/0.7.17
 module load juicer/1.22.01
 export PATH="/home/FCAM/msmith/scripts:$PATH"
 topdir=/core/projects/EBP/smith/juicer_primary
-pairs=/scratch/msmith/contacts_corrected.pairs
+pairs=${topdir}/test_juicertools_reformatted.pairs
 site="Arima"
-gid="intDF011"
-gpath=${topdir}/references/intDF011_scaffolds_final.fa
-output="${topdir}/intDF011_contacts"
+gid="test_juicertools"
+gpath=${topdir}/references/test_juicertools.fa
+output="${topdir}/test_juicertools"
 
 make_contact_maps_juiceboxtools.sh \
-	-t 24 \
+	-t 12 \
 	-d "${topdir}" \
 	-c "${pairs}" \
-	-s "${site}" \
 	-g "${gid}" \
+	-s "${site}" \
 	-z "${gpath}" \
 	-x "/scratch/msmith" \
 	-o "${output}"
