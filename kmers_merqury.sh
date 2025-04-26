@@ -25,5 +25,6 @@ sub_merqury=${merqury_out}/_submit_merqury.sh #this is the version of the script
 hifi=/seqdata/EBP/plant/Pseudotsuga_menziesii/allhifi_merged_trimmed.fastq.gz
 
 #NOTE: it seems meryl/merqury cannot follow symlinks.
+mkdir /scratch/msmith/merqury_out
 
-${sub_merqury} ${merqury_out}/intDF_hifi_CBP.meryl ${primasm} ${altasm} ${merqury_out}/intDF_CBP_merq
+${sub_merqury} ${merqury_out}/intDF_hifi_CBP.meryl ${primasm} ${altasm} /scratch/msmith/merqury/intDF_CBP_merq
