@@ -1,4 +1,4 @@
-#!/bin/bash
+]#!/bin/bash
 
 if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
@@ -111,40 +111,51 @@ fi
 
 fieldcheck=`awk '/^#/ {print $0} !/^#/ {exit}' "${contacts}" | grep "columns" | grep "frag1"`
 if [ -z "$fieldcheck" ] ; then
-awk '
-BEGIN { OFS = "\t" }
-/^#/ {
-    if ($0 ~ /^#columns:/) {
-        sub(/pair_type/, "frag1\tfrag2");
-        print;
-    } else {
-        print;
-    }
-    next;
-}
-{
-    # Convert + to 0 and - to 1 in fields 6 and 7
-    if ($6 == "+") $6 = 0;
-    else if ($6 == "-") $6 = 1;
+	if [ -f "${tmpdir}/contacts_corrected.pairs" ]; then
+	    echo "-> Original .pairs file not formatted correctly, but corrected temp file was found. Continuing with this file."
+	    contacts="${tmpdir}/contacts_corrected.pairs"
+	else
+	    awk '
+	    BEGIN { OFS = "\t" }
+	    /^#/ {
+    	    if ($0 ~ /^#columns:/) {
+        	sub(/pair_type/, "frag1\tfrag2");
+        	print;
+    	    } else {
+        	print;
+    	    }
+    		next;
+	    }	
+	    {
+    		# Convert + to 0 and - to 1 in fields 6 and 7
+    		if ($6 == "+") $6 = 0;
+    		else if ($6 == "-") $6 = 1;
 
-    if ($7 == "+") $7 = 0;
-    else if ($7 == "-") $7 = 1;
+    		if ($7 == "+") $7 = 0;
+    		else if ($7 == "-") $7 = 1;
 
-    # Build a list of fields from $1 to $(NF-1)
-    out = $1;
-    for (i = 2; i < NF; i++) {
-        out = out OFS $i;
-    }
-    print out, 0, 1;  # This uses OFS="\t" correctly
-}' "${contacts}" > "${tmpdir}/contacts_corrected.pairs"
-	#reset contacts
-	contacts="${tmpdir}/contacts_corrected.pairs"
-	echo "-> Done."
+    		# Build a list of fields from $1 to $(NF-1)
+    		out = $1;
+    		for (i = 2; i < NF; i++) {
+        	out = out OFS $i;
+    	    }
+    	    print out, 0, 1;  # This uses OFS="\t" correctly
+	    }' "${contacts}" > "${tmpdir}/contacts_corrected.pairs"
+	    #reset contacts
+	    contacts="${tmpdir}/contacts_corrected.pairs"
+	    echo "-> Done."
+	fi
 else
 	echo "-> Pairs file assumed correctly formatted."
 fi
 
 #make the .hic file ----
 echo "-> Beginning .hic file creation."
-java -jar $JUICER pre -v -t "${tmpdir}" "${contacts}" "${output}.hic" "${chromsizes}"
-rm "${contacts}"
+java -XX:+UseParallelGC -Xms150G -Xmx300G -jar $JUICER pre -v --threads "${threads}" -t "${tmpdir}" "${contacts}" "${output}.hic" "${chromsizes}"
+if [ $? -eq 0 ]; then
+echo "-> juicer_tools pre succeeded."
+exit 0
+else
+echo "[E]: juicer_tools pre failed. Exiting."
+exit 1
+fi 

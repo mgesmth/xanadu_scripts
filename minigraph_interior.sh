@@ -3,7 +3,7 @@
 #SBATCH --partition=himem2
 #SBATCH --qos=himem
 #SBATCH --cpus-per-task=24
-#SBATCH --mem=1000G
+#SBATCH --mem=650G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o minigraph_interior.%j.out
@@ -13,7 +13,7 @@ echo `hostname`
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-prim=${core}/CBP_assemblyfiles/interior_primary_1Mb.fa
+prim=/scratch/msmith/interior_primary_first15.fa
 alt=${core}/CBP_assemblyfiles/interior_alternate_1Mb.fa
 out=${home}/minigraph_out/interior_primalt_newopts
 
@@ -39,5 +39,5 @@ export PATH="${core}/bin/gfatools:$PATH"
 #minigraph -cxggs -l 10k ${test_gfa} ${human} ${chimp} ${orang} > "${test_out}.gfa"
 #gfatools bubble "${test_out}.gfa" > "${test_out}.bed"
 
-minigraph -cxggs -t 24 -k21 -U10,50 --min-cov-mapq 20 -q 20 --gg-match-pen 10 ${prim} ${alt} > "${out}.gfa"
+minigraph -cxggs -t 24 -k21 --min-cov-mapq 20 -q 20 --gg-match-pen 10 ${prim} ${alt} > "${out}.gfa"
 gfatools bubble "${out}.gfa" > "${out}.bed"
