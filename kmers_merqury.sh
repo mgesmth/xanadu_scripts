@@ -5,8 +5,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=2G
 #SBATCH -d afterok:9030334
-#SBATCH -o meryl.%j.out
-#SBATCH -e meryl.%j.err
+#SBATCH -o merqury.%j.out
+#SBATCH -e merqury.%j.err
 
 module load R/4.2.2
 export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
