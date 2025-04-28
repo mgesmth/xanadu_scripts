@@ -50,7 +50,9 @@ if [[ -z ${infile} || -z ${mode} || -z ${lineage} ]] ; then
   exit 1
 fi
 
-base=`basename ${infile}` 
+basein=`basename ${infile}`
+baseout=`basename ${output}`
+outdir=`dirname ${output}`
 
-echo "[M]: Beginning ${mode} BUSCO assessment of ${base} with lineage db ${lineage}." 
-busco -c "${threads}" -i "${infile}" -m "${mode}" -l "${lineage}" -o "${output}"
+echo "[M]: Beginning ${mode} BUSCO assessment of ${basein} with lineage db ${lineage}." 
+busco -c "${threads}" -i "${infile}" -m "${mode}" -l "${lineage}" -o "${baseout}" --out_path "${outdir}"
