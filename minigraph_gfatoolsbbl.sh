@@ -35,9 +35,9 @@
  	q) queries=${OPTARG};;
  	o) output_prefix=${OPTARG};;
  	t) threads=${OPTARG};;
-   k) kmer=${OPTARG};;
+   	k) kmer=${OPTARG};;
  	x)
-     eval nextopt=\${$OPTIND}
+ 	    eval nextopt=\${$OPTIND}
  	 #if the next positional parameter is not an option flag, define query2 as the parameter:
  	 if [[ -n $nextopt && $nextopt != -* ]] ; then
  	  OPTIND=$((OPTIND + 1))
@@ -45,15 +45,15 @@
  	 fi
  	  ;;
  	y)
-     eval nextopt=\${$OPTIND}
+     	eval nextopt=\${$OPTIND}
  	 #if the next positional parameter is not an option flag, define query2 as the parameter:
  	 if [[ -n $nextopt && $nextopt != -* ]] ; then
  	  OPTIND=$((OPTIND + 1))
  	  queries+=" $nextopt"
  	 fi
  	  ;;
-   z)
-     eval nextopt=\${$OPTIND}
+   	z)
+     	eval nextopt=\${$OPTIND}
  	 #if the next positional parameter is not an option flag, define query2 as the parameter:
  	 if [[ -n $nextopt && $nextopt != -* ]] ; then
  	  OPTIND=$((OPTIND + 1))
