@@ -22,9 +22,10 @@
  	exit 0
  fi
  
- #Defaults
- chain="50k"
- kmer=19
+#Defaults
+chain="50k"
+kmer=19
+threads=1
 
 optstring=":t:r:q:o:k:l:x:y:z:"
 q1="" q2="" q3="" q4=""
@@ -52,7 +53,7 @@ queries=$(echo $queries)  # Normalize whitespace
  
  if [[ -z "${reference}" || -z "${queries}" || -z "${output_prefix}" ]] ; then
    echo "[E]: Options -r, -q, and -o require an argument. Exiting 1."
-   echo "[E]: Run ./minigraph.sh -h or --help for detailed usage."
+   echo "[E]: Run ./minigraph_gfatoolsbbl.sh -h or --help for detailed usage."
    exit 1
  else
    echo "[M]: Beginning minigraph graph generation on ${threads} threads"
