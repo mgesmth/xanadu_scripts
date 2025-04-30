@@ -44,4 +44,4 @@ FA_QRY="${FILESALT[$SLURM_ARRAY_TASK_ID]}"
 FA_REF_BASENAME=$(basename "$FA_REF" .fasta)
 OUT="${outdir}/${FA_REF_BASENAME}_alternate"
 
-${home}/scripts/minigraph_gfatoolsbbl.sh -t "$threads" -r "$FA_REF" -q "$FA_QRY" -o "$OUT"
+${home}/scripts/minigraph_gfatoolsbbl.sh -t "$threads" -r "${primdir}/${FA_REF}" -q "${altdir}/${FA_QRY}" -o "$OUT"
