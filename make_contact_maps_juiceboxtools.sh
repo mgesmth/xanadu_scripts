@@ -151,7 +151,7 @@ fi
 
 #make the .hic file ----
 echo "-> Beginning .hic file creation."
-java -XX:+UseParallelGC -Xms150G -Xmx300G -jar $JUICER pre -v --threads "${threads}" -t "${tmpdir}" "${contacts}" "${output}.hic" "${chromsizes}"
+java -XX:+UseParallelGC -Xms250G -Xmx400G -jar $JUICER pre -v --threads "${threads}" -t "${tmpdir}" "${contacts}" "${output}.hic" "${chromsizes}"
 if [ $? -eq 0 ]; then
 echo "-> juicer_tools pre succeeded."
 exit 0
