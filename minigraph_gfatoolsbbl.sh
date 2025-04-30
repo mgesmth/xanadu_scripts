@@ -2,7 +2,6 @@
  
  if [[ ( $@ == "--help") ||  $@ == "-h" ]]
  then
-     echo "Usage: ./minigraph.sh -t <THREADS> -r <REF.FA/GFA> -q <QUERY1.FA> -o <OUT_PREFIX> [-x <QUERY2.FA> -y <QUERY3.FA> -z <QUERY4.FA>] [-l <CHAINLEN> -k <KMER>]"
      echo "Usage: ./minigraph_gfatoolsbbl.sh -t <THREADS> -r <REF.FA/GFA> -q <QUERY1.FA> -o <OUT_PREFIX> [-x <QUERY2.FA> -y <QUERY3.FA> -z <QUERY4.FA>] [-l <CHAINLEN> -k <KMER>]"
      echo ""
      echo "A script to generate a genome alignment graph (GFA) of up to 5 genomes using minigraph."
