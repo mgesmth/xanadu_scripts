@@ -22,7 +22,7 @@ fi
 
 justprim="false"
 
-OPTSTRING="x:"
+OPTSTRING="x"
 while getopts ${OPTSTRING} opt
 do
     case ${opt} in

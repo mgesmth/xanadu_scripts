@@ -6,7 +6,7 @@
 #SBATCH --mem=1G
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH --array[1-33]%10
+#SBATCH --array=[1-33]%10
 #SBATCH -o %x_%A.%a.out
 #SBATCH -e %x_%A.%a.err
 
