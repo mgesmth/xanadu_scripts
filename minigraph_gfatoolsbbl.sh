@@ -1,45 +1,93 @@
 #!/bin/bash
-#SBATCH -J minigraph_byscaffold
-#SBATCH -N 1
-#SBATCH -n 1
-#SBATCH -c 4
-#SBATCH --mem=75G
-#SBATCH -p general
-#SBATCH -q general
-#SBATCH --array[=0-32]%4
-#SBATCH -o %x_%A.%a.out
-#SBATCH -e %x_%A.%a.err
 
-home=/home/FCAM/msmith
-core=/core/projects/EBP/smith
-scratch=/scratch/msmith
-altdir=${scratch}/minigraph_prep/alternate_fastas
-primdir=${scratch}/minigraph_prep/primary_fastas
-outdir=${scratch}/minigraph_prep/primalt_out
-threads="4"
-
-export PATH="${core}/bin/minigraph-0.21:$PATH"
-export PATH="${core}/bin/gfatools-0.5:$PATH"
-
-echo "[M]: Host Name:" `hostname`
-echo "[M]: This is minigraph task $SLURM_ARRAY_TASK_ID"
-
-#Create an array containing the names of the PRIM fasta files to align
-FILESPRIM=($(ls -1 ${primdir} | sort -g -t '_' -k2))
-
-#Create an array containing the names of the ALT fasta files to align (in order of 1 to n)
-FILESALT=($(ls -1 ${altdir} | sort -g -t '_' -k2))
-
-# Sanity check: ensure array index is in range
-if [ "$SLURM_ARRAY_TASK_ID" -ge "${#FILESPRIM[@]}" ]; then
-  echo "[E]: SLURM_ARRAY_TASK_ID ($SLURM_ARRAY_TASK_ID) out of bounds (max index: $((${#FILESPRIM[@]} - 1)))"
-  exit 1
+if [[ ( $@ == "--help") ||  $@ == "-h" ]]
+then
+    echo "Usage: ./minigraph_gfatoolsbbl.sh -t <THREADS> -r <REF.FA/GFA> -q <QUERY1.FA> -o <OUT_PREFIX> [-x <QUERY2.FA> -y <QUERY3.FA> -z <QUERY4.FA>] [-l <CHAINLEN> -k <KMER>]"
+    echo ""
+    echo "A script to generate a genome alignment graph (GFA) of up to 5 genomes using minigraph."
+    echo ""
+    echo "positional arguments:"
+    echo ""
+    echo "-t <THREADS>         Number of threads to use for mapping. Default."
+    echo "-r <REF.FA/.GFA>     Path to the reference genome to use in graph generation."
+    echo "-q <QUERY1.FA>       Path to the first query genome to be aligned to the reference."
+    echo "-o <OUTPUT_PREFIX>   The prefix to the paths of generated graph. "
+    echo "-x <QUERY2.FA>       Path to the second query genome to be aligned. Optional."
+    echo "-y <QUERY3.FA>       Path to the third query genome to be aligned. Optional."
+    echo "-z <QUERY4.FA>       Path to the fourth query genome to be aligned. Optional."
+    echo "-l <CHAINLEN>        Minimum chain length to consider. Default 50k."
+    echo "-k <KMER>            Minimizer kmer length. Default 19."
+    echo ""
+    echo ""
+	exit 0
 fi
 
-#Get the names of the fasta files to be implicated in this array task
-FA_REF=${FILESPRIM[$SLURM_ARRAY_TASK_ID]}
-FA_QRY=${FILESALT[$SLURM_ARRAY_TASK_ID]}
-FA_REF_BASENAME=$(basename "$FA_REF" .fasta)
-OUT="${outdir}/${FA_REF_BASENAME}_alternate"
+#Defaults
+chain="50k"
+kmer=19
 
-${home}/scripts/minigraph_gfatoolsbbl.sh -t "${threads}" -r "${FA_REF}" -q "${FA_QRY}" -o "${OUT}"
+OPTSTRING="t:r:q:o:k:l:x:y:z:"
+while getopts ${OPTSTRING} opt
+do
+    case ${opt}
+        in
+	r) reference=${OPTARG};;
+	q) queries=${OPTARG};;
+	o) output_prefix=${OPTARG};;
+	t) threads=${OPTARG};;
+  k) kmer=${OPTARG};;
+	x)
+    eval nextopt=\${$OPTIND}
+	 #if the next positional parameter is not an option flag, define query2 as the parameter:
+	 if [[ -n $nextopt && $nextopt != -* ]] ; then
+	  OPTIND=$((OPTIND + 1))
+	  queries+=" $nextopt"
+	 fi
+	  ;;
+	y)
+    eval nextopt=\${$OPTIND}
+	 #if the next positional parameter is not an option flag, define query2 as the parameter:
+	 if [[ -n $nextopt && $nextopt != -* ]] ; then
+	  OPTIND=$((OPTIND + 1))
+	  queries+=" $nextopt"
+	 fi
+	  ;;
+  z)
+    eval nextopt=\${$OPTIND}
+	 #if the next positional parameter is not an option flag, define query2 as the parameter:
+	 if [[ -n $nextopt && $nextopt != -* ]] ; then
+	  OPTIND=$((OPTIND + 1))
+	  queries+=" $nextopt"
+	 fi
+	  ;;
+  l) chain=${OPTARG};;
+  ?)
+      echo "invalid option: ${opt}"
+      exit 1
+	  ;;
+    esac
+done
+
+set -o errexit
+set -o pipefail
+
+if [[ -z "${reference}" || -z "${queries}" || -z "${output_prefix}" ]] ; then
+  echo "[E]: Options -r, -q, and -o require an argument. Exiting 1."
+  echo "[E]: Run ./minigraph.sh -h or --help for detailed usage."
+  exit 1
+else
+  echo "[M]: Beginning minigraph graph generation on ${threads} threads"
+  echo "[M]: Reference genome: ${reference}"
+  echo "[M]: Query genome(s): ${queries}"
+  echo ""
+  minigraph -cxggs -t "${threads}" -l "${chain}" -k "${kmer}" "${reference}" "${queries}" > "${output_prefix}.gfa"
+  echo ""
+  echo "[M]: Minigraph graph generation complete."
+  echo "[M]: Beginning SV extraction with gfatools bubble."
+  echo ""
+  gfatools bubble "${output_prefix}.gfa" > "${output_prefix}.bed"
+  echo ""
+  echo "[M]: gfatools bubble SV extraction complete. Exiting 0."
+fi
+
+
