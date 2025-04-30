@@ -25,48 +25,27 @@
  #Defaults
  chain="50k"
  kmer=19
- 
- OPTSTRING="t:r:q:o:k:l:x:y:z:"
- while getopts ${OPTSTRING} opt
- do
-     case ${opt}
-         in
- 	r) reference=${OPTARG};;
- 	q) queries=${OPTARG};;
- 	o) output_prefix=${OPTARG};;
- 	t) threads=${OPTARG};;
-   	k) kmer=${OPTARG};;
- 	x)
- 	    eval nextopt=\${$OPTIND}
- 	 #if the next positional parameter is not an option flag, define query2 as the parameter:
- 	 if [[ -n $nextopt && $nextopt != -* ]] ; then
- 	  OPTIND=$((OPTIND + 1))
- 	  queries+=" $nextopt"
- 	 fi
- 	  ;;
- 	y)
-     	eval nextopt=\${$OPTIND}
- 	 #if the next positional parameter is not an option flag, define query2 as the parameter:
- 	 if [[ -n $nextopt && $nextopt != -* ]] ; then
- 	  OPTIND=$((OPTIND + 1))
- 	  queries+=" $nextopt"
- 	 fi
- 	  ;;
-   	z)
-     	eval nextopt=\${$OPTIND}
- 	 #if the next positional parameter is not an option flag, define query2 as the parameter:
- 	 if [[ -n $nextopt && $nextopt != -* ]] ; then
- 	  OPTIND=$((OPTIND + 1))
- 	  queries+=" $nextopt"
- 	 fi
- 	  ;;
-   l) chain=${OPTARG};;
-   ?)
-       echo "invalid option: ${opt}"
-       exit 1
- 	  ;;
-     esac
- done
+
+optstring=":t:r:q:o:k:l:x:y:z:"
+q1="" q2="" q3="" q4=""
+while getopts ${optstring} opt; do
+  case ${opt} in
+    t) threads=${OPTARG} ;;
+    r) reference=${OPTARG} ;;
+    q) q1=${OPTARG} ;;
+    x) q2=${OPTARG} ;;
+    y) q3=${OPTARG} ;;
+    z) q4=${OPTARG} ;;
+    o) output_prefix=${OPTARG} ;;
+    l) chain=${OPTARG} ;;
+    k) kmer=${OPTARG} ;;
+    \?) echo "[E]: Invalid option -$OPTARG" >&2; exit 1 ;;
+    :) echo "[E]: Option -$OPTARG requires an argument." >&2; exit 1 ;;
+  esac
+done
+
+queries="${q1} ${q2} ${q3} ${q4}"
+queries=$(echo $queries)  # Normalize whitespace
  
  set -o errexit
  set -o pipefail
