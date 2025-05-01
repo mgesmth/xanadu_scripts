@@ -29,7 +29,7 @@ out=${home}/minigraph_out/interior_primalt_toscaff1
 #EXEC
 module load zlib/1.2.11
 export PATH="${core}/bin/minigraph-0.21:$PATH"
-export PATH="${core}/bin/gfatools-0.5:$PATH"
+export PATH="${core}/bin/gfatools:$PATH"
 
 #test real variables - succeeded
 #ls ${prim}

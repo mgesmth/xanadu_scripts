@@ -3,10 +3,10 @@
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -c 4
-#SBATCH --mem=75G
+#SBATCH --mem=150G
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH --array=[0-32]%4
+#SBATCH --array=[0-32]%3
 #SBATCH -o %x_%A.%a.out
 #SBATCH -e %x_%A.%a.err
 
