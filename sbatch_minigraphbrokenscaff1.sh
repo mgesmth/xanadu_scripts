@@ -11,6 +11,8 @@
 
 echo `hostname`
 
+core=/core/projects/EBP/smith
+home=/home/FCAM/msmith
 prim=/scratch/msmith/scaffold_1_primary_broken.fa
 alt=/scratch/msmith/forscaffold_1_primary_alternate_broken.fa
 out=/home/FCAM/msmith/minigraph_out/testbroken_scaffold1
