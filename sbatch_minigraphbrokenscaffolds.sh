@@ -25,7 +25,7 @@ threads="36"
 
 ##Break scaffolds with Quast
 ##NOTE: I had to edit break_scaffolds_into_contigs.py at line 57 - fastaparser module has function "write_fasta", not "write_fasta_to_file"
-source ${home}/quast/.venv/bin/activate
+source ${home}/quast_out/.venv/bin/activate
 unbroken_prim_name=`basename ${prim_unbroken}`
 unbroken_alt_name=`basename ${alt_unbroken}`
 echo "[M]: Breaking scaffolded assembly ${unbroken_prim_name} into contigs and writing to ${prim_broken}."
