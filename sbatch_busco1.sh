@@ -29,4 +29,4 @@ mode="genome"
 db="embryophyta_odb12"
 out=${core}/busco/intDF011
 
-run_busco.sh -t 12 -i "${mine}" -m "${mode}" -f -l "${db}" -o "${out}"
+/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${mine}" -m "${mode}" -l "${db}" -o "${out}"

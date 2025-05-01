@@ -55,4 +55,4 @@ baseout=`basename ${output}`
 outdir=`dirname ${output}`
 
 echo "[M]: Beginning ${mode} BUSCO assessment of ${basein} with lineage db ${lineage}." 
-busco -c "${threads}" -i "${infile}" -m "${mode}" -l "${lineage}" -o "${baseout}" --out_path "${outdir}"
+busco -c "${threads}" -i "${infile}" -m "${mode}" -f -l "${lineage}" -o "${baseout}" --out_path "${outdir}"
