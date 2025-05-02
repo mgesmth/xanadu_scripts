@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH -J busco_embryo
+#SBATCH -J busco
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 12
 #SBATCH --mem=200G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
-#SBATCH -o busco_embryo.%j.out
-#SBATCH -e busco_embryo.%j.err
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
 
 echo `hostname`
 
@@ -20,13 +20,17 @@ export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
 #A downloaded version of miniprot: the one on Xanadu seems coorrupted
 export PATH="/core/projects/EBP/smith/bin/miniprot:$PATH"
 
+home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
 mine=${core}/scaffold/withpairtools_noerrorcorrect/intDF011_scaffolds_final.fa
 coastal=${core}/coastal/coastalDF_scaffrenamed_sorted.fa
 mode="genome"
-db="embryophyta_odb12"
-out=${core}/busco/intDF011_viridiplantae
+db1="viridiplantae_odb12"
+db2="eukaryota_odb12"
+out1=${home}/busco/intDF011_viridiplantae
+out2=${home}/busco/intDF011_eukaryota
 
-/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${mine}" -m "${mode}" -l "${db}" -o "${out}"
+/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${mine}" -m "${mode}" -l "${db1}" -o "${out1}"
+/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${mine}" -m "${mode}" -l "${db2}" -o "${out2}"

@@ -47,4 +47,4 @@ module load zlib/1.2.11
 export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
 
-${home}/scripts/minigraph_gfatoolsbbl.sh -t "$threads" -r "${prim_broken}" -q "${coa_broken}" -o "${out}"
+${home}/scripts/minigraph_gfatoolsbbl.sh -t "$threads" -r "${primalt_broken}" -q "${coa_broken}" -o "${out}"
