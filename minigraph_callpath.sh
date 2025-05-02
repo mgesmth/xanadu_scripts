@@ -22,5 +22,7 @@ export PATH="${core}/bin/gfatools:$PATH"
 minidir=/home/FCAM/msmith/minigraph_out
 gfa=${minidir}/all_brokenscaffolds.gfa
 coastal=${scratch}/coastal_1Mb_broken.fa
+alternate=${scratch}/interior_alternate_1Mb_broken.fa 
 
-minigraph -cxasm --call -t24 "$gfa" "$coastal" > "${minidir}/coastal_path.bed"
+#minigraph -cxasm --call -t24 "$gfa" "$coastal" > "${minidir}/coastal_path.bed"
+minigraph -cxasm --call -t24 "$gfa" "$alternate" > "${minidir}/alternate_path.bed"
