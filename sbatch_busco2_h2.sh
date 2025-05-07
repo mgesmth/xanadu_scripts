@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -J busco
-#SBATCH -p himem2
+#SBATCH -p himem
 #SBATCH -q himem
-#SBATCH -c 18
+#SBATCH -c 20
 #SBATCH --mem=300G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
