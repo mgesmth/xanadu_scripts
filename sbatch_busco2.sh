@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J busco
-#SBATCH -p himem2
+#SBATCH -p himem
 #SBATCH -q himem
 #SBATCH -c 18
-#SBATCH --mem=300G
+#SBATCH --mem=250G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
@@ -32,5 +32,4 @@ db2="eukaryota_odb12"
 out1=${home}/busco/intDF011_viridiplantae
 out2=${home}/busco/intDF011_eukaryota
 
-/home/FCAM/msmith/scripts/run_busco.sh -t 18 -i "${mine}" -m "${mode}" -l "${db1}" -o "${out1}"
 /home/FCAM/msmith/scripts/run_busco.sh -t 18 -i "${mine}" -m "${mode}" -l "${db2}" -o "${out2}"
