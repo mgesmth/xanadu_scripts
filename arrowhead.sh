@@ -15,7 +15,8 @@ module load juicer/1.22.01
 
 scratch=/scratch/msmith
 core=/core/projects/EBP/smith
-hic=${core}/juicer_primary/interior_primary_contacts.hic
+home=/home/FCAM/msmith
+hic=${home}/interior_primary_contacts.hic
 out=${scratch}/interior_primary_contactdomains.txt
 
-arrowhead --threads 12 -k KR "${hic}" "${out}"
+java -Xmx250G -jar $JUICER arrowhead --threads 12 --ignore-sparsity -k KR "${hic}" "${out}"
