@@ -20,15 +20,8 @@ export PATH="/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linu
 k8_dir=/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
 
 #test code
-testdir=/core/projects/EBP/smith/bin/minigraph-0.21/test
-cd $testdir 
-mkdir vcf_test
-for fa in $(ls MT-*.fa) ; do
-  name=$(ls "$fa" | awk -F '.' '{print $1}')
-  minigraph -cxasm -l10k --call test.gfa "$fa" > vcf_test/"${name}.bed"
-done
 
-cd vcf_test && ls *.bed > samples.txt
+cd /core/projects/EBP/smith/bin/minigraph-0.21/test/vcf_test && ls *.bed > samples.txt
 #merge bedfiles into one
 echo "[M]: Beginning merging of bedfiles..."
 paste *.bed | ${k8_dir}/k8 mgutils.js merge -s samples.txt - | gzip > test_vcf.sv.bed.gz
