@@ -6,7 +6,6 @@
 #SBATCH -n 1
 #SBATCH -c 12
 #SBATCH --mem=200G
-#SBATCH --array=[0-2]%3
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
@@ -25,20 +24,15 @@ export PATH="/core/projects/EBP/smith/bin/miniprot:$PATH"
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-dbs=($(echo -e "eukaryota_odb12\nembryophyta_odb12\nviridiplantae_odb12"))
-
-/home/FCAM/msmith/scripts/run_busco.sh -t 28 -i "${mine}" -m "${mode}" -l "${db1}" -o "${out1}"
-
-#names for db for this task:
-db="${dbs[$SLURM_ARRAY_TASK_ID]}"
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
+mine=${core}/scaffold/withpairtools_noerrorcorrect/intDF011_scaffolds_final.fa
 coastal=${core}/coastal/coastalDF_scaffrenamed_sorted.fa
 mode="genome"
-out1="${home}/busco/prim_${db}"
-out2="${home}/busco/alt_${db}"
-out3="${home}/busco/coa_${db}"
+db="viridiplantae_odb12"
+out1="${home}/busco/intDF011_${db}"
 
-/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${prim}" -m "${mode}" -l "${db}" -o "${out1}"
-/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${alt}" -m "${mode}" -l "${db}" -o "${out2}"
-/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${coa}" -m "${mode}" -l "${db}" -o "${out3}"
+
+/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${mine}" -m "${mode}" -l "${db}" -o "${out1}"
+#/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${alt}" -m "${mode}" -l "${db}" -o "${out2}"
+#/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${coa}" -m "${mode}" -l "${db}" -o "${out3}"
