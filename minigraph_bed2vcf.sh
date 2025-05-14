@@ -17,6 +17,7 @@ module load java/17.0.2
 export PATH="/core/projects/EBP/smith/bin/minigraph-0.21:$PATH"
 #minigraph_utils
 export PATH="/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linux:$PATH"
+k8_dir=/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
 
 #test code
 testdir=/core/projects/EBP/smith/bin/minigraph-0.21/test
@@ -30,14 +31,14 @@ done
 cd vcf_test && ls *.bed > samples.txt
 #merge bedfiles into one
 echo "[M]: Beginning merging of bedfiles..."
-paste *.bed | k8 mgutils.js merge -s samples.txt - | gzip > test_vcf.sv.bed.gz
+paste *.bed | ${k8_dir}/k8 mgutils.js merge -s samples.txt - | gzip > test_vcf.sv.bed.gz
 if [ $? -ne 0 ] ; then
   echo "[E]: Merging of path bedfiles failed. Exiting."
   exit 1
 else
   echo "[M]: Merging of path bedfiles complete. Beginning vcf formation..."
   #make vcf and send it out of the tmpdir
-  k8 mgutils-es6.js merge2vcf -r0 all_dougfir.sv.bed.gz > ../all_dougfir.sv.vcf
+  ${k8_dir}/k8 mgutils-es6.js merge2vcf -r0 test_vcf.sv.bed.gz > ../test_vcf.sv.vcf
   if [ $? -eq 0 ] ; then
     echo "[M]: VCF creation complete. Beginning cleanup..."
   else
