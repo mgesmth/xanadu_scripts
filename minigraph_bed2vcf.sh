@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J mg_bed2vcf
-#SBATCH -p himem
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -c 2
 #SBATCH --mem=20G
 #SBATCH --mail-type=ALL
@@ -20,8 +20,7 @@ export PATH="/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linu
 
 #test code
 testdir=/core/projects/EBP/smith/bin/minigraph-0.21/test
-cd $testdir
-minigraph 
+cd $testdir 
 mkdir vcf_test
 for fa in $(ls MT-*.fa) ; do
   name=$(ls "$fa" | awk -F '.' '{print $1}')
