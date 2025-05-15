@@ -48,22 +48,21 @@ cd $minidir
 #make a tmpdir to run in
 mkdir tmp
 mv alternate_path.bed tmp/
-mv coastal_path.bed tmp/
 mv primary_path.bed tmp/
 cd tmp/
 #the order of the genomes in this list matters - doing it manually
-echo -e "primary_path.bed\nalternate_path.bed\ncoastal_path.bed" > samples.txt
+echo -e "primary_path.bed\nalternate_path.bed" > samples.txt
 
 #merge bedfiles into one
 echo "[M]: Beginning merging of path bedfiles..."
-paste *.bed | ${k8_dir}/k8 ${k8_dir}/mgutils.js merge -s samples.txt - | gzip > all_dougfir.sv.bed.gz
+paste *.bed | ${k8_dir}/k8 ${k8_dir}/mgutils.js merge -s samples.txt - | gzip > int_dougfir.sv.bed.gz
 if [ $? -ne 0 ] ; then
   echo "[E]: Merging of path bedfiles failed. Exiting."
   exit 1
 else
   echo "[M]: Merging of path bedfiles complete. Beginning vcf formation..."
   #make vcf and send it out of the tmpdir
-  ${k8_dir}/k8 ${k8_dir}/mgutils-es6.js merge2vcf -r0 all_dougfir.sv.bed.gz > ../all_dougfir.sv.vcf
+  ${k8_dir}/k8 ${k8_dir}/mgutils-es6.js merge2vcf -r0 int_dougfir.sv.bed.gz > ../int_dougfir.sv.vcf
   if [ $? -eq 0 ] ; then
     echo "[M]: VCF creation complete. Beginning cleanup..."
   else

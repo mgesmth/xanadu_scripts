@@ -3,7 +3,7 @@
 #SBATCH -p himem2
 #SBATCH -q himem
 #SBATCH -c 24
-#SBATCH --mem=200G
+#SBATCH --mem=150G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
@@ -25,6 +25,6 @@ coastal=${scratch}/coastal_1Mb_broken.fa
 alternate=${scratch}/interior_alternate_1Mb_broken.fa 
 primary=${scratch}/interior_primary_1Mb_broken.fa
 
-minigraph -cxasm --call -t24 "$gfa" "$coastal" > "${minidir}/coastal_path.bed"
-#minigraph -cxasm --call -t24 "$gfa" "$alternate" > "${minidir}/alternate_path.bed"
+#minigraph -cxasm --call -t24 "$gfa" "$coastal" > "${minidir}/coastal_path.bed"
+minigraph -cxasm --call -t24 "$gfa" "$alternate" > "${minidir}/alternate_path.bed"
 #minigraph -cxasm --call -t24 "$gfa" "$primary" > "${minidir}/primary_path.bed"
