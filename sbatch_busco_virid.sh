@@ -33,6 +33,6 @@ db="viridiplantae_odb12"
 out1="${home}/busco/intDF011_${db}"
 
 
-/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${mine}" -m "${mode}" -l "${db}" -o "${out1}"
+/home/FCAM/msmith/scripts/run_busco_online.sh -t 12 -i "${mine}" -m "${mode}" -l "${db}" -o "${out1}"
 #/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${alt}" -m "${mode}" -l "${db}" -o "${out2}"
 #/home/FCAM/msmith/scripts/run_busco.sh -t 12 -i "${coa}" -m "${mode}" -l "${db}" -o "${out3}"
