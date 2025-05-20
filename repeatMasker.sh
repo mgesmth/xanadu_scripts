@@ -16,10 +16,11 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 repdir=${home}/repeats
 db=${repdir}/primary_db
-prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
+prim=interior_primary_final.fa
 tetools=${core}/bin/dfam-tetools-latest.sif
 
-cd $repdir
+#I guess RepeatMasker needs the genome to be in the workingdir?
+cd ${core}/CBP_assemblyfiles/
 
-singularity shell $tetools
-RepeatMasker -pa 24 -gff -html -dir ${repdir} -lib "${db}/primary-families.fa" "$prim"
+singularity exec $tetools \
+RepeatMasker -pa 24 -gff -html -dir ${repdir} -lib "${db}/primary-families.fa" "./${prim}"
