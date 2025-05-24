@@ -3,8 +3,8 @@
 #split .fai into scaffolds
 for scaffold in $(cat scaffolds.txt) ; do
   grep "${scaffold}_" interior_primary_1Mb_broken.fa.fai > ${scaffold}.fa.fai
-  len=$(wc -l ${scaffold}.fa.fai | cut -d ' ' -f1)
-  len_minus1=$(echo $((${len}-1)))
+  length=$(wc -l ${scaffold}.fa.fai | cut -d ' ' -f1)
+  len_minus1=$(echo $((${length}-1)))
   touch tmp_${scaffold}.txt
   for len in $(cut -f2 ${scaffold}.fa.fai | head -n ${len_minus1}) ; do
     new=$(echo $((${len}+200)))
