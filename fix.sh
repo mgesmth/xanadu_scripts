@@ -17,6 +17,6 @@ done
 cut -f1 interior_primary_1Mb_broken.fa.fai > names.txt
 touch tmp.txt
 for scaffold in $(cat scaffolds.txt) ; do
-  cat tmp_${scaffold}.txt >> tmp.txt
+  cut -f2 tmp_${scaffold}.txt >> tmp.txt
 done
 paste names.txt tmp.txt > contig_lengths_adjusted.tsv
