@@ -25,7 +25,7 @@ cut -f2 interior_primary_1Mb.fa.fai | paste - scafflengths_check.txt | less #the
 #Create the index
 for scaffold in $(cat scaffolds.txt) ; do
   new=(0)
-  contig_lengths=(cut -f2 contig_lengths_adjusted_${scaffold}.tsv)
+  contig_lengths=($(cut -f2 contig_lengths_adjusted_${scaffold}.tsv))
   numlines=$(wc -l contig_lengths_adjusted_${scaffold}.tsv | cut -d ' ' -f1)
   numlines_minus1=$(echo $((${numlines}-1)))
   for i in $(seq 1 ${numlines_minus1}) ; do
