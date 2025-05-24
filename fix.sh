@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#split .fai into scaffolds
+#split .fai into scaffolds; add gaps (200N) to each contig, except the last
 for scaffold in $(cat scaffolds.txt) ; do
   grep "${scaffold}_" interior_primary_1Mb_broken.fa.fai > ${scaffold}.fa.fai
   length=$(wc -l ${scaffold}.fa.fai | cut -d ' ' -f1)
@@ -14,9 +14,17 @@ for scaffold in $(cat scaffolds.txt) ; do
   echo -e "${last}\t${last}" >> tmp_${scaffold}.txt
 done
 
+#Recombine scaffold indexes
 cut -f1 interior_primary_1Mb_broken.fa.fai > names.txt
 touch tmp.txt
 for scaffold in $(cat scaffolds.txt) ; do
   cut -f2 tmp_${scaffold}.txt >> tmp.txt
 done
 paste names.txt tmp.txt > contig_lengths_adjusted.tsv
+
+#check lengths
+touch scafflengths_check.txt
+for scaffold in $(cat scaffolds.txt) ; do
+  grep "${scaffold}_" contig_lengths_adjusted.tsv | cut -f2 | paste -sd+ - | bc >> scafflengths_check.txt 
+done
+cut -f2 interior_primary_1Mb.fa.fai | paste - scafflengths_check.txt | less #they match!
