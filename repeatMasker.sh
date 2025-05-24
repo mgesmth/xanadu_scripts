@@ -20,7 +20,8 @@ prim=interior_primary_final.fa
 tetools=${core}/bin/dfam-tetools-latest.sif
 
 #I guess RepeatMasker needs the genome to be in the workingdir?
-cd ${core}/CBP_assemblyfiles/
+cp ${core}/CBP_assemblyfiles/${prim} ${scratch}
+cd ${scratch}
 
 singularity exec $tetools \
-RepeatMasker -pa 24 -gff -html -dir ${repdir} -lib "${db}/primary-families.fa" "./${prim}"
+RepeatMasker -frag 60000000 -pa 24 -gff -html -dir ${repdir} -lib "${db}/primary-families.fa" "./${prim}"
