@@ -8,23 +8,20 @@ for scaffold in $(cat scaffolds.txt) ; do
   touch tmp_${scaffold}.txt
   for len in $(cut -f2 ${scaffold}.fa.fai | head -n ${len_minus1}) ; do
     new=$(echo $((${len}+200)))
-    echo -e "${len}\t${new}" >> tmp_${scaffold}.txt
+    echo "${new}" >> tmp_${scaffold}.txt
   done
   last=$(tail -n1 ${scaffold}.fa.fai | cut -f2)
-  echo -e "${last}\t${last}" >> tmp_${scaffold}.txt
+  echo -e "${last}" >> tmp_${scaffold}.txt
+  cut -f1 ${scaffold}.fa.fai | paste - tmp_${scaffold}.txt > contig_lengths_adjusted_${scaffold}.tsv
 done
-
-#Recombine scaffold indexes
-cut -f1 interior_primary_1Mb_broken.fa.fai > names.txt
-touch tmp.txt
-for scaffold in $(cat scaffolds.txt) ; do
-  cut -f2 tmp_${scaffold}.txt >> tmp.txt
-done
-paste names.txt tmp.txt > contig_lengths_adjusted.tsv
 
 #check lengths
 touch scafflengths_check.txt
 for scaffold in $(cat scaffolds.txt) ; do
-  grep "${scaffold}_" contig_lengths_adjusted.tsv | cut -f2 | paste -sd+ - | bc >> scafflengths_check.txt 
+  cut -f2 contig_lengths_adjusted_${scaffold}.tsv | paste -sd+ - | bc >> scafflengths_check.txt 
 done
 cut -f2 interior_primary_1Mb.fa.fai | paste - scafflengths_check.txt | less #they match!
+
+#Create the index
+#new=(0)
+
