@@ -23,6 +23,7 @@ done
 cut -f2 interior_primary_1Mb.fa.fai | paste - scafflengths_check.txt | less #they match!
 
 #Create the index
+touch contig2scaffoldpos.idx
 for scaffold in $(cat scaffolds.txt) ; do
   new=(0)
   contig_lengths=($(cut -f2 contig_lengths_adjusted_${scaffold}.tsv))
@@ -34,5 +35,20 @@ for scaffold in $(cat scaffolds.txt) ; do
   done
   printf '%s\n' "${new[@]}" > foo.txt
   cut -f1 contig_lengths_adjusted_${scaffold}.tsv | paste - foo.txt > ${scaffold}.idx && rm foo.txt
+  cat ${scaffold}.idx >> contig2scaffoldpos.idx
 done
+
+cd ~/minigraph_out
+awk '/^#/ {print $0}' foo.vcf > all_dougfir_scaffcoord.sv.vcf
+awk '!/^#/' foo.vcf | while read -r rec; do
+  contig=$(echo ${rec} | cut -d ' ' -f1)
+  start=$(echo ${rec} | cut -d ' ' -f2)
+  end=$(echo "$rec" | grep -o 'END=[0-9]*' | cut -d= -f2)
+  s=$(grep -w "$contig" contig2scaffoldpos.idx | cut -f2)
+  new_start=$(echo $((${start}+${s})))
+  new_end=$(echo $((${end}+${s})))
+  echo ${rec} | sed "s/${start}/${new_start}/g" | sed "s/${end}/${new_end}/g" | sed "s/ /\t/g" >> all_dougfir_scaffcoord.sv.vcf
+done
+
+
 
