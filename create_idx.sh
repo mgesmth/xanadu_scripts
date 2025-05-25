@@ -12,5 +12,6 @@ for scaffold in $(cat scaffolds.txt) ; do
   done
   printf '%s\n' "${new[@]}" > foo.txt
   cut -f1 contig_lengths_adjusted_${scaffold}.tsv | paste - foo.txt > ${scaffold}.idx && rm foo.txt
+  cat ${scaffold}.idx >> contig2scaffoldpos.idx
 done
 
