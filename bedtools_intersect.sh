@@ -51,7 +51,7 @@ fi
 
 if [[ $b == *.txt ]] ; then
   b_list=$(cat ${b})
-  echo ${b_list} | bedtools intersect -a "$a" -b stdin -f "$f" -F "$F" -wa -wb -sorted -header -filenames > ${output}
+  echo ${b_list} | bedtools intersect -a "$a" -b stdin -f "$f" -F "$F" -wa -wb -filenames > ${output}
 else
-  bedtools intersect -a "$a" -b "$b" -f "$f" -F "$F" -wa -wb -sorted -header -filenames > ${output}
+  bedtools intersect -a "$a" -b "$b" -f "$f" -F "$F" -wa -wb > ${output}
 fi
