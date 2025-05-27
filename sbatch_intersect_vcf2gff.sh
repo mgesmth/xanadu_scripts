@@ -12,10 +12,11 @@
 home=/home/FCAM/msmith
 scripts=${home}/scripts
 mini=${home}/svs/minigraph_out
-vcf=${mini}/all_dougfir_allthree_altall.sv.vcf
-bed=${mini}/all_brokenscaffolds.bed 
+inter=${home}/svs/intersect
+vcf=${mini}/all_dougfir_scaffcoord.sv.vcf
+gff=${intersect}/liftoff_interior_douglas_fir_copies_flank05.gff3_polished
 min="0.00000005"
-out=${home}/svs/intersect/bed2vcf
+out=${home}/svs/intersect/vcf2gff.txt
 
 module load bedtools/2.29.0
 
