@@ -27,14 +27,14 @@ fi
 f="0.000000001"
 F="0.000000001"
 
-OPTSTRING="a:b:f:o:"
+OPTSTRING="a:b:f:F:o:"
 while getopts ${OPTSTRING} opt
 do
     case ${opt} in
 	a) a=${OPTARG};;
 	b) b=${OPTARG};;
 	f) f=${OPTARG};;
-  F) F=${OPTARG};;
+  	F) F=${OPTARG};;
 	o) output=${OPTARG};;
   ?)
     echo "invalid option: ${opt}"
