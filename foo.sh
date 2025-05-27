@@ -12,12 +12,12 @@
 home=/home/FCAM/msmith
 scripts=${home}/scripts
 mini=${home}/svs/minigraph_out
-vcf=${mini}/all_dougfir_allthree_altall.sv.vcf
-bed=${mini}/all_brokenscaffolds.bed 
-min="1"
+inter=${home}/svs/intersect
+vcf=${mini}/all_dougfir_scaffcoord.sv.vcf
+gff=${inter}/liftoff_interior_douglas_fir_copies_flank05.gff
+min="0.00000005"
 out=${home}/svs/intersect/bed2vcf
 
-module load bedtools/2.29.0
+export PATH="/core/projects/EBP/smith/bin:$PATH"
 
-${scripts}/bedtools_intersect.sh -a ${bed} -b ${vcf} -f ${min} -F ${min} -o ${out}
-
+bedtools intersect -a "$gff" -b "$vcf" -f "$min" -F "$min" -wo > "$out"
