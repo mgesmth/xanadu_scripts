@@ -43,7 +43,7 @@ do
     esac
 done
 
-if [[ -z ${a} || -z ${b} || ; then
+if [[ -z ${a} || -z ${b} || ]] ; then
   echo "[E]: Parameters -a and -b must have arguments."
   echo "[E]: Run ./bedtools_intersect.sh for detailed usage."
   exit 1
