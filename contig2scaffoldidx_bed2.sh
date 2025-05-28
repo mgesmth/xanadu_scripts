@@ -1,27 +1,33 @@
 #!/bin/bash
-#SBATCH -p general
-#SBATCH -q general
-#SBATCH -c 12
-#SBATCH --mem=36G
-#SBATCH -o %x.%j.out
-#SBATCH -e %x.%j.err
+#SBATCH -p himem2
+#SBATCH -q himem
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 2
+#SBATCH --mem=12G
+#SBATCH --array=0-12
+#SBATCH -o %A.%a.out
+#SBATCH -e %A.%a.err
 
-cd /home/FCAM/msmith/svs/intersect
+cd /home/FCAM/msmith/svs/intersect/chunk
+FILES=($(ls -1 chunk_*))
 idx=/home/FCAM/msmith/svs/minigraph_out/contig2scaffoldpos.idx
-touch new_scaffolded.bed
+F=${FILES[$SLURM_ARRAY_TASK_ID]}
+OUT=$(echo "${FILES[$SLURM_ARRAY_TASK_ID]}.out") 
+touch ../out/${OUT}
 #With the index, translate the coordinates of the SV vcf from contig-scale to scaffold-scale
 #Now for the records:
-awk '{print $0}' new.bed | while read -r rec; do
+for rec in $(cat ${F}); do
   #Contig name
   contig=$(echo ${rec} | cut -d ' ' -f1)
   #Variant start
   start=$(echo ${rec} | cut -d ' ' -f2)
-  #Variant end
+  #Variant end is embedded in the info field
   end=$(echo ${rec} | cut -d ' ' -f3)
   #Grab the appropriate contig from the index
   s=$(grep -w "$contig" ${idx} | cut -f2)
   new_start=$(echo $((${start}+${s})))
   new_end=$(echo $((${end}+${s})))
-  echo ${rec} | sed "s/${start}/${new_start}/g" | sed "s/${end}/${new_end}/g" | sed "s/ /\t/g" >> new_scaffolded.bed
+  echo ${rec} | sed "s/${start}/${new_start}/g" | sed "s/${end}/${new_end}/g" | sed "s/ /\t/g" >> ../out/${OUT}
 done
 
