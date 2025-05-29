@@ -23,5 +23,6 @@ tetools=${core}/bin/dfam-tetools-latest.sif
 cp ${core}/CBP_assemblyfiles/${prim} ${scratch}
 cd ${scratch}
 
+#Putting quick search option because it's taking way too fucking long on the default
 singularity exec $tetools \
-RepeatMasker -frag 60000000 -pa 24 -gff -html -dir ${repdir} -lib "${db}/primary-families.fa" "./${prim}"
+RepeatMasker -frag 60000000 -pa 24 -gff -q -html -dir ${repdir} -lib "${db}/primary-families.fa" "./${prim}"
