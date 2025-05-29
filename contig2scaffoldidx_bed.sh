@@ -6,12 +6,14 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
+set -f
+
 cd /home/FCAM/msmith/svs/intersect
 idx=/home/FCAM/msmith/svs/minigraph_out/contig2scaffoldpos.idx
 touch new_scaffolded.bed
 #With the index, translate the coordinates of the SV vcf from contig-scale to scaffold-scale
 #Now for the records:
-awk '{print $0}' new.bed | while read -r rec; do
+cat new.bed | while read -r rec; do
   #Contig name
   contig=$(echo ${rec} | cut -d ' ' -f1)
   #Variant start
