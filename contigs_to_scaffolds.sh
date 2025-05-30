@@ -12,4 +12,4 @@ awk '
 
     print
 }
-' new_scaffolded.bed > tmp.tmp
+' all_dougfir_scaffcoord.sv.vcf > tmp.tmp
