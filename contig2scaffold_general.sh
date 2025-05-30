@@ -3,6 +3,7 @@
 if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
   echo "./contig2scaffold_general.sh -p <CONTIG2SCAFFOLDPOS.IDX> -i <INFILE> -o <OUTFILE> -f <bed/vcf>"
+fi
 
 OPTSTRING="p:i:o:f:"
 while getopts ${OPTSTRING} opt
@@ -49,9 +50,3 @@ if [[ "$fmt" == "vcf" ]] ; then
     echo "Format not recognized. Exiting."
     exit 1
 fi
-      
-        
-    
-
-
-    
