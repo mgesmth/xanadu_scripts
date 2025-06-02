@@ -12,8 +12,8 @@ echo "[M]: Host Name: `hostname`"
 
 sv=/home/FCAM/msmith/svs
 core=/core/projects/EBP/smith
-gfa=${svs}/vg/all_brokenscaffolds1.0.gfa
-out=${svs}/vg/all_brokenscaffolds
+gfa=${sv}/vg/all_brokenscaffolds1.0.gfa
+out=${sv}/vg/all_brokenscaffolds
 
 export PATH="${core}/bin:$PATH"
 
