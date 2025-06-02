@@ -42,24 +42,5 @@ for scaffold in $(cat scaffolds.txt) ; do
   cat ${scaffold}.idx >> contig2scaffoldpos.idx
 done
 
-#With the index, translate the coordinates of the SV vcf from contig-scale to scaffold-scale
-##NOTE: foo.vcf is the same as all_dougfir_allthree_altall.sv.vcf but with contig names changed to match index
-##print the header of the VCF to the new vcf
-awk '/^#/ {print $0}' foo.vcf > all_dougfir_scaffcoord.sv.vcf
-#Now for the records:
-awk '!/^#/' foo.vcf | while read -r rec; do
-  #Contig name
-  contig=$(echo ${rec} | cut -d ' ' -f1)
-  #Variant start
-  start=$(echo ${rec} | cut -d ' ' -f2)
-  #Variant end is embedded in the info field
-  end=$(echo "$rec" | grep -o 'END=[0-9]*' | cut -d= -f2)
-  #Grab the appropriate contig from the index
-  s=$(grep -w "$contig" contig2scaffoldpos.idx | cut -f2)
-  new_start=$(echo $((${start}+${s})))
-  new_end=$(echo $((${end}+${s})))
-  echo ${rec} | sed "s/${start}/${new_start}/g" | sed "s/${end}/${new_end}/g" | sed "s/ /\t/g" >> all_dougfir_scaffcoord.sv.vcf
-done
-
 
 
