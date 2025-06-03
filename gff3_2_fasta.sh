@@ -12,10 +12,10 @@ echo "[M]: Host name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 source ${core}/bin/gff3toolkit_venv/bin/activate
-gff3=${home}/svs/intersect/completecovered_genes.gff3
+gff3=${home}/svs/intersect/completecovered_genes_fixed.gff3
 fa=/scratch/msmith/interior_primary_final.fa
 out="${home}/intersect/completecovered_genes"
 
 base=$(basename ${gff3})
 echo "[M]: Beginning gff3 to fasta conversion of ${base}. Sending to ${out}."
-gff3_to_fasta -g ${gff3} -f ${fa} -o "$out"
+gff3_to_fasta -g ${gff3} -f ${fa} -st all -d simple -o "$out"
