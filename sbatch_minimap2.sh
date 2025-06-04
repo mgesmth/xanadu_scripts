@@ -12,7 +12,7 @@
 echo '[M]: Host Name: `hostname`'
 
 module load minimap2/2.28
-module load samtools/1.20
+module load samtools/1.19.2
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith

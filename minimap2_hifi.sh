@@ -41,7 +41,7 @@ reab=$(basename "$reads")
 
 echo '[M]: Beginning minimap alignment of "$reab" to reference genome "$refb"'
 
-minimap -ax map-pb -t "$threads" -k 19 "$ref" "$reads" | samtools view -bh > "$out"
+minimap2 -ax map-pb --split-prefix "${outdir}/minitmp" -t "$threads" -k 19 "$ref" "$reads" | samtools view -bh > "$out"
 
 if [[ $? -eq 0 ]] ; then
   echo ""
