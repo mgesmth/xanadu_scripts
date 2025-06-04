@@ -24,6 +24,6 @@ cat ${file} | while read -r line ; do
   recname=$(echo "$line" | awk '{print $1":"$2"-"$3}')
   segs=$(echo "$line" | cut -f12)
   gfatools view -l "$segs" ${indir}/all_brokenscaffolds.gfa > "$recname".gfa
-  gfatools gfa2fa tmp.gfa > "$recname".fa
+  gfatools gfa2fa "$recname".gfa > "$recname".fa
   rm "$recname".gfa
 done
