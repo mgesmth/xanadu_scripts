@@ -13,7 +13,7 @@ echo `hostname`
 
 export PATH="/core/projects/EBP/smith/bin/gfatools:$PATH"
 
-bed=/home/FCAM/msmith/minigraph_out/all_brokenscaffolds.gfa
+bed=/home/FCAM/msmith/minigraph_out/all_brokenscaffolds_verified.bed
 indir=/home/FCAM/msmith/svs/minigraph_out/split
 outdir=/scratch/msmith/classifying_repeat
 cd ${outdir}
