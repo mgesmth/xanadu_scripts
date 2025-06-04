@@ -13,6 +13,7 @@ echo `hostname`
 
 export PATH="/core/projects/EBP/smith/bin/gfatools:$PATH"
 
+bed=/home/FCAM/msmith/minigraph_out/all_brokenscaffolds.gfa
 indir=/home/FCAM/msmith/svs/minigraph_out/split
 outdir=/scratch/msmith/classifying_repeat
 cd ${outdir}
@@ -23,7 +24,7 @@ file=${chunks[$SLURM_ARRAY_TASK_ID]}
 cat ${file} | while read -r line ; do
   recname=$(echo "$line" | awk '{print $1":"$2"-"$3}')
   segs=$(echo "$line" | cut -f12)
-  gfatools view -l "$segs" ${indir}/all_brokenscaffolds.gfa > "$recname".gfa
+  gfatools view -l "$segs" ${bed} > "$recname".gfa
   gfatools gfa2fa "$recname".gfa > "$recname".fa
   rm "$recname".gfa
 done
