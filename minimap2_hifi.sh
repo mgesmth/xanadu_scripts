@@ -39,9 +39,10 @@ outdir=$(dirname "$out")
 refb=$(basename "$ref")
 reab=$(basename "$reads")
 
-echo '[M]: Beginning minimap alignment of "$reab" to reference genome "$refb"'
+echo "[M]: Beginning minimap alignment of ${reab} to reference genome ${refb}"
 
-minimap2 -ax map-pb --split-prefix "${outdir}/minitmp" -t "$threads" -k 19 "$ref" "$reads" | samtools view -bh > "$out"
+minimap2 -ax map-pb --split-prefix "${outdir}/minitmp" -t "$threads" -k 19 "$ref" "$reads" | \ 
+  samtools sort -m 4G -T "$outdir" -O bam -o "$out"
 
 if [[ $? -eq 0 ]] ; then
   echo ""
