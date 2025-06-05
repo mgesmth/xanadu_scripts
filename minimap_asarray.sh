@@ -27,4 +27,9 @@ base=$(basename ${FQ})
 
 echo "[M]: Welcome to minimap alignment task ${SLURM_ARRAY_TASK_ID}."
 
-${home}/scripts/minimap2_hifi.sh -t 4 -r "$prim" -q "$FQ" -o "${out}_${SLURM_ARRAY_TASK_ID}.bam"
+${home}/scripts/minimap2_hifi.sh -s 2 -t 4 -r "$prim" -q "$FQ" -o "${out}_${SLURM_ARRAY_TASK_ID}.bam"
+if [[ $? -eq 0 ]]; then
+rm "$FQ"
+else
+exit 1
+fi
