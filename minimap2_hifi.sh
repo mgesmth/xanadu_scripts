@@ -14,6 +14,7 @@ then
   echo "-r <REF.FA>          Path to the reference genome."
   echo "-q <HIFI.FASTQ.GZ>   Path to PacBio HiFi reads."
   echo "-o <OUT>             BAM file name to output to, including path."
+  echo "-x <TMP_PREFIX>	     A prefix for minimap2 to create tmp files with."
   echo "Note kmer length is internally set to 18." 
   echo ""
   exit 0
@@ -21,7 +22,7 @@ fi
 
 thr_mini=3
 thr_sort=1
-OPTSTRING="t:s:r:q:o:"
+OPTSTRING="t:s:r:q:o:x:"
 while getopts ${OPTSTRING} opt
 do
   case ${opt} in
@@ -30,6 +31,7 @@ do
     r) ref=${OPTARG} ;;
     q) reads=${OPTARG} ;;
     o) out=${OPTARG} ;;
+    x) tmpref=${OPTARG} ;;
   esac
 done
 
@@ -45,8 +47,8 @@ reab=$(basename "$reads")
 
 echo "[M]: Beginning minimap alignment of ${reab} to reference genome ${refb}"
 
-minimap2 -ax map-pb --split-prefix "${outdir}/minitmp" -t "$thr_mini" -k 19 "$ref" "$reads" | \ 
-  samtools sort -@ "$thr_sort" -m 4G -T "$outdir" -O bam -o "$out"
+minimap2 -ax map-hifi --split-prefix "$tmpref" -t "$thr_mini" -k 19 "$ref" "$reads" | \
+samtools sort -@ "$thr_sort" -m 4G -T "$outdir" -O bam -o "$out"
 
 if [[ $? -eq 0 ]] ; then
   echo ""
@@ -57,4 +59,3 @@ else
   echo "[E]: Alignment failed. Exiting 1."
   exit 1
 fi
-  
