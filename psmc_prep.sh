@@ -14,27 +14,13 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
 core=/core/projects/EBP/smith
-prim=${core}/CBP_assemblyfiles/interior_primary_final
+prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 hifi_split=${scratch}/hifi_out
 hifi_merge=${scratch}/hifialn_merged.bam 
 
 module load samtools/1.20
 module load psmc/0.6.5
 module load bcftools/1.20
-
-echo "[M]: Beginning merging of split alignment files."
-echo ""
-samtools merge -@ 24 -b ${hifi_split}/splitfiles.txt -o "$hifi_merge"
-if [[ $? -eq 0 ]] ; then
-  echo ""
-  echo "[M]: Merging complete. Moving on to fastq file creation."
-  rm -r ${scratch}/hifi_split
-  echo ""
-else
-  echo ""
-  echo "[E]: Merging failed. Exiting."
-  exit 1
-fi
 
 #based on the example from the lh3/psmc github page
 
