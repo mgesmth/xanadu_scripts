@@ -18,20 +18,9 @@ prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 hifi_split=${scratch}/hifi_out
 hifi_merge=${scratch}/hifialn_merged.bam 
 
-ls -1 ${hifi_split}/hifialn*.bam > ${hifi_split}/mergefiles.txt 
-
 module load samtools/1.20
 module load psmc/0.6.5
 module load bcftools/1.20
-
-samtools merge -@ 24 -b ${hifi_split}/mergefiles.txt -o ${hifi_merge}
-
-if [[ $? -eq 0 ]]; then
-echo "[M]: Merging complete. Beginning file conversion."
-else
-echo "[E]: Merging failed. Exiting."
-exit 1
-fi
 
 #based on the example from the lh3/psmc github page
 
@@ -40,8 +29,8 @@ if [[ ! -f "${prim}.fai" ]] ; then
 fi
 
 #set read depth min max (-d,-D) to 1/3 avg. read depth and 2x avg. read depth
-bcftools mpileup -C50 -f "$prim" "$hifi_merge" | bcftools call -c -Ov | \
-vcfutils.pl vcf2fq -d 10 -D 64 | gzip > ${scratch}/hifialn_merged.fastq.gz
+bcftools mpileup -C50 -f "$prim" "$hifi_merge" | bcftools call -c -Ov > ${scratch}/hifialn_merged.vcf
+vcfutils.pl vcf2fq -d 10 -D 64 ${scratch}/hifialn_merged.vcf | gzip > ${scratch}/hifialn_merged.fastq.gz
 if [[ $? -eq 0 ]] ; then
   echo ""
   echo "[M]: Fastq conversion complete. Moving on to psmcfa file creation."
@@ -52,5 +41,5 @@ else
   exit 1
 fi
 
-fq2psmcfa -q20 ${scratch}/hifialn_merged.fastq.gz > ${home}/psmc/hifialn_merged.psmcfa
+fq2psmcfa -q20 ${scratch}/hifialn_merged.fastq.gz > ${home}/hifialn_merged.psmcfa
 

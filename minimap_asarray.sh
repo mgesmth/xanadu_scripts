@@ -4,6 +4,7 @@
 #SBATCH -q general
 #SBATCH -n 1
 #SBATCH -c 8
+#SBATCH -d afterok:9161589
 #SBATCH --mem=40G
 #SBATCH --array=0-287%60
 #SBATCH -o %j.%A.%a.out
@@ -20,6 +21,8 @@ outdir=${scratch}/hifi_out
 
 module load samtools/1.20
 module load minimap2/2.28
+
+cd ${hifidir}
 
 FILES=($(cat ${hifidir}/chunks.txt))
 FQ=${FILES[$SLURM_ARRAY_TASK_ID]}
