@@ -2,7 +2,8 @@
 
 if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
-  echo "./contig2scaffold_general.sh -p <CONTIG2SCAFFOLDPOS.IDX> -i <INFILE> -o <OUTFILE> -f <bed/vcf>"
+  echo "./contig2scaffold_general.sh -p <CONTIG2SCAFFOLDPOS.IDX> -i <INFILE> -o <OUTFILE> -f <bed/path_bed/vcf>"
+  echo "Path_bed is the file format outputted by minigraph -cxasm --call"
 fi
 
 OPTSTRING="p:i:o:f:"
@@ -44,6 +45,16 @@ if [[ "$fmt" == "vcf" ]] ; then
         new_start=$2+a
         new_end=$3+a
         print $1,new_start,new_end,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14
+      }' >> ${out}
+    done
+  elif [[ "$fmt" == "path_bed" ]] ; then
+    touch ${out}
+    cat ${in} | while read -r rec; do
+      add=$(echo "$rec" | cut -f1 | grep -wf - ${index} | cut -f2)
+      echo "$rec" | awk -v a="$add" 'BEGIN { OFS="\t" } {
+        new_start=$2+a
+        new_end=$3+a
+        print $1,new_start,new_end,$3,$4,$5,$6
       }' >> ${out}
     done
   else
