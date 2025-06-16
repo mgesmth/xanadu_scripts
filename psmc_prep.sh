@@ -18,13 +18,20 @@ prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 hifi_split=${scratch}/hifi_out
 hifi_merge=${scratch}/hifialn_merged.bam 
 
-ls -1 ${hifi_split}/hifialn*.bam > ${hifi_split}/mergefiles.txt 
 
 module load samtools/1.20
 module load psmc/0.6.5
 module load bcftools/1.20
 
-samtools merge -@ 24 -b ${hifi_split}/mergefiles.txt -o ${hifi_merge}
+set -e
+
+cd ${scratch}
+
+#samtools merge -@ 24 -b ${hifi_split}/mergefiles.txt -o ${hifi_merge}
+#one alignment job failed. Adding it in:
+samtools merge -@ 24 -b ${scratch}/merge.txt -o ${scratch}/tmp.bam
+rm ${hifi_merge}
+mv ${scratch}/tmp.bam ${hifi_merge}
 
 if [[ $? -eq 0 ]]; then
 echo "[M]: Merging complete. Beginning file conversion."
