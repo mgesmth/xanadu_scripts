@@ -1,0 +1,33 @@
+#!/bin/bash
+#SBATCH -J repeatMasker_SVs
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 4
+#SBATCH --mem=7G
+#SBATCH --array=[0-197]%50
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=meg8130@student.ubc.ca
+#SBATCH -o %x.%a.%j.out
+#SBATCH -e %x.%a.%j.err
+
+echo "[M]: Host Name: `hostname`"
+
+home=/home/FCAM/msmith
+core=/core/projects/EBP/smith
+scratch=/scratch/msmith
+repdir=${home}/repeats
+splitdir=${home}/svs/misc/segment_sequences.fa.split
+db=${repdir}/primary_db
+outdir=${repdir}/svs
+
+tetools=${core}/bin/dfam-tetools-latest.sif
+
+#I guess RepeatMasker needs the genome to be in the workingdir?
+cd ${splitdir}
+
+files=($(ls -1 *))
+file=${files[$SLURM_ARRAY_TASK_ID]}
+
+#Putting quick search option because it's taking way too fucking long on the default
+singularity exec $tetools \
+RepeatMasker -frag 6000000 -pa 4 -gff -q -html -dir ${outdir} -lib "${db}/primary-families.fa" "${file}"

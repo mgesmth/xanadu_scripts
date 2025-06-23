@@ -4,6 +4,7 @@ if [[ ( $@ == "--help") ||  $@ == "-h" ]]
 then
   echo "./contig2scaffold_general.sh -p <CONTIG2SCAFFOLDPOS.IDX> -i <INFILE> -o <OUTFILE> -f <bed/path_bed/vcf>"
   echo "Path_bed is the file format outputted by minigraph -cxasm --call"
+  exit 0
 fi
 
 OPTSTRING="p:i:o:f:"
