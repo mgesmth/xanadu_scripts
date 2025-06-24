@@ -2,8 +2,8 @@
 #SBATCH -J minigraph
 #SBATCH -p himem2
 #SBATCH -q himem
-#SBATCH -c 36
-#SBATCH --mem=500G
+#SBATCH -c 24
+#SBATCH --mem=750G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
@@ -17,7 +17,7 @@ scratch=/scratch/msmith
 prim=${scratch}/interior_primary_scaffold1split.fa
 alt=${scratch}/interior_alternate_1Mb.fa
 coa=${scratch}/coastal_1Mb.fa
-threads="36"
+threads="24"
 outfix=${home}/svs/minigraph_out/all_primscaff1split
 
 ##Break scaffolds with Quast
@@ -36,4 +36,6 @@ module load zlib/1.2.11
 export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
 
-${home}/scripts/minigraph_gfatoolsbbl.sh -t "$threads" -r "${prim}" -q "${alt}" -x "${coa}" -o "${outfix}"
+#${home}/scripts/minigraph_gfatoolsbbl.sh -t "$threads" -r "${prim}" -q "${alt}" -x "${coa}" -o "${outfix}"
+minigraph -cxggs -t "$threads" "$prim" "$alt" "$coa" > "${out}.gfa"
+gfatools bubble "${out}.gfa" > "${out}.bed"

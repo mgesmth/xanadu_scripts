@@ -12,4 +12,4 @@ awk '
 
     print
 }
-' all_dougfir_scaffcoord.sv.vcf > tmp.tmp
+' $1 > $2

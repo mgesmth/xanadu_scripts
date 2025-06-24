@@ -45,27 +45,27 @@ while getopts ${optstring} opt; do
   esac
 done
 
-queries="${q1} ${q2} ${q3} ${q4}"
-queries=$(echo $queries)  # Normalize whitespace
+queries_1="${q1} ${q2} ${q3} ${q4}"
+queries=$(echo ${queries_1})  # Normalize whitespace
  
- set -o errexit
- set -o pipefail
+set -o errexit
+set -o pipefail
  
- if [[ -z "${reference}" || -z "${queries}" || -z "${output_prefix}" ]] ; then
-   echo "[E]: Options -r, -q, and -o require an argument. Exiting 1."
-   echo "[E]: Run ./minigraph_gfatoolsbbl.sh -h or --help for detailed usage."
-   exit 1
- else
-   echo "[M]: Beginning minigraph graph generation on ${threads} threads"
-   echo "[M]: Reference genome: ${reference}"
-   echo "[M]: Query genome(s): ${queries}"
-   echo ""
-   minigraph -cxggs -t "${threads}" -l "${chain}" -k "${kmer}" "${reference}" "${queries}" > "${output_prefix}.gfa"
-   echo ""
-   echo "[M]: Minigraph graph generation complete."
-   echo "[M]: Beginning SV extraction with gfatools bubble."
-   echo ""
-   gfatools bubble "${output_prefix}.gfa" > "${output_prefix}.bed"
-   echo ""
-   echo "[M]: gfatools bubble SV extraction complete. Exiting 0."
- fi
+if [[ -z "${reference}" || -z "${queries}" || -z "${output_prefix}" ]] ; then
+  echo "[E]: Options -r, -q, and -o require an argument. Exiting 1."
+  echo "[E]: Run ./minigraph_gfatoolsbbl.sh -h or --help for detailed usage."
+  exit 1
+else
+  echo "[M]: Beginning minigraph graph generation on ${threads} threads"
+  echo "[M]: Reference genome: ${reference}"
+  echo "[M]: Query genome(s): ${queries}"
+  echo ""
+  minigraph -cxggs -t "${threads}" -l "${chain}" -k "${kmer}" "${reference}" "${queries}" > "${output_prefix}.gfa"
+  echo ""
+  echo "[M]: Minigraph graph generation complete."
+  echo "[M]: Beginning SV extraction with gfatools bubble."
+  echo ""
+  gfatools bubble "${output_prefix}.gfa" > "${output_prefix}.bed"
+  echo ""
+  echo "[M]: gfatools bubble SV extraction complete. Exiting 0."
+fi
