@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gfa=${minidir}/all_primscaff1split.gfa
+gfa=/home/FCAM/msmith/svs/minigraph_out/all_primscaff1split.gfa
 fa=$1
 out=$2
 
