@@ -3,7 +3,7 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 12
-#SBATCH --mem=100G
+#SBATCH --mem=50G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
@@ -47,12 +47,12 @@ minidir=${home}/svs/minigraph_out
 cd $minidir
 #make a tmpdir to run in
 mkdir tmp
-mv alternate_path.bed tmp/
-mv coastal_path.bed tmp/
+mv scaffold_alternate_path.bed tmp/
+mv scaffold_coastal_path.bed tmp/
 #mv primary_path.bed tmp/
 cd tmp/
 #the order of the genomes in this list matters - doing it manually
-echo -e "scaffold_alternate_path.bed\nscaffold_coastal_path.bed" > samples.txt
+echo -e "scaffold_coastal_path.bed\nscaffold_alternate_path.bed" > samples.txt
 
 #merge bedfiles into one
 echo "[M]: Beginning merging of path bedfiles..."
@@ -63,7 +63,7 @@ if [ $? -ne 0 ] ; then
 else
   echo "[M]: Merging of path bedfiles complete. Beginning vcf formation..."
   #make vcf and send it out of the tmpdir
-  ${k8_dir}/k8 ${k8_dir}/mgutils-es6.js merge2vcf -r0 all_primscaff1split.sv.bed.gz > ../all_primscaff1split.sv.vcf
+  ${k8_dir}/k8 ${k8_dir}/mgutils-es6.js merge2vcf -r0 all_primscaff1split.sv.bed.gz > ../all_primscaff1split2.sv.vcf
   if [ $? -eq 0 ] ; then
     echo "[M]: VCF creation complete. Beginning cleanup..."
   else
