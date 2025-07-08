@@ -5,7 +5,7 @@
 #SBATCH -c 8
 #SBATCH -n 1
 #SBATCH --mem=15G
-#SBATCH --array[0-287]%30
+#SBATCH --array=[0-287]%30
 #SBATCH -o %x.%a.%A.out
 #SBATCH -e %x.%a.%A.err
 
@@ -15,7 +15,7 @@ echo "[M]: Host Name: `hostname`"
 
 module load psmc/0.6.5
 module load samtools/1.20
-module load bcftools/1.20
+module load bcftools/1.19
 
 home=/home/FCAM/msmith
 scratch=/scratch/msmith

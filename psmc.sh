@@ -26,5 +26,5 @@ module load psmc/0.6.5
 #psmc -r2 -p "2+2+25*2+4+6" -o "${psmcdir}/interior_trial2.psmc" "$psmcfa"
 #psmc -r4 -p "2+2+25*2+4+6" -o "${psmcdir}/interior_trial4.psmc" "$psmcfa"
 #psmc -r5 -p "2+2+25*2+4+6" -o "${psmcdir}/interior_trial5.psmc" "$psmcfa"
-psmc -r10 -p "2+2+25*2+4+6" -o "${psmcdir}/trial10/interior_trial10.psmc" "${psmcfa}"
-
+#psmc -r10 -p "2+2+25*2+4+6" -o "${psmcdir}/trial10/interior_trial10.psmc" "${psmcfa}"
+psmc -r20 -p "2+2+25*2+4+6" -o "${psmcdir}/trial20/interior_trial20.psmc" "${psmcfa}"
