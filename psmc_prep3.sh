@@ -30,7 +30,7 @@ module load bcftools/1.20
 
 #set read depth min max (-d,-D) to 1/3 avg. read depth and 2x avg. read depth
 bcftools mpileup -f "$prim" "$hifi_merge" | bcftools call -c -Ov > ${scratch}/hifialn_merged2.vcf
-vcfutils.pl vcf2fq -d 10 -D 100 ${scratch}/hifialn_merged2.vcf | gzip > ${scratch}/hifialn_merged2.fastq.gz
+vcfutils.pl vcf2fq -d 30 -D 170 ${scratch}/hifialn_merged2.vcf | gzip > ${scratch}/hifialn_merged2.fastq.gz
 if [[ $? -eq 0 ]] ; then
   echo ""
   echo "[M]: Fastq conversion complete. Moving on to psmcfa file creation."
