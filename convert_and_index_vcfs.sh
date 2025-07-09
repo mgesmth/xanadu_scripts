@@ -23,7 +23,7 @@ cd ${vcfdir}
 
 FILES=($(cat files.txt))
 VCF=${FILES[$SLURM_ARRAY_TASK_ID]}
-newfile=$(echo "$VCF" | sed 's/.vcf.gz/.vcf.bgz')
+newfile=$(echo "$VCF" | sed 's/.vcf.gz/.vcf.bgz/')
 
 echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}. We are transforming ${VCF} to ${newfile}."
 
