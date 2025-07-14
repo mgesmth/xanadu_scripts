@@ -2,8 +2,8 @@
 #SBATCH -J psmc
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 24
-#SBATCH --mem=150G
+#SBATCH -c 18
+#SBATCH --mem=86G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -27,4 +27,5 @@ module load psmc/0.6.5
 #psmc -r4 -p "2+2+25*2+4+6" -o "${psmcdir}/interior_trial4.psmc" "$psmcfa"
 #psmc -r5 -p "2+2+25*2+4+6" -o "${psmcdir}/interior_trial5.psmc" "$psmcfa"
 #psmc -r10 -p "2+2+25*2+4+6" -o "${psmcdir}/trial10/interior_trial10.psmc" "${psmcfa}"
-psmc -r20 -p "2+2+25*2+4+6" -o "${psmcdir}/trial20/interior_trial20.psmc" "${psmcfa}"
+#psmc -r20 -p "2+2+25*2+4+6" -o "${psmcdir}/trial20/interior_trial20.psmc" "${psmcfa}"
+psmc -r15 -p "2+2+25*2+4+6" -o "${psmcdir}/trial15/interior_trial15.psmc" "${psmcfa}"

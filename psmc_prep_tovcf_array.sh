@@ -5,7 +5,7 @@
 #SBATCH -c 8
 #SBATCH -n 1
 #SBATCH --mem=15G
-#SBATCH --array=[0-287]%30
+#SBATCH --array=[0-287]%100
 #SBATCH -o %x.%a.%A.out
 #SBATCH -e %x.%a.%A.err
 
@@ -16,6 +16,7 @@ echo "[M]: Host Name: `hostname`"
 module load psmc/0.6.5
 module load samtools/1.20
 module load bcftools/1.19
+module load tabix/0.2.6
 
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
@@ -33,7 +34,9 @@ echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are transforming "$BAM" to "$VCFGZ""
 echo "[M]: Beginning..."
 
-bcftools mpileup -f "$prim" "${bams}/${BAM}" | bcftools call -c -Ov | gzip > "${vcfs}/${VCFGZ}"
+bcftools mpileup -f "$prim" "${bams}/${BAM}" | bcftools call -c -Ov | \
+bcftools sort -T ${scratch} | bgzip -c > "${vcfs}/${VCFGZ}"
+bcftools tabix -p "vcf" "${vcfs}/${VCFGZ}"
 if [[ $? -eq 0 ]] ; then
   date
   echo "[M]: File ${VCFGZ} created."
