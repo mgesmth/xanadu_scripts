@@ -27,9 +27,9 @@ threads="36"
 gfa="${minidir}/${out_prefix}.gfa"
 k8dir=${core}/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
 
-prim_prefix=$(echo "$prim" | sed 's/.fa//')
-alt_prefix=$(echo "$alt" | sed 's/.fa//')
-coast_prefix=$(echo "$coast" | sed 's/.fa//')
+prim_prefix=$(basename "$prim" | sed 's/.fa//')
+alt_prefix=$(basename "$alt" | sed 's/.fa//')
+coast_prefix=$(basename "$coast" | sed 's/.fa//')
 
 #programs
 export PATH="${core}/bin/minigraph-0.21:$PATH"
@@ -38,18 +38,18 @@ export PATH="${core}/bin/gfatools:$PATH"
 
 #--------------------
 
-date
-echo "[M]: Beginning pangenome construction."
-minigraph -cxggs -t "$threads" "$prim" "$alt" "$coast" > "$gfa"
-if [[ $? -eq 0 ]] ; then
-  date
-  echo "[M]: Pangenome construction complete. Moving on to extracting variants and calling paths."
-  gfatools bubble "$gfa" > "${minidir}/${out_prefix}.bed"
-else
-  date
-  echo "[E]: Pangenome construction failed. Exiting 1."
-  exit 1
-fi
+#date
+#echo "[M]: Beginning pangenome construction."
+#minigraph -cxggs -t "$threads" "$prim" "$alt" "$coast" > "$gfa"
+#if [[ $? -eq 0 ]] ; then
+#  date
+#  echo "[M]: Pangenome construction complete. Moving on to extracting variants and calling paths."
+#  gfatools bubble "$gfa" > "${minidir}/${out_prefix}.bed"
+#else
+#  date
+#  echo "[E]: Pangenome construction failed. Exiting 1."
+#  exit 1
+#fi
 
 #Calling paths in a conditional because I don't trust set -e
 minigraph -xasm --call -t "$threads" "$gfa" "$prim" > "${minidir}/${prim_prefix}.bed"
