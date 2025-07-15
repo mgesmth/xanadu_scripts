@@ -49,9 +49,16 @@ echo "[M]: We are aligning ${r1} and ${r2} to ${ref}."
 bwa mem -SP5M -t "$threads" "$ref" "$r1" "$r2" | samtools view -bh -o "${bam_dir}/${out}"
 
 if [[ $? -eq 0 ]] ; then
-  echo "[M]: Alignment complete. Bye."
   date
-  exit 0
+  echo "[M]: Alignment complete. Removing fastqs for disk..."
+  rm "$r1" "$r2"
+  if [[ $? -eq 0 ]] ; then
+    echo "[M]: All cleaned up. Bye."
+    exit 0
+  else
+    echo "[E]: Failed to remove fastqs."
+    exit 1
+  fi
 else
   echo "[E]: Alignment failed. Exit code $?"
   date
