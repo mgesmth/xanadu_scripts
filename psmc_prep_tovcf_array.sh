@@ -34,9 +34,9 @@ echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are transforming "$BAM" to "$VCFGZ""
 echo "[M]: Beginning..."
 
-bcftools mpileup -f "$prim" "${bams}/${BAM}" | bcftools call -c -Ov | \
-bcftools sort -T ${scratch} | bgzip -c > "${vcfs}/${VCFGZ}"
-bcftools tabix -p "vcf" "${vcfs}/${VCFGZ}"
+bcftools mpileup -q 30 -Q 30 -f "$prim" "${bams}/${BAM}" | bcftools call -c -Ov | \
+bcftools sort -T ${scratch}/sortb | bgzip -c > "${vcfs}/${VCFGZ}"
+bcftools index -p "vcf" "${vcfs}/${VCFGZ}"
 if [[ $? -eq 0 ]] ; then
   date
   echo "[M]: File ${VCFGZ} created."

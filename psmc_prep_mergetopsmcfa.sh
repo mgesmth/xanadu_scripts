@@ -35,7 +35,7 @@ bcftools sort -m 600G -T ${scratch} | bgzip -c > "$out_vcf_s"
 if [[ $? -eq 0 ]] ; then
 	rm *.vcf.gz *.csi
 	cd ..
-	vcfutils.pl vcf2fq -d 10 -D 100 "$out_vcf_s" | gzip -c > "$out_fastq"
+	vcfutils.pl vcf2fq -d 10 -D 60 "$out_vcf_s" | gzip -c > "$out_fastq"
 	if [[ $? -eq 0 ]] ; then
 		rm ${out_vcf_s}
 		fq2psmcfa -q20 "$out_fastq" > "$out_psmcfa"
