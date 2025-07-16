@@ -24,7 +24,7 @@ bam_dir=${scratch}/hic_bams
 if [[ ! -d "$bam_dir" ]] ; then
   mkdir "$bamdir"
 fi
-ref=${core}/CBP_assemblyfiles/interior_primary_final.fa
+ref=${core}/juicer_formanualcur/references/interior_primary_final.fa
 if [ ! -f "${assembly}.bwt" ]; then
   echo "[M]: BWA index not found. Indexing..."
   bwa index ${ref}
