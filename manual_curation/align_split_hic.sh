@@ -45,9 +45,8 @@ out=$(echo "$r1" | sed 's/fastq.gz/bam/' | sed 's/_R1//')
 echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are aligning ${r1} and ${r2} to ${ref}."
 
-bwa mem -SP5M -t 3 "$ref" "$r1" "$r2" | \
-samtools sort -m 2G 
-samtools view -bh -o "${bam_dir}/${out}"
+bwa mem -SP5M -t 4 "$ref" "$r1" "$r2" | \
+samtools sort -n -@ 4 -m 2500M -O "bam" -o "$out" 
 
 if [[ $? -eq 0 ]] ; then
   date
@@ -65,7 +64,3 @@ else
   date
   exit 1
 fi
-
-
-
-
