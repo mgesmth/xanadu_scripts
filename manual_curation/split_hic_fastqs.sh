@@ -2,8 +2,8 @@
 #SBATCH -J split_hic_fastqs
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 24
-#SBATCH --mem=500G
+#SBATCH -c 18
+#SBATCH --mem=200G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
