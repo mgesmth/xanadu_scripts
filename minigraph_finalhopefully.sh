@@ -90,6 +90,7 @@ if [[ -f "${minidir}/${prim_prefix}.bed" && -f "${minidir}/${alt_prefix}.bed" &&
       #Filtering for missing data then for where all three alleles are the reference allele
       awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." && $12 != "." {print}' "${minidir}/${out_prefix}.sv.vcf" | \
       awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ || $12 ~ /1:1/ {print}' > "${minidir}/${out_prefix}_filt.sv.vcf"
+      #one additional filter at the summary step, bear in mind
       cd ..
       rm -r minigraph_tmp
       exit 0
