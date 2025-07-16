@@ -9,3 +9,6 @@ echo -e "No. of SVs where alternate has only variant: ${alt_alt}"
 echo -e "No. of SVs where coastal has only variant: ${coast_alt}"
 echo -e "No. of SVs where both queries have the same variant: ${same_alt}"
 echo -e "No. of SVs where both queries have different variants: ${two_alt}"
+echo ""
+sum=$(echo $((${alt_alt}+${coast_alt}+${same_alt}+${two_alt})))
+echo "Sum: $sum"
