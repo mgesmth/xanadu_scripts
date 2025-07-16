@@ -38,39 +38,39 @@ export PATH="${core}/bin/gfatools:$PATH"
 
 #--------------------
 
-#date
-#echo "[M]: Beginning pangenome construction."
-#minigraph -cxggs -t "$threads" "$prim" "$alt" "$coast" > "$gfa"
-#if [[ $? -eq 0 ]] ; then
-#  date
-#  echo "[M]: Pangenome construction complete. Moving on to extracting variants and calling paths."
-#  gfatools bubble "$gfa" > "${minidir}/${out_prefix}.bed"
-#else
-#  date
-#  echo "[E]: Pangenome construction failed. Exiting 1."
-#  exit 1
-#fi
+date
+echo "[M]: Beginning pangenome construction."
+minigraph -cxggs -t "$threads" "$prim" "$alt" "$coast" > "$gfa"
+if [[ $? -eq 0 ]] ; then
+  date
+  echo "[M]: Pangenome construction complete. Moving on to extracting variants and calling paths."
+  gfatools bubble "$gfa" > "${minidir}/${out_prefix}.bed"
+else
+  date
+  echo "[E]: Pangenome construction failed. Exiting 1."
+  exit 1
+fi
 
 #Calling paths in a conditional because I don't trust set -e
-#minigraph -xasm --call -t "$threads" "$gfa" "$prim" > "${minidir}/${prim_prefix}.bed"
-#if [[ $? -eq 0 ]] ; then 
-#  minigraph -xasm --call -t "$threads" "$gfa" "$alt" > "${minidir}/${alt_prefix}.bed"
-#  if [[ $? -eq 0 ]] ; then
-#    minigraph -xasm --call -t "$threads" "$gfa" "$coast" > "${minidir}/${coast_prefix}.bed"
-#    if [[ $? -eq 0 ]] ; then
-#      echo "[M]: Bubbles popped and paths called. Moving onto VCF file creation."
-#    else
-#      echo "[E]: Call coastal path failed. Exit code $?"
-#      exit 1
-#    fi
-#  else
-#    echo "[E]: Call alternate path failed. Exit code $?"
-#    exit 1
-#  fi
-#else
-#  echo "[E]: Call primary path failed. Exit code $?"
-#  exit 1
-#fi
+minigraph -xasm --call -t "$threads" "$gfa" "$prim" > "${minidir}/${prim_prefix}.bed"
+if [[ $? -eq 0 ]] ; then 
+  minigraph -xasm --call -t "$threads" "$gfa" "$alt" > "${minidir}/${alt_prefix}.bed"
+  if [[ $? -eq 0 ]] ; then
+    minigraph -xasm --call -t "$threads" "$gfa" "$coast" > "${minidir}/${coast_prefix}.bed"
+    if [[ $? -eq 0 ]] ; then
+      echo "[M]: Bubbles popped and paths called. Moving onto VCF file creation."
+    else
+      echo "[E]: Call coastal path failed. Exit code $?"
+      exit 1
+    fi
+  else
+    echo "[E]: Call alternate path failed. Exit code $?"
+    exit 1
+  fi
+else
+  echo "[E]: Call primary path failed. Exit code $?"
+  exit 1
+fi
 
 mkdir ${scratch}/minigraph_tmp
 cd ${scratch}/minigraph_tmp
@@ -85,7 +85,11 @@ if [[ -f "${minidir}/${prim_prefix}.bed" && -f "${minidir}/${alt_prefix}.bed" &&
     ${k8_dir}/k8 ${k8_dir}/mgutils-es6.js merge2vcf -r0 "${out_prefix}.sv.bed.gz" > "${minidir}/${out_prefix}.sv.vcf"
     if [[ $? -eq 0 ]] ; then
       date
-      echo "[M]: SV VCF created. Cleaning up..."
+      echo "[M]: SV VCF created. Filtering and cleaning up..."
+      #Filtering for missing data
+      awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." && $12 != "." {print}' "${minidir}/${out_prefix}.sv.vcf" > "${minidir}/${out_prefix}_filt1.sv.vcf"
+      #Filtering for where all three alleles are the reference allele
+      awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ || $12 ~ /1:1/ {print}' "${minidir}/${out_prefix}_filt1.sv.vcf" > "${minidir}/${out_prefix}_filt2.sv.vcf"
       cd ..
       rm -r minigraph_tmp
       exit 0
