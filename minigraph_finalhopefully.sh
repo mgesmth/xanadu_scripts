@@ -26,6 +26,7 @@ out_prefix="finalpangenome"
 threads="36"
 gfa="${minidir}/${out_prefix}.gfa"
 k8_dir=${core}/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
+misc_dir=$(core}/bin/minigraph-0.21/misc
 
 prim_prefix=$(basename "$prim" | sed 's/.fa//')
 alt_prefix=$(basename "$alt" | sed 's/.fa//')
@@ -80,16 +81,16 @@ cp "${minidir}/${alt_prefix}.bed" .
 cp "${minidir}/${coast_prefix}.bed" .
 if [[ -f "${minidir}/${prim_prefix}.bed" && -f "${minidir}/${alt_prefix}.bed" && -f "${minidir}/${coast_prefix}.bed" ]] ; then
   echo -e "${prim_prefix}.bed\n${alt_prefix}.bed\n${coast_prefix}.bed" > samples.txt
-  paste *.bed | ${k8_dir}/k8 ${k8_dir}/mgutils.js merge -s samples.txt - | gzip -c > "${out_prefix}.sv.bed.gz"
+  paste *.bed | ${k8_dir}/k8 ${misc_dir}/mgutils.js merge -s samples.txt - | gzip -c > "${out_prefix}.sv.bed.gz"
   if [[ $? -eq 0 ]] ; then
-    ${k8_dir}/k8 ${k8_dir}/mgutils-es6.js merge2vcf -r0 "${out_prefix}.sv.bed.gz" > "${minidir}/${out_prefix}.sv.vcf"
+    ${k8_dir}/k8 ${misc_dir}/mgutils-es6.js merge2vcf -r0 "${out_prefix}.sv.bed.gz" > "${minidir}/${out_prefix}.sv.vcf"
     if [[ $? -eq 0 ]] ; then
       date
       echo "[M]: SV VCF created. Filtering and cleaning up..."
-      #Filtering for missing data
-      awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." && $12 != "." {print}' "${minidir}/${out_prefix}.sv.vcf" > "${minidir}/${out_prefix}_filt1.sv.vcf"
-      #Filtering for where all three alleles are the reference allele
-      awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ || $12 ~ /1:1/ {print}' "${minidir}/${out_prefix}_filt1.sv.vcf" > "${minidir}/${out_prefix}_filt2.sv.vcf"
+      #Filtering for missing data then for where all three alleles are the reference allele
+      awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." && $12 != "." {print}' "${minidir}/${out_prefix}.sv.vcf" | \
+      awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ || $12 ~ /1:1/ {print}' > "${minidir}/${out_prefix}_filt.sv.vcf"
+      #one additional filter at the summary step, bear in mind
       cd ..
       rm -r minigraph_tmp
       exit 0
