@@ -30,5 +30,17 @@ awk 'BEGIN { OFS="\t" } !/^#/ {
 split($8,m,";")
 #genotypes, by default, have the form 0:0. just one haplotype, so I just want one num, i.e. 0 (substr($11,3))
 print $1,$2,substr(m[1],5),substr($11,3),substr($12,3)}' finalpangenome_filt.sv.vcf | \
-paste - prim_allele_len.tmp alt_allele_len.tmp coast_allele_len.tmp >> sv_allele_summary.tsv
+paste - prim_allele_len.tmp alt_allele_len.tmp coast_allele_len.tmp >> tmp_summary.tsv
 
+#Some variants appear to be smaller than the 50 bp lower limit. Must be weird artifacts. Filtering them out.
+awk '{
+  if ($2 ~ /start/) {
+    print
+  } else {
+    if ($6 < 50 && $7 < 50 && $8 < 50) {
+      next
+    } else {
+      print
+    }
+  }
+}' tmp_summary.tsv > sv_allele_summary.tsv
