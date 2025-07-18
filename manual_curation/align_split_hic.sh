@@ -8,7 +8,7 @@
 #SBATCH --mem=20G
 #SBATCH --array=[0-299]%50
 #SBATCH -o %x.%j.%a.out
-#SBATCH -e %x.%j.%a.err
+#SBATCH -e %x.%A.%a.err
 
 set -e
 
@@ -22,21 +22,21 @@ scratch=/scratch/msmith
 core=/core/projects/EBP/smith
 fq_dir=${scratch}/hic_split
 bam_dir=${scratch}/hic_bams
-if [[ ! -d "$bam_dir" ]] ; then
-  mkdir "$bamdir"
-fi
-ref=${core}/juicer_formanualcur/references/interior_primary_final.fa
+#if [[ ! -d "$bam_dir" ]] ; then
+#  mkdir "$bam_dir"
+#fi
+ref=${core}/CBP_assemblyfiles/interior_primary_final.fa
 ref_name=$(basename ${ref})
-if [ ! -f "${assembly}.bwt" ]; then
-  echo "[M]: BWA index not found. Indexing..."
-  bwa index ${ref}
-  if [[ $? -ne 0 ]] ; then
-    echo "[E]: Indexing failed. Exit code $?."
-    exit 1
-  else
-    echo "[M]: Indexing complete."
-  fi
-fi
+#if [ ! -f "${assembly}.bwt" ]; then
+#  echo "[M]: BWA index not found. Indexing..."
+#  bwa index ${ref}
+#  if [[ $? -ne 0 ]] ; then
+#    echo "[E]: Indexing failed. Exit code $?."
+#    exit 1
+#  else
+#    echo "[M]: Indexing complete."
+#  fi
+#fi
 
 cd ${fq_dir}
 fqs=($(ls -1 allhiC_R1.*.fastq.gz))
