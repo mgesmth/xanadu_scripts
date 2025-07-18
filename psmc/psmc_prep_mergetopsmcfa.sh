@@ -18,9 +18,9 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 vcfs=${scratch}/vcfs
 out_vcf=${scratch}/hifialn_merged2.vcf.gz
-out_vcf_s=${scratch}/hifialn_merged2.vcf.gz
+out_vcf_s=${scratch}/hifialn_merged2.s.vcf.gz
 out_fastq=${scratch}/hifialn_merged2.fastq.gz
-out_psmcfa=${home}/hifialn_merged2.psmcfa
+out_psmcfa=${home}/psmc/hifialn_merged2.psmcfa
 
 module load vcftools/0.1.16
 module load psmc/0.6.5
@@ -28,14 +28,21 @@ module load bcftools/1.20
 module load tabix/0.2.6
  
 cd ${vcfs}
-vcf_files=$(ls -1 *.vcf.gz | paste -sd ' ')
+ls -1 *.vcf.gz > vcf_files.txt
 
-bcftools concat --threads 12 -a -d ${vcf_files} | bgzip -c > "$out_vcf"
-bcftools sort -m 600G -T ${scratch} | bgzip -c > "$out_vcf_s"
+bcftools concat --threads 36 -a -d -O "z" -f vcf_files.txt -o "$out_vcf"
+if [[ $? -ne 0 ]] ; then
+	echo "Concatenation of split vcfs failed. Exit code $?"
+ 	date
+  	exit 1
+fi
+
+cd ..
+rm -r vcfs
+bcftools sort -m 1000G -T ${scratch} -O "z" -o "$out_vcf_s" "$out_vcf"
 if [[ $? -eq 0 ]] ; then
-	rm *.vcf.gz *.csi
-	cd ..
-	vcfutils.pl vcf2fq -d 10 -D 60 "$out_vcf_s" | gzip -c > "$out_fastq"
+	rm "$out_vcf"
+	vcfutils.pl vcf2fq -d 10 -D 64 "$out_vcf_s" | gzip -c > "$out_fastq"
 	if [[ $? -eq 0 ]] ; then
 		rm ${out_vcf_s}
 		fq2psmcfa -q20 "$out_fastq" > "$out_psmcfa"
