@@ -531,7 +531,7 @@ then
 	    fi
 	else
    #I'm only doing chimeric reads so I'm only editting the second pertinent to what I'm doing
-	  echo "Using already aligned reads $name$ext.bam";
+	  echo "Using already aligned reads $name$ext.bam"
   fi
 
 	# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
@@ -539,16 +539,17 @@ then
 	  if [ $singleend -eq 1 ] ; then
 		  awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
 	  else
-		  awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
+   		#This would be me, I think
+		  saawk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam
 	  fi
 	else
 	  if [ $singleend -eq 1 ] ; then
-		  awk -v stem=${name}${ext}_norm -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
+   		
+		  awk -v stem=${name}${ext}_norm -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
 	  else
-     #Decompressing the bam file one at a time for storage
-      samtools view -h $name$ext.bam > 
-		  awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam > $name$ext.sam2
-		  awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk $name$ext.sam2 | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
+     #This is me, I think
+		  samtools view -h $name$ext.bam | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
+		  awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | samtools sort -t cb -n $sthreadstring > ${name}${ext}.s.bam && rm $name$ext.bam
 	  fi
 	fi
 
@@ -556,8 +557,6 @@ then
 	then
 	    echo "***! Failure during chimera handling of $name${ext}"
 	    exit 1 
-	else  
-	    rm $name$ext.sam* 
 	fi  
     done # done looping over all fastq split files
 fi  # Not in merge, dedup,  or final stage, i.e. need to split and align files.
@@ -576,7 +575,7 @@ then
 	mv $donesplitdir/* $splitdir/.
     fi
     
-    if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam  $splitdir/*.bam
+    if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
     then
 	echo "***! Some problems occurred somewhere in creating sorted align files."
 	exit 1
@@ -595,9 +594,9 @@ if [ -z $final ] && [ -z $postproc ]
 then
     if [ $justexact -eq 1 ]
     then
-	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 > $outputdir/merged_dedup.sam
+	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
     else
-	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk  > $outputdir/merged_dedup.sam
+	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
     fi
     if [ $? -ne 0 ]
     then
