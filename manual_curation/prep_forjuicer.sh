@@ -23,11 +23,11 @@ prim_name=$(basename ${prim})
 gid="intdf137"
 enzyme="Arima"
 
-#echo "[M]: Generating BWA index for ${prim_name}"
-#bwa index ${prim}
-#if [[ $? -eq 0 ]] ; then
+echo "[M]: Generating BWA index for ${prim_name}"
+bwa index ${prim}
+if [[ $? -eq 0 ]] ; then
   date
-#  echo "[M]: Index made. Moving onto site_positions file."
+  echo "[M]: Index made. Moving onto site_positions file."
   cd ${juicedir}/restriction_sites
   python ${juicedir}/scripts/generate_site_positions.py "$enzyme" "$gid" "$prim"
   if [[ $? -eq 0 ]] ; then
@@ -38,7 +38,7 @@ enzyme="Arima"
     echo "[E]: site_positions file failed to generate. Exit code $?"
     exit 1
   fi
-#else
-#  echo "[E]: BWA index generation failed. Exit code $?"
-#  exit 1
-#fi
+else
+  echo "[E]: BWA index generation failed. Exit code $?"
+  exit 1
+fi
