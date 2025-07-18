@@ -4,8 +4,8 @@
 #SBATCH -q general
 #SBATCH -n 1
 #SBATCH -c 8
+#SBATCH -d 657659
 #SBATCH --mem=20G
-#SBATCH -d afterok:656087
 #SBATCH --array=[0-299]%50
 #SBATCH -o %x.%j.%a.out
 #SBATCH -e %x.%j.%a.err

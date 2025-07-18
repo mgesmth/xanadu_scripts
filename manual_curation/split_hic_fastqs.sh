@@ -4,7 +4,6 @@
 #SBATCH -q general
 #SBATCH -c 18
 #SBATCH --mem=200G
-#SBATCH -d afterok:655950
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
