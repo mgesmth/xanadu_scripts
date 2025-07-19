@@ -41,13 +41,19 @@ ref_name=$(basename ${ref})
 cd ${fq_dir}
 fqs=($(ls -1 allhiC_R1.*.fastq.gz))
 r1=${fqs[$SLURM_ARRAY_TASK_ID]}
+r1_string="_R1"
+name=${r1//$r1_string/}
 r2=$(echo "$r1" | sed 's/R1/R2/')
-out=$(echo "$r1" | sed 's/fastq.gz/bam/' | sed 's/_R1//')
+out=$(echo "$name" | sed 's/fastq.gz/bam/')
+sampleName="HiC_sample"
+libraryName="HiC_library"
+
+rg="@RG\\tID:${name}\\tSM:${sampleName}\\tPL:LS454\\tLB:${libraryName}"
 
 echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are aligning ${r1} and ${r2} to ${ref_name}."
 
-bwa mem -SP5M -t 4 "$ref" "$r1" "$r2" | \
+bwa mem -SP5M -t 4 -R "$rg" "$ref" "$r1" "$r2" | \
 samtools sort -n -@ 4 -m 2500M -O "bam" -o "$out" 
 
 if [[ $? -eq 0 ]] ; then
