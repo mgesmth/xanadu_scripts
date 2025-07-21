@@ -12,6 +12,9 @@
 set -e
 
 echo "[M]: Host Name: `hostname`"
+module load samtools/1.20
+module load bwa/0.7.17
+module load java-sdk/1.8.0_92
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
@@ -24,7 +27,7 @@ jd=${scratch}/juicer_formanualcur
 echo "[M]: Beginning juicer run."
 cd ${jd}
 #Okay - now run juicer (CPU version, modified for better handling of large files)
-scripts/juicer.sh -g "$gid" -d "${jd}/work/test" -s "$site" -S "chimeric" \
+scripts/juicer.sh -g "$gid" -d "${jd}/work/test" -s "$site" -S chimeric \
 -p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
 -z references/interior_primary_final.fa -D "$jd" -t "$threads"
 if [[ $? -e 0 ]] ; then
