@@ -3,10 +3,10 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -n 1
-#SBATCH -c 8
-#SBATCH --mem=20G
-#SBATCH --array=[0-299]%50
-#SBATCH -o %x.%j.%a.out
+#SBATCH -c 12
+#SBATCH --mem=40G
+#SBATCH --array=[0-5]
+#SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
 set -e
@@ -38,7 +38,7 @@ ref_name=$(basename ${ref})
 #fi
 
 cd ${fq_dir}
-fqs=($(cat fastqs.txt))
+fqs=($(cat fastqs_failed.txt))
 r1=${fqs[$SLURM_ARRAY_TASK_ID]}
 r1_string="_R1"
 name=${r1//$r1_string/}
@@ -53,7 +53,7 @@ echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are aligning ${r1} and ${r2} to ${ref_name}."
 
 bwa mem -SP5M -t 4 -R "$rg" "$ref" "$r1" "$r2" | \
-samtools sort -n -@ 4 -m 2500M -O "bam" -o "$out" 
+samtools sort -n -@ 4 -m 2500M -O "bam" -o "${bam_dir}/${out}"
 
 if [[ $? -eq 0 ]] ; then
   date

@@ -30,7 +30,7 @@ echo "[M]: Splitting ${R1} and ${R2} into ${splitN} parts..."
 seqkit split2 -1 "$R1" -2 "$R2" -p "$splitN" -O "$outdir" -f
 if [[ $? -eq 0 ]] ; then
   echo "[M]: Splitting complete."
-  date
+  ls -1 *_R1.*.fastq.gz > fastqs.txt
   exit 0
 else
   echo "[M]: Splitting failed. Exit code $?"
