@@ -9,6 +9,8 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
+set -e
+
 echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
@@ -21,6 +23,8 @@ threads=36
 
 mv ${ori_jd} ${scratch}/
 jd=${scratch}/juicer_formanualcur
+
+echo "[M]: Beginning setup"
 
 #SOFT-LINK FILES ---
 cd ${jd}/references
@@ -46,6 +50,13 @@ for R1 in $(cat ${scratch}/hic_split/fastqs.txt); do
   ln -s ${jd}/work/intdf137/fastq/"$R2" "$R2"
   cd ../fastq
 done
+
+if [[ $? -eq 0 ]] ; then
+  echo "[M]: Setup complete. Beginning juicer run."
+else
+  echo "[E]: Setup failed. Exiting."
+  exit 1
+fi
 
 cd ${jd}
 #Okay - now run juicer (CPU version, modified for better handling of large files)
