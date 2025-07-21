@@ -15,6 +15,9 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 ori_jd=${core}/juicer_formanualcur
+gid="intdf137"
+site="Arima"
+threads=36
 
 mv ${ori_jd} ${scratch}/
 jd=${scratch}/juicer_formanualcur
@@ -27,7 +30,36 @@ ln -s ${core}/CBP_assemblyfiles/interior_primary_final.fa.ann interior_primary_f
 ln -s ${core}/CBP_assemblyfiles/interior_primary_final.fa.pac interior_primary_final.fa.pac
 ln -s ${core}/CBP_assemblyfiles/interior_primary_final.fa.bwt interior_primary_final.fa.bwt
 ln -s ${core}/CBP_assemblyfiles/interior_primary_final.fa.sa interior_primary_final.fa.sa
-cd ../work/intdf137/fastq
+cd ../work/intdf137/splits
+#Move bam files into splits folder
+for file in $(ls -1 ${scratch}/hic_bams/*.bam) ; do
+  mv ${file} .
+done
+cd ../fastq
+#Touch files that would have corresponded to the bam files (required from the wiki); link to these files in split
+for R1 in $(cat ${scratch}/hic_split/fastqs.txt); do
+  R2=$(echo "$R1" | sed 's/R1/R2/')
+  touch "$R1"
+  touch "$R2"
+  cd ../splits
+  ln -s ${jd}/work/intdf137/fastq/"$R1" "$R1"
+  ln -s ${jd}/work/intdf137/fastq/"$R2" "$R2"
+  cd ../fastq
+done
 
+cd ${jd}
+#Okay - now run juicer (CPU version, modified for better handling of large files)
+scripts/juicer.sh -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S "chimeric" \
+-p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
+-z references/interior_primary_final.fa -D "$jd" -t "$threads"
+if [[ $? -e 0 ]] ; then
+  echo "[M]: Juicer complete! Bye."
+  date
+  exit 0
+else
+  echo "[E]: Juicer failed. Exit code $?"
+  date
+  exit 1
+fi
 
 
