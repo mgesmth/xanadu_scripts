@@ -5,18 +5,19 @@ os.chdir('/home/FCAM/msmith/svs/minigraph_out/finalpangenome')
 
 
 #functions
-def handle_twollele_indel(ref_allele_length, query_allele_length):
+def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
     global first_category, second_category
     if ref_allele_length > query_allele_length:
         first_category="DEL"
         second_category="SIMPLE"
+	return True
     elif ref_allele_length < query_allele_length:
         first_category="INS"
         second_category="SIMPLE"
+	return True
     else:
-	with open
-	print(line, sep='\t', file="non_inverted_equal_lengths.tsv")
-        raise Exception("[E]: Non-inverted variant has equal allele lengths.")
+	ef.write(line)
+	return False
 
 def handle_twoallele_inversion(ref_allele_length, query_allele_length):
     global first_category, second_category
@@ -28,7 +29,7 @@ def handle_twoallele_inversion(ref_allele_length, query_allele_length):
     else:
         second_category="SIMPLE"
 
-with open("sv_allele_summary.tsv") as f:
+with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
     with open("sv_categorized.tsv", "w") as fw:
         #skip header
         f.readline()
@@ -59,21 +60,24 @@ with open("sv_allele_summary.tsv") as f:
                 #Categorize variants based on variant genotype
             if genotype == "0:0:1":
                 if inversion is False:
-                    handle_twollele_indel(prim_len, coast_len)
+                    if not handle_twollele_indel(prim_len, coast_len, line, ef):
+			continue
                 elif inversion is True:
                     handle_twoallele_inversion(prim_len, coast_len)
                 else:
                     raise Exception("[E]: Inversion Boolean not recognized.")
             elif genotype == "0:1:0":
                 if inversion is False:
-                    handle_twollele_indel(prim_len, alt_len)
+                    if not handle_twollele_indel(prim_len, alt_len, line, ef):
+			continue
                 elif inversion is True:
                     handle_twoallele_inversion(prim_len, alt_len)
                 else:
                     raise Exception("[E]: Inversion Boolean not recognized.")
             elif genotype == "0:1:1":
                 if inversion is False:
-                    handle_twollele_indel(prim_len, alt_len)
+                    if not handle_twollele_indel(prim_len, alt_len, line, ef):
+			continue
                 elif inversion is True:
                     handle_twoallele_inversion(prim_len, alt_len)
                 else:
@@ -104,6 +108,3 @@ with open("sv_allele_summary.tsv") as f:
                 raise Exception("[E]: Genotype not recognized.")
             newline=(columns[0],columns[1],columns[2],first_category,second_category,genotype,len_string)
             fw.write('\t'.join(map(str, newline)) + '\n')
-    fw.close()
-f.close()
-
