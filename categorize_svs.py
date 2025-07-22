@@ -101,3 +101,6 @@ with open("sv_allele_summary.tsv") as f:
                 raise Exception("[E]: Genotype not recognized.")
             newline=(columns[1],columns[2],columns[3],first_category,second_category,genotype,len_string)
             fw.write('\t'.join(map(str, newline)) + '\n')
+    fw.close()
+f.close()
+
