@@ -1,10 +1,11 @@
 #!/bin/env python
 
 import os
-os.chdir(~/svs/minigraph/finalpangenome)
+os.chdir(/home/msmith/svs/minigraph/finalpangenome)
 
 #functions
 def handle_twollele_indel(ref_allele_length, query_allele_length):
+    global first_category, second_category
     if ref_allele_length > query_allele_length:
         first_category="DEL"
         second_category="SIMPLE"
@@ -15,6 +16,7 @@ def handle_twollele_indel(ref_allele_length, query_allele_length):
         raise Exception("[E]: Non-inverted variant has equal allele lengths.")
 
 def handle_twoallele_inversion(ref_allele_length, query_allele_length):
+    global first_category, second_category
     first_category="INV"
     if ref_allele_length > query_allele_length:
         second_category="DEL"
@@ -25,18 +27,19 @@ def handle_twoallele_inversion(ref_allele_length, query_allele_length):
 
 with open("sv_allele_summary.tsv") as f:
     with open("sv_categorized.tsv", "w") as fw:
-        #return this first line as is - header line
+        #skip header
         f.readline()
         for line in f:
             #define variables
-            columns=line.strip()split('\t')
+            columns=line.strip().split('\t')
             prim_allele=int(0)
-            prim_len=float(columns[6])
+            prim_len=int(columns[6])
             alt_allele=int(columns[4])
-            alt_len=float(columns[7])
-            coast_geno=int(columns[5])
-            coast_allele=float(columns[8])
-            inversion=bool(columns[9])
+            alt_len=int(columns[7])
+            coast_allele=int(columns[5])
+            coast_len=int(columns[8])
+            inversion = bool(int(columns[9]))
+            len_string=f"{prim_len}:{alt_len}:{coast_len}"
 
             #There's definitely a more efficient way to do this, but here we are
 
@@ -70,6 +73,8 @@ with open("sv_allele_summary.tsv") as f:
                     handle_twollele_indel(prim_len, alt_len)
                 elif inversion is True:
                     handle_twoallele_inversion(prim_len, alt_len)
+                else:
+                    raise Exception("[E]: Inversion Boolean not recognized.")
             elif genotype == "0:1:2":
                 #Implicit in there being three alleles is that there is some indel activity
                 longest_allele=max(prim_len, alt_len, coast_len)
@@ -94,5 +99,5 @@ with open("sv_allele_summary.tsv") as f:
                         second_category="INDEL"
             else:
                 raise Exception("[E]: Genotype not recognized.")
-
-            print()
+            newline=(columns[1],columns[2],columns[3],first_category,second_category,genotype,len_string)
+            fw.write('\t'.join(map(str, newline)) + '\n')
