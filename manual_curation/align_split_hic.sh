@@ -5,7 +5,6 @@
 #SBATCH -n 1
 #SBATCH -c 8
 #SBATCH --mem=20G
-#SBATCH -d afterok:661542
 #SBATCH --array=[0-299]%50
 #SBATCH -o %x.%j.%a.out
 #SBATCH -e %x.%A.%a.err
@@ -54,12 +53,12 @@ echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are aligning ${r1} and ${r2} to ${ref_name}."
 
 bwa mem -SP5M -t 4 -R "$rg" "$ref" "$r1" "$r2" | \
-samtools sort -n -@ 4 -m 2500M -O "bam" -o "$out" 
+samtools sort -n -@ 4 -m 2500M -O "bam" -o "${bam_dir}/${out}"
 
 if [[ $? -eq 0 ]] ; then
   date
   echo "[M]: Alignment complete. Removing fastqs for disk..."
-  rm "$r1" "$r2"
+#  rm "$r1" "$r2"
   if [[ $? -eq 0 ]] ; then
     echo "[M]: All cleaned up. Bye."
     exit 0

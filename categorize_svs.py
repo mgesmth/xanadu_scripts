@@ -1,7 +1,8 @@
 #!/bin/env python
 
 import os
-os.chdir(/home/msmith/svs/minigraph/finalpangenome)
+os.chdir('/home/FCAM/msmith/svs/minigraph_out/finalpangenome')
+
 
 #functions
 def handle_twollele_indel(ref_allele_length, query_allele_length):
@@ -13,6 +14,8 @@ def handle_twollele_indel(ref_allele_length, query_allele_length):
         first_category="INS"
         second_category="SIMPLE"
     else:
+	with open
+	print(line, sep='\t', file="non_inverted_equal_lengths.tsv")
         raise Exception("[E]: Non-inverted variant has equal allele lengths.")
 
 def handle_twoallele_inversion(ref_allele_length, query_allele_length):
@@ -33,13 +36,13 @@ with open("sv_allele_summary.tsv") as f:
             #define variables
             columns=line.strip().split('\t')
             prim_allele=int(0)
-            prim_len=int(columns[6])
-            alt_allele=int(columns[4])
-            alt_len=int(columns[7])
-            coast_allele=int(columns[5])
-            coast_len=int(columns[8])
-            inversion = bool(int(columns[9]))
-            len_string=f"{prim_len}:{alt_len}:{coast_len}"
+            prim_len=int(columns[5])
+            alt_allele=int(columns[3])
+            alt_len=int(columns[6])
+            coast_allele=int(columns[4])
+            coast_len=int(columns[7])
+            inversion = bool(int(columns[8]))
+            len_string=str(prim_len) + ":" + str(alt_len) + ":" + str(coast_len)
 
             #There's definitely a more efficient way to do this, but here we are
 
@@ -99,7 +102,7 @@ with open("sv_allele_summary.tsv") as f:
                         second_category="INDEL"
             else:
                 raise Exception("[E]: Genotype not recognized.")
-            newline=(columns[1],columns[2],columns[3],first_category,second_category,genotype,len_string)
+            newline=(columns[0],columns[1],columns[2],first_category,second_category,genotype,len_string)
             fw.write('\t'.join(map(str, newline)) + '\n')
     fw.close()
 f.close()
