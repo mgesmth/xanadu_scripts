@@ -464,10 +464,10 @@ echo "$0 $@" >> $headfile
 ## Not in merge, dedup, final, or postproc stage, i.e. need to align files. 
 if [ -z $merge ] && [ -z $mergeonly ] && [ -z $final ] && [ -z $dedup ] && [ -z $deduponly ] && [ -z $postproc ]
 then
-    if [ "$nofrag" -eq 0 ]
+    if [ "$nofrag" -eq 0 && "$chimeric" -eq 0 ]
     then
 	echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with site file $site_file"
-    else
+    elif [ "$nofrag" -eq 1 && "$chimeric" -eq 0 ] 
         echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with no fragment delimited maps."
     fi
 
@@ -498,9 +498,8 @@ then
 	    usegzip=1
 	fi
 
-	source ${juiceDir}/scripts/common/countligations.sh
-
 	if [ -z "$chimeric" ] ; then
+ 	source ${juiceDir}/scripts/common/countligations.sh
 	  if [ "$methylation" = 1 ] ; then
 		  conda activate
 	  fi
