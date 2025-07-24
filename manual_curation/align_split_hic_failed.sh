@@ -5,7 +5,6 @@
 #SBATCH -n 1
 #SBATCH -c 12
 #SBATCH --mem=40G
-#SBATCH --array=[0-5]
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
@@ -38,12 +37,11 @@ ref_name=$(basename ${ref})
 #fi
 
 cd ${fq_dir}
-fqs=($(cat fastqs_failed.txt))
-r1=${fqs[$SLURM_ARRAY_TASK_ID]}
+r1=allhiC_R1.part_282.fastq.gz
 r1_string="_R1"
 name=${r1//$r1_string/}
 r2=$(echo "$r1" | sed 's/R1/R2/')
-out=$(echo "$name" | sed 's/fastq.gz/bam/')
+out=$(echo "$r1" | sed 's/fastq.gz/bam/')
 sampleName="HiC_sample"
 libraryName="HiC_library"
 
@@ -58,7 +56,7 @@ samtools sort -n -@ 4 -m 2500M -O "bam" -o "${bam_dir}/${out}"
 if [[ $? -eq 0 ]] ; then
   date
   echo "[M]: Alignment complete. Removing fastqs for disk..."
-  rm "$r1" "$r2"
+  #rm "$r1" "$r2"
   if [[ $? -eq 0 ]] ; then
     echo "[M]: All cleaned up. Bye."
     exit 0
