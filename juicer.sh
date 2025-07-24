@@ -533,8 +533,6 @@ then
    #I'm only doing chimeric reads so I'm only editting the second pertinent to what I'm doing
 	  echo "Using already aligned reads $name$ext.bam"
   fi
-
-  echo $singleend
   
 	# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
 	if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
@@ -542,8 +540,8 @@ then
 		  awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
 	  else
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
-  		mv $name$ext.bam "in_${name}${ext}.bam"
-		samtools view -h "in_${name}${ext}.bam" | \
+  		mv $name$ext.bam "${name}${ext}_in.bam"
+		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
       		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "in_${name}${ext}.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
@@ -555,8 +553,8 @@ then
 	  else
      #This is me, I think
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
-  		mv $name$ext.bam "in_${name}${ext}.bam"
-		samtools view -h "in_${name}${ext}.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
+  		mv $name$ext.bam "${name}${ext}_in.bam"
+		samtools view -h "${name}${ext}_in.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
 		awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | \
     		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "in_${name}${ext}.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
