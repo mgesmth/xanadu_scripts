@@ -470,7 +470,8 @@ then
     elif [ "$nofrag" -eq 1 && "$chimeric" -eq 0 ] ; then 
         echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with no fragment delimited maps."
     fi
-
+    
+    
     for ((i = 0; i < ${#read1files[@]}; ++i)); do
 	usegzip=0
 	file1=${read1files[$i]}
@@ -534,6 +535,22 @@ then
 	  echo "Using already aligned reads $name$ext.bam"
   fi
   
+#this is all me (MEG), a lot taken from the SLURM version of juicer
+groupname="a$(date +%s)"
+
+jid=`sbatch <<- CHIM | egrep -o -e "\b[0-9]+$"
+	#!/bin/bash -l
+	#SBATCH -p general
+ 	#SBATCH -q general
+	#SBATCH -o /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.out
+	#SBATCH -e /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.err
+	#SBATCH --mem=10G
+	#SBATCH -c 1
+	#SBATCH --ntasks=1
+	#SBATCH -J "${groupname}_chimera_${jname}"
+        #SBATCH --threads-per-core=1
+	module load samtools/1.20
+  
 	# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
 	if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
 	  if [ $singleend -eq 1 ] ; then
@@ -551,7 +568,7 @@ then
    		
 		  awk -v stem=${name}${ext}_norm -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
 	  else
-     #This is me, I think
+     	#This is me, I think
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
@@ -566,61 +583,107 @@ then
 	    echo "***! Failure during chimera handling of $name${ext}"
 	    exit 1 
 	fi  
+ 	date
+CHIM`
+
+dependchimera="afterok:$jid"
+if [ -n "$alignonly" ]
+	then
+   		exit 0
+	fi
+
     done # done looping over all fastq split files
 fi  # Not in merge, dedup,  or final stage, i.e. need to split and align files.
 
-if [ -n "$alignonly" ]
-then
-    exit 0
+
+#MERGE AND DEDUP FILES
+if [ $justexact -eq 1 ] ; then
+
+	jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
+		#!/bin/bash -l
+		#SBATCH -p himem2
+ 		#SBATCH -q himem
+		#SBATCH -o /core/projects/EBP/smith/manual_curation_log/merge-%j.out
+		#SBATCH -e /core/projects/EBP/smith/manual_curation_log/merge-%j.err
+		#SBATCH --mem=800G
+		#SBATCH -c 24
+		#SBATCH -d $dependchimera
+		#SBATCH -J "${groupname}_merge_${jname}"
+  		module load samtools/1.20
+
+		#MERGE SORTED AND ALIGNED FILES
+   		if [ -d $donesplitdir ]
+    		then
+			mv $donesplitdir/* $splitdir/.
+    		fi
+     
+    		if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
+    		then
+			echo "***! Some problems occurred somewhere in creating sorted align files."
+			exit 1
+    		else
+			echo "(-: Finished sorting all sorted files into a single merge."
+    		fi
+
+ 		if ! samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
+		then
+ 			echo "***! Some problems occurred somewhere in deduping file."
+   			exit 1
+     		else
+      			echo "(-: Finished deduping."
+		fi
+		date
+	MRALL`
+	if [ $? -ne 0 ] ; then
+		exit 1
+	fi
+else 
+	jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
+		#!/bin/bash -l
+		#SBATCH -p himem2
+ 		#SBATCH -q himem
+		#SBATCH -o /core/projects/EBP/smith/manual_curation_log/merge-%j.out
+		#SBATCH -e /core/projects/EBP/smith/manual_curation_log/merge-%j.err
+		#SBATCH --mem=800G
+		#SBATCH -c 24
+		#SBATCH -d $dependchimera
+		#SBATCH -J "${groupname}_merge_${jname}"
+  		module load samtools/1.20
+
+		#MERGE SORTED AND ALIGNED FILES
+   		if [ -d $donesplitdir ]
+    		then
+			mv $donesplitdir/* $splitdir/.
+    		fi
+     
+    		if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
+    		then
+			echo "***! Some problems occurred somewhere in creating sorted align files."
+			exit 1
+    		else
+			echo "(-: Finished sorting all sorted files into a single merge."
+    		fi
+
+ 		if ! samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
+		then
+ 			echo "***! Some problems occurred somewhere in deduping file."
+   			exit 1
+     		else
+      			echo "(-: Finished deduping."
+		fi
+		date
+
+    		if [ -n "$deduponly" ]
+			then
+    		exit 0
+	fi
+	MRALL`
+ 	if [ $? -ne 0 ] ; then
+		exit 1
+	fi
 fi
 
-#MERGE SORTED AND ALIGNED FILES
-# Not in final, dedup, or postproc
-if [ -z $final ] && [ -z $dedup ] && [ -z $deduponly ] && [ -z $postproc ]
-then
-    if [ -d $donesplitdir ]
-    then
-	mv $donesplitdir/* $splitdir/.
-    fi
-    
-    if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
-    then
-	echo "***! Some problems occurred somewhere in creating sorted align files."
-	exit 1
-    else
-	echo "(-: Finished sorting all sorted files into a single merge."
-    fi
-fi
 
-if [ -n "$mergeonly" ]
-then
-    exit 0
-fi
-
-#REMOVE DUPLICATES 
-if [ -z $final ] && [ -z $postproc ]
-then
-    if [ $justexact -eq 1 ]
-    then
-	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
-    else
-	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
-    fi
-    if [ $? -ne 0 ]
-    then
-	echo "***! Mark duplicates of $outputdir/merged_sort.bam failed."
-	exit 1
-    else
-	echo "(-:  Mark duplicates done successfully"
-
-    fi
-fi
-
-
-if [ -n "$deduponly" ]
-then
-    exit 0
-fi
 
 #CREATE HIC FILES 
 if [ -z "$genomePath" ]
