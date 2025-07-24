@@ -61,6 +61,7 @@
 #             match any files with the read1str.   
 # Juicer version 2.0
 shopt -s extglob
+set -e
 export LC_ALL=C
 juicer_version="2.0"
 ### LOAD BWA AND SAMTOOLS 
@@ -539,35 +540,34 @@ then
 groupname="a$(date +%s)"
 
 jid=`sbatch <<- CHIM | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p general
- 	#SBATCH -q general
-	#SBATCH -o /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.out
-	#SBATCH -e /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.err
-	#SBATCH --mem=10G
-	#SBATCH -c 1
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_chimera_${jname}"
-        #SBATCH --threads-per-core=1
-	module load samtools/1.20
+#!/bin/bash
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -o /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.out
+#SBATCH -e /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.err
+#SBATCH --mem=10G
+#SBATCH -c 1
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_chimera_${jname}"
+
+module load samtools/1.20
   
-	# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
-	if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
-	  if [ $singleend -eq 1 ] ; then
-		  awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
-	  else
+# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
+if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
+	if [ $singleend -eq 1 ] ; then
+		awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
+	else
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
       		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
-	  fi
+	fi
+else
+	if [ $singleend -eq 1 ] ; then   		
+		awk -v stem=${name}${ext}_norm -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
 	else
-	  if [ $singleend -eq 1 ] ; then
-   		
-		  awk -v stem=${name}${ext}_norm -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
-	  else
      	#This is me, I think
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
   		mv $name$ext.bam "${name}${ext}_in.bam"
@@ -575,15 +575,15 @@ jid=`sbatch <<- CHIM | egrep -o -e "\b[0-9]+$"
 		awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | \
     		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
-	  fi
 	fi
+fi
 
-	if [ $? -ne 0 ]
-	then
-	    echo "***! Failure during chimera handling of $name${ext}.bam"
-	    exit 1 
-	fi  
- 	date
+if [ $? -ne 0 ]
+then
+	echo "***! Failure during chimera handling of $name${ext}.bam"
+	exit 1 
+fi  
+date
 CHIM`
 
 dependchimera="afterok:$jid"
@@ -599,228 +599,228 @@ fi
 #MERGE AND DEDUP FILES - run the big job
 if [ $justexact -eq 1 ] ; then
 
-	jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
-		#!/bin/bash -l
-		#SBATCH -p himem2
- 		#SBATCH -q himem
-		#SBATCH -o /core/projects/EBP/smith/manual_curation_log/merge-%j.out
-		#SBATCH -e /core/projects/EBP/smith/manual_curation_log/merge-%j.err
-		#SBATCH --mem=800G
-		#SBATCH -c 24
-		#SBATCH -d $dependchimera
-		#SBATCH -J "${groupname}_merge_${jname}"
-  		module load samtools/1.20
-		module load bwa/0.7.17
-		module load java-sdk/1.8.0_92
+jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
+#!/bin/bash -l
+#SBATCH -p himem2
+#SBATCH -q himem
+#SBATCH -o /core/projects/EBP/smith/manual_curation_log/merge-%j.out
+#SBATCH -e /core/projects/EBP/smith/manual_curation_log/merge-%j.err
+#SBATCH --mem=800G
+#SBATCH -c 24
+#SBATCH -d $dependchimera
+#SBATCH -J "${groupname}_merge_${jname}"
+module load samtools/1.20
+module load bwa/0.7.17
+module load java-sdk/1.8.0_92
 
-		#MERGE SORTED AND ALIGNED FILES
-   		if [ -d $donesplitdir ]
-    		then
-			mv $donesplitdir/* $splitdir/.
-    		fi
+#MERGE SORTED AND ALIGNED FILES
+if [ -d $donesplitdir ]
+then
+	mv $donesplitdir/* $splitdir/.
+fi
 
-		sthreadstring="$(getconf _NPROCESSORS_ONLN)"
+sthreadstring="$(getconf _NPROCESSORS_ONLN)"
      
-    		if ! samtools merge -c -t cb -n $sthreadstring -o $outputdir/merged_sort.bam $splitdir/*.bam
-    		then
-			echo "***! Some problems occurred somewhere in creating sorted align files."
-			exit 1
-    		else
-			echo "(-: Finished sorting all sorted files into a single merge."
-    		fi
+if ! samtools merge -c -t cb -n $sthreadstring -o $outputdir/merged_sort.bam $splitdir/*.bam
+then
+	echo "***! Some problems occurred somewhere in creating sorted align files."
+	exit 1
+else
+	echo "(-: Finished sorting all sorted files into a single merge."
+fi
 
- 		if ! samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
-		then
- 			echo "***! Some problems occurred somewhere in deduping file."
-   			exit 1
-     		else
-      			echo "(-: Finished deduping."
-		fi
-		date
+if ! samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
+then
+	echo "***! Some problems occurred somewhere in deduping file."
+   	exit 1
+else
+	echo "(-: Finished deduping."
+fi
+date
 
-    		#CREATE HIC FILES 
-		if [ -z "$genomePath" ]
-		then
-   			#If no path to genome is give, use genome ID as default.
-    			genomePath=$genomeID
-		fi
+#CREATE HIC FILES 
+if [ -z "$genomePath" ]
+then
+   	#If no path to genome is give, use genome ID as default.
+    	genomePath=$genomeID
+fi
 
-    		if [ ! -s  ${outputdir}/merged_dedup.bam ] ; then 
-        		# Check that dedupping worked properly
-        		# in ideal world, we would check this in split_rmdups and not remove before we know they are correct
-			size1=$(samtools view $sthreadstring -h ${outputdir}/merged_sort.bam | wc -l | awk '{print $1}')
-			size2=$(wc -l ${outputdir}/merged_dedup.sam | awk '{print $1}')
+if [ ! -s  ${outputdir}/merged_dedup.bam ] ; then 
+        # Check that dedupping worked properly
+        # in ideal world, we would check this in split_rmdups and not remove before we know they are correct
+	size1=$(samtools view $sthreadstring -h ${outputdir}/merged_sort.bam | wc -l | awk '{print $1}')
+	size2=$(samtools view $sthreadstring -h ${outputdir}/merged_dedup.bam | wc -l | awk '{print $1}')
 	
-			if [ $size1 -ne $size2 ] ; then
-	    			echo "***! Error! The sorted file and dups/no dups files do not add up, or were empty."
-	    			exit 1
-			fi
-			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
-			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
-    		else
-			if [ ! -s ${outputdir}/merged1.txt ] 
-			then
-	    			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
-			fi
-			if [ ! -s ${outputdir}/merged30.txt ]
-			then
-	    			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
-			fi
-    		fi
-
-      		export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
-    		export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
-    		tail -n1 $headfile | awk '{printf"%-1000s\n", $0}' > $outputdir/inter.txt
-    		if [ $singleend -eq 1 ] 
-    		then
-			ret=$(samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if ($0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}')
-			dups=$(echo $ret | awk '{print $1}')
-			singdups=$(echo $ret | awk '{print $2}')
-			cat $splitdir/*.res.txt | awk -v dups=$dups -v singdups=$singdups -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
-    		else
-			dups=$(samtools view -c -f 1089 -F 256 $sthreadstring $outputdir/merged_dedup.bam)
-			cat $splitdir/*.res.txt | awk -v dups=$dups -v ligation=$ligation -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
-    		fi
-    
-    		cp $outputdir/inter.txt $outputdir/inter_30.txt
-
-    		if [ $assembly -eq 1 ] 
-    		then
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
-    		else
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
-    		fi
-
-    		# if early exit, we stop here, once the stats are calculated
-    		if [ ! -z "$earlyexit" ]
-    		then
-        		if [ $assembly -eq 1 ]
-        		then
-            			samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
-			fi
-			export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1; 
-			if ${juiceDir}/scripts/common/check.sh && [ "$cleanup" = 1 ]
-			then
-	    			${juiceDir}/scripts/common/cleanup.sh
-			fi
-			exit
-    		fi
-
-	MRALL`
-	if [ $? -ne 0 ] ; then
-		exit 1
+	if [ $size1 -ne $size2 ] ; then
+	    	echo "***! Error! The sorted file and dups/no dups files do not add up, or were empty."
+	    	exit 1
 	fi
+	samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
+	samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
+else
+	if [ ! -s ${outputdir}/merged1.txt ] 
+	then
+   		samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
+	fi
+	if [ ! -s ${outputdir}/merged30.txt ]
+	then
+	    	samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
+	fi
+fi
+
+export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
+export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
+tail -n1 $headfile | awk '{printf"%-1000s\n", $0}' > $outputdir/inter.txt
+if [ $singleend -eq 1 ] 
+then
+	ret=$(samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if ($0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}')
+	dups=$(echo $ret | awk '{print $1}')
+	singdups=$(echo $ret | awk '{print $2}')
+	cat $splitdir/*.res.txt | awk -v dups=$dups -v singdups=$singdups -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
+else
+	dups=$(samtools view -c -f 1089 -F 256 $sthreadstring $outputdir/merged_dedup.bam)
+	cat $splitdir/*.res.txt | awk -v dups=$dups -v ligation=$ligation -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
+fi
+    
+cp $outputdir/inter.txt $outputdir/inter_30.txt
+
+if [ $assembly -eq 1 ] 
+then
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
+else
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
+fi
+
+# if early exit, we stop here, once the stats are calculated
+if [ ! -z "$earlyexit" ]
+then
+	if [ $assembly -eq 1 ]
+        then
+            	samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
+	fi
+	export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1; 
+	if ${juiceDir}/scripts/common/check.sh && [ "$cleanup" = 1 ]
+	then
+	    	${juiceDir}/scripts/common/cleanup.sh
+	fi
+	exit
+fi
+
+MRALL`
+if [ $? -ne 0 ] ; then
+	exit 1
+fi
 else 
 	jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
-		#!/bin/bash -l
-		#SBATCH -p himem2
- 		#SBATCH -q himem
-		#SBATCH -o /core/projects/EBP/smith/manual_curation_log/merge-%j.out
-		#SBATCH -e /core/projects/EBP/smith/manual_curation_log/merge-%j.err
-		#SBATCH --mem=800G
-		#SBATCH -c 24
-		#SBATCH -d $dependchimera
-		#SBATCH -J "${groupname}_merge_${jname}"
-  		module load samtools/1.20
-		module load bwa/0.7.17
-		module load java-sdk/1.8.0_92
+	#!/bin/bash -l
+	#SBATCH -p himem2
+ 	#SBATCH -q himem
+	#SBATCH -o /core/projects/EBP/smith/manual_curation_log/merge-%j.out
+	#SBATCH -e /core/projects/EBP/smith/manual_curation_log/merge-%j.err
+	#SBATCH --mem=800G
+	#SBATCH -c 24
+	#SBATCH -d $dependchimera
+	#SBATCH -J "${groupname}_merge_${jname}"
+  	module load samtools/1.20
+	module load bwa/0.7.17
+	module load java-sdk/1.8.0_92
 
-		sthreadstring="$(getconf _NPROCESSORS_ONLN)"
+	sthreadstring="$(getconf _NPROCESSORS_ONLN)"
 
-		#MERGE SORTED AND ALIGNED FILES
-   		if [ -d $donesplitdir ]
-    		then
-			mv $donesplitdir/* $splitdir/.
-    		fi
+	#MERGE SORTED AND ALIGNED FILES
+   	if [ -d $donesplitdir ]
+    	then
+		mv $donesplitdir/* $splitdir/.
+    	fi
      
-    		if ! samtools merge -c -t cb -n $sthreadstring -o $outputdir/merged_sort.bam $splitdir/*.bam
-    		then
-			echo "***! Some problems occurred somewhere in creating sorted align files."
-			exit 1
-    		else
-			echo "(-: Finished sorting all sorted files into a single merge."
-    		fi
+    	if ! samtools merge -c -t cb -n $sthreadstring -o $outputdir/merged_sort.bam $splitdir/*.bam
+    	then
+		echo "***! Some problems occurred somewhere in creating sorted align files."
+		exit 1
+    	else
+		echo "(-: Finished sorting all sorted files into a single merge."
+    	fi
 
- 		if ! samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
-		then
- 			echo "***! Some problems occurred somewhere in deduping file."
-   			exit 1
-     		else
-      			echo "(-: Finished deduping."
-		fi
-		date
+ 	if ! samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
+	then
+ 		echo "***! Some problems occurred somewhere in deduping file."
+   		exit 1
+     	else
+      		echo "(-: Finished deduping."
+	fi
+	date
 
-    		#CREATE HIC FILES 
-		if [ -z "$genomePath" ]
-		then
-   			#If no path to genome is give, use genome ID as default.
-    			genomePath=$genomeID
-		fi
+    	#CREATE HIC FILES 
+	if [ -z "$genomePath" ]
+	then
+   		#If no path to genome is give, use genome ID as default.
+    		genomePath=$genomeID
+	fi
 
-    		if [ ! -s  ${outputdir}/merged_dedup.bam ] ; then 
-        		# Check that dedupping worked properly
-        		# in ideal world, we would check this in split_rmdups and not remove before we know they are correct
-			size1=$(samtools view $sthreadstring -h ${outputdir}/merged_sort.bam | wc -l | awk '{print $1}')
-			size2=$(samtools view $sthreadstring -h ${outputdir}/wc -l ${outputdir}/merged_dedup.sam | awk '{print $1}')
+    	if [ ! -s  ${outputdir}/merged_dedup.bam ] ; then 
+        	# Check that dedupping worked properly
+        	# in ideal world, we would check this in split_rmdups and not remove before we know they are correct
+		size1=$(samtools view $sthreadstring -h ${outputdir}/merged_sort.bam | wc -l | awk '{print $1}')
+		size2=$(samtools view $sthreadstring -h ${outputdir}/wc -l ${outputdir}/merged_dedup.sam | awk '{print $1}')
 	
-			if [ $size1 -ne $size2 ] ; then
-	    			echo "***! Error! The sorted file and dups/no dups files do not add up, or were empty."
-	    			exit 1
-			fi
-			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
-			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
-    		else
-			if [ ! -s ${outputdir}/merged1.txt ] 
-			then
-	    			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
-			fi
-			if [ ! -s ${outputdir}/merged30.txt ]
-			then
-	    			samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
-			fi
-    		fi
+		if [ $size1 -ne $size2 ] ; then
+    			echo "***! Error! The sorted file and dups/no dups files do not add up, or were empty."
+	    		exit 1
+		fi
+		samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
+		samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.sam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
+    	else
+		if [ ! -s ${outputdir}/merged1.txt ] 
+		then
+	   		samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
+		fi
+		if [ ! -s ${outputdir}/merged30.txt ]
+		then
+	    		samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
+		fi
+    	fi
       		
-		export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
-    		export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
-    		tail -n1 $headfile | awk '{printf"%-1000s\n", $0}' > $outputdir/inter.txt
-    		if [ $singleend -eq 1 ] 
-    		then
-			ret=$(samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if ($0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}')
-			dups=$(echo $ret | awk '{print $1}')
-			singdups=$(echo $ret | awk '{print $2}')
-			cat $splitdir/*.res.txt | awk -v dups=$dups -v singdups=$singdups -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
-    		else
-			dups=$(samtools view -c -f 1089 -F 256 $sthreadstring $outputdir/merged_dedup.bam)
-			cat $splitdir/*.res.txt | awk -v dups=$dups -v ligation=$ligation -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
-    		fi
+	export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
+    	export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
+    	tail -n1 $headfile | awk '{printf"%-1000s\n", $0}' > $outputdir/inter.txt
+    	if [ $singleend -eq 1 ] 
+    	then
+		ret=$(samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if ($0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}')
+		dups=$(echo $ret | awk '{print $1}')
+		singdups=$(echo $ret | awk '{print $2}')
+		cat $splitdir/*.res.txt | awk -v dups=$dups -v singdups=$singdups -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
+    	else
+		dups=$(samtools view -c -f 1089 -F 256 $sthreadstring $outputdir/merged_dedup.bam)
+		cat $splitdir/*.res.txt | awk -v dups=$dups -v ligation=$ligation -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
+    	fi
     
-    		cp $outputdir/inter.txt $outputdir/inter_30.txt
+    	cp $outputdir/inter.txt $outputdir/inter_30.txt
 
-    		if [ $assembly -eq 1 ] 
-    		then
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
-    		else
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
-			${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
-    		fi
+    	if [ $assembly -eq 1 ] 
+    	then
+		${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
+		${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
+    	else
+		${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
+		${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
+    	fi
 
-    		# if early exit, we stop here, once the stats are calculated
-    		if [ ! -z "$earlyexit" ]
-    		then
-        		if [ $assembly -eq 1 ]
-        		then
-            			samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
-			fi
-			export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1; 
-			if ${juiceDir}/scripts/common/check.sh && [ "$cleanup" = 1 ]
-			then
-	    			${juiceDir}/scripts/common/cleanup.sh
-			fi
-			exit
-    		fi
+    	# if early exit, we stop here, once the stats are calculated
+    	if [ ! -z "$earlyexit" ]
+    	then
+        	if [ $assembly -eq 1 ]
+        	then
+           		samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
+		fi
+		export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1; 
+		if ${juiceDir}/scripts/common/check.sh && [ "$cleanup" = 1 ]
+		then
+	    		${juiceDir}/scripts/common/cleanup.sh
+		fi
+		exit
+    	fi
 	MRALL`
  	if [ $? -ne 0 ] ; then
 		exit 1
