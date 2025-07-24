@@ -1,7 +1,11 @@
 #!/bin/env python
 
+fai="/scratch/msmith/interior_primary_bigscaffoldsplit.fa.fai"
+sum="/home/FCAM/msmith/svs/minigraph_out/finalpangenome/sv_allele_summary.tsv"
+out="/home/FCAM/msmith/svs/minigraph_out/finalpangenome/sv_allele_summary_updatedcoord.tsv"
+
 print("[M]: Beginning creation of index dictionary.")
-with open("interior_primary_final.fa.fai") as f:
+with open(fai, 'r') as f:
   previous_line = None
   length_dict={}
   for line in f:
@@ -32,11 +36,24 @@ with open("interior_primary_final.fa.fai") as f:
 f.close()
 
 #Now we have the dictionary: let's update the coordinates in sv_allele_summary.tsv
-with open("sv_allele_summary.tsv", "r") as f, open("sv_allele_summary_updatedcoord.tsv", "w") as of:
+with open(sum, 'r') as f, open(out, "w") as of:
   header=f.readline()
   of.write(header)
   for line in f:
     fields=line.strip().split('\t')
+    scaff=str(fields[0])
+    if "primary_1" in scaff:
+      new_scaff=str(scaff.rsplit("_",1)[0])
+      newline=(new_scaff,fields[1],fields[2],fields[3],fields[4],fields[5],fields[6],fields[7],fields[8])
+    elif "primary_2" in scaff:
+      new_scaff=str(scaff.rsplit("_",1)[0])
+      new_start=int(fields[1])+int(length_dict[scaff])
+      new_end=int(fields[2])+int(length_dict[scaff])
+      newline=(new_scaff,new_start,new_end,fields[3],fields[4],fields[5],fields[6],fields[7],fields[8])
+    else:
+      newline=line
+    of.write('\t'.join(map(str, newline)) + '\n')
+      
     
 
 
