@@ -462,7 +462,7 @@ echo "$0 $@" >> $headfile
 ## ALIGN FASTQ IN SINGLE END MODE, SORT BY READNAME, HANDLE CHIMERIC READS     
 
 ## Not in merge, dedup, final, or postproc stage, i.e. need to align files. 
-if [ -z $chimeric ] && [ -z $merge ] && [ -z $mergeonly ] && [ -z $final ] && [ -z $dedup ] && [ -z $deduponly ] && [ -z $postproc ]
+if [ -z $merge ] && [ -z $mergeonly ] && [ -z $final ] && [ -z $dedup ] && [ -z $deduponly ] && [ -z $postproc ]
 then
     if [ "$nofrag" -eq 0 ]
     then
@@ -505,22 +505,23 @@ then
 		  conda activate
 	  fi
 	  if [ $singleend -eq 1 ] ; then
+      #I'm commenting out the alignment lines because I think something is running when it shouldn't be
       if [ "$methylation" = 1 ] ; then
         # The -M flag is already used in bwameth.py
         echo "Running bwameth.py $threadstring -5 --do-not-penalize-chimeras --reference ${refSeq} --read-group $rg $name1$ext > $name$ext.sam"
-        $call_bwameth $threadstring -5 --do-not-penalize-chimeras --reference ${refSeq} --read-group '$rg' $name1$ext > $name$ext.sam
+        #$call_bwameth $threadstring -5 --do-not-penalize-chimeras --reference ${refSeq} --read-group '$rg' $name1$ext > $name$ext.sam
 		  else
 		    echo "Running command $bwa_cmd mem -5M $threadstring -R $rg $refSeq $name1$ext > $name$ext.sam"
-		    $bwa_cmd mem -K 320000000 -5M $threadstring -R "$rg" $refSeq $file1 > $name$ext.sam 
+		    #$bwa_cmd mem -K 320000000 -5M $threadstring -R "$rg" $refSeq $file1 > $name$ext.sam 
 		  fi
 	  else
 		  if [ "$methylation" = 1 ] ; then
 		    # The -M flag is already used in bwameth.py
 		    echo "Running bwameth.py $threadstring -5SP --do-not-penalize-chimeras --read-group '$rg'  --reference ${refSeq} $name1$ext $name2$ext > $name$ext.sam"
-		    $call_bwameth $threadstring -5SP --do-not-penalize-chimeras --read-group '$rg' --reference ${refSeq} $name1$ext $name2$ext > $name$ext.sam
+		    #$call_bwameth $threadstring -5SP --do-not-penalize-chimeras --read-group '$rg' --reference ${refSeq} $name1$ext $name2$ext > $name$ext.sam
 		  else
 		    echo "Running command bwa mem -SP5M $threadstring -R $rg $refSeq $file1 $file2 > $name$ext.sam" 
-		    $bwa_cmd mem -K 320000000 -SP5M $threadstring -R "$rg" $refSeq $file1 $file2 > $name$ext.sam
+		    #$bwa_cmd mem -K 320000000 -SP5M $threadstring -R "$rg" $refSeq $file1 $file2 > $name$ext.sam
 		  fi
 	  fi
 	    if [ $? -ne 0 ] ; then
@@ -540,7 +541,11 @@ then
 		  awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
 	  else
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
-		  samtools view -h $name$ext.bam | awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam
+  		mv $name$ext.bam "in_${name}${ext}.bam"
+		samtools view -h "in_${name}${ext}.bam" | \
+    		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
+      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "in_${name}${ext}.bam" && \
+		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	else
 	  if [ $singleend -eq 1 ] ; then
@@ -549,8 +554,11 @@ then
 	  else
      #This is me, I think
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
-		  samtools view -h $name$ext.bam | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
-		  awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | samtools sort -t cb -n $sthreadstring > ${name}${ext}.s.bam && rm $name$ext.bam
+  		mv $name$ext.bam "in_${name}${ext}.bam"
+		samtools view -h "in_${name}${ext}.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
+		awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | \
+    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "in_${name}${ext}.bam" && \
+		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	fi
 
