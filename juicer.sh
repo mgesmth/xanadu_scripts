@@ -560,7 +560,7 @@ jid=`sbatch <<- CHIM | egrep -o -e "\b[0-9]+$"
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
-      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "in_${name}${ext}.bam" && \
+      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	else
@@ -573,14 +573,14 @@ jid=`sbatch <<- CHIM | egrep -o -e "\b[0-9]+$"
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
 		awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | \
-    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "in_${name}${ext}.bam" && \
+    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	fi
 
 	if [ $? -ne 0 ]
 	then
-	    echo "***! Failure during chimera handling of $name${ext}"
+	    echo "***! Failure during chimera handling of $name${ext}.bam"
 	    exit 1 
 	fi  
  	date
@@ -618,8 +618,10 @@ if [ $justexact -eq 1 ] ; then
     		then
 			mv $donesplitdir/* $splitdir/.
     		fi
+
+		sthreadstring="$(getconf _NPROCESSORS_ONLN)"
      
-    		if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
+    		if ! samtools merge -c -t cb -n $sthreadstring -o $outputdir/merged_sort.bam $splitdir/*.bam
     		then
 			echo "***! Some problems occurred somewhere in creating sorted align files."
 			exit 1
@@ -666,7 +668,7 @@ if [ $justexact -eq 1 ] ; then
 			fi
     		fi
 
-      				export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
+      		export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
     		export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
     		tail -n1 $headfile | awk '{printf"%-1000s\n", $0}' > $outputdir/inter.txt
     		if [ $singleend -eq 1 ] 
@@ -725,13 +727,15 @@ else
 		module load bwa/0.7.17
 		module load java-sdk/1.8.0_92
 
+		sthreadstring="$(getconf _NPROCESSORS_ONLN)"
+
 		#MERGE SORTED AND ALIGNED FILES
    		if [ -d $donesplitdir ]
     		then
 			mv $donesplitdir/* $splitdir/.
     		fi
      
-    		if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
+    		if ! samtools merge -c -t cb -n $sthreadstring -o $outputdir/merged_sort.bam $splitdir/*.bam
     		then
 			echo "***! Some problems occurred somewhere in creating sorted align files."
 			exit 1
