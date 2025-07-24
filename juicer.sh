@@ -535,7 +535,8 @@ then
   fi
 
   echo "check: alignment block passed"
-
+  ls -l $name$ext.bam
+  
 	# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
 	if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
 	  if [ $singleend -eq 1 ] ; then
