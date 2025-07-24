@@ -16,19 +16,20 @@ with open(fai, 'r') as f:
     scaff_num=int(ori_scaffold.split('_')[1])
     
     #handle split scaffolds
-    if scaff_num < 8:
+    if scaff_num < 7:
       if frag_1 in ori_scaffold:
         previous_line=line #update previous line for next iteration (for fragment 2)
         length_dict.update({ori_scaffold: 0})
-      else if frag_2 in ori_scaffold:
+      elif frag_2 in ori_scaffold:
         previous_len=int(previous_line.strip().split('\t')[1])
         add=previous_len+200
         length_dict.update({ori_scaffold: add})
       else:
+	print(ori_scaffold)
         raise Exception("[E]: previous line not stored correctly.")
 
     #handle unsplit scaffolds
-    elif scaff_num > 8:
+    elif scaff_num > 6:
       length_dict.update({ori_scaffold: 0})
 
     else:
