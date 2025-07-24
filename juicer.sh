@@ -473,20 +473,20 @@ then
     fi
     
     
-    for ((i = 0; i < ${#read1files[@]}; ++i)); do
-	usegzip=0
-	file1=${read1files[$i]}
-	file2=${read2files[$i]}
+    #for ((i = 0; i < ${#read1files[@]}; ++i)); do
+	#usegzip=0
+	#file1=${read1files[$i]}
+	#file2=${read2files[$i]}
 
   #file extension (i.e., fastq.gz)
-	ext=${file1#*$read1str}
+	#ext=${file1#*$read1str}
   #file name without read info, i.e., sample1_R1.fastq.gz -> sample1_
-	name=${file1%$read1str*} 
+	#name=${file1%$read1str*} 
 
 	# these names have to be right or it'll break
-	name1=${name}${read1str}
-	name2=${name}${read2str}	
-	jname=$(basename "$name")${ext}
+	#name1=${name}${read1str}
+	#name2=${name}${read2str}	
+	#jname=$(basename "$name")${ext}
 	# RG group; ID derived from paired-end name, sample and library can be user set
 	if [ $singleend -eq 1 ]
 	then
@@ -543,15 +543,24 @@ jid=`sbatch <<- CHIM | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -o /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.out
-#SBATCH -e /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%j.err
-#SBATCH --mem=10G
+#SBATCH -o /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%x.%A.%a.out
+#SBATCH -e /core/projects/EBP/smith/manual_curation_log/juicer_array_logs/chimera-%x.%A.%a.err
+#SBATCH --mem=20G
+#SBATCH --array=[0-299]
 #SBATCH -c 1
 #SBATCH --ntasks=1
-#SBATCH -J "${groupname}_chimera_${jname}"
-
+#SBATCH -J "${groupname}_chimera"
+set -e
 module load samtools/1.20
-  
+
+file1=${read1files[$SLURM_ARRAY_BATCH_ID]}
+file2=${read2files[$SLURM_ARRAY_BATCH_ID]}
+ext=${file1#*$read1str}
+name=${file1%$read1str*} 
+name1=${name}${read1str}
+name2=${name}${read2str}
+jname=$(basename "$name")${ext}
+
 # call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
 if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
 	if [ $singleend -eq 1 ] ; then
