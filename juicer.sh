@@ -467,7 +467,7 @@ then
     if [ "$nofrag" -eq 0 && "$chimeric" -eq 0 ]
     then
 	echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with site file $site_file"
-    elif [ "$nofrag" -eq 1 && "$chimeric" -eq 0 ] 
+    elif [ "$nofrag" -eq 1 && "$chimeric" -eq 0 ] ; then 
         echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with no fragment delimited maps."
     fi
 

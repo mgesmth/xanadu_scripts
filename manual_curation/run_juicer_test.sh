@@ -1,11 +1,9 @@
 #!/bin/bash
-#SBATCH -J run_juicer
+#SBATCH -J run_juicer_test
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 12
 #SBATCH --mem=48G
-#SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -27,7 +25,7 @@ jd=${scratch}/juicer_formanualcur
 echo "[M]: Beginning juicer run."
 cd ${jd}
 #Okay - now run juicer (CPU version, modified for better handling of large files)
-scripts/juicer.sh -g "$gid" -d "${jd}/work/test" -s "$site" -S chimeric \
+scripts/juicer.sh -f -g "$gid" -d "${jd}/work/test" -s "$site" -S chimeric \
 -p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
 -z references/interior_primary_final.fa -D "$jd" -t "$threads"
 if [[ $? -e 0 ]] ; then
