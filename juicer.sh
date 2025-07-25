@@ -601,7 +601,7 @@ if [ -n "$alignonly" ]
    		exit 0
 	fi
 
-    done # done looping over all fastq split files
+   # done # done looping over all fastq split files
 fi 
 
 
