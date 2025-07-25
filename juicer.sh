@@ -594,6 +594,9 @@ then
 fi  
 date
 CHIM`
+if [ $? -ne 0 ] ; then
+	exit 1
+fi
 dependchimera="afterok:$jid"
 
 if [ -n "$alignonly" ]
