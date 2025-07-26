@@ -476,7 +476,7 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
-      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
+      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	else
@@ -489,7 +489,7 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
 		awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | \
-    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
+    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	fi
