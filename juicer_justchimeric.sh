@@ -167,9 +167,8 @@ printHelpAndExit() {
     exit "$1"
 }
 
-while getopts "x:d:g:a:hs:p:y:z:S:D:b:t:jfuecT:1:2:i:-:w:k:m" opt; do
+while getopts "d:g:a:hs:p:y:z:S:D:b:t:jfuecT:1:2:i:-:w:k:m" opt; do
     case $opt in
-  x) R1file=$OPTARG ;;
 	g) genomeID=$OPTARG ;;
 	h) printHelpAndExit 0;;
 	d) topDir=$OPTARG ;;
@@ -477,7 +476,7 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
-      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_1.bam" && \
+      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	else
