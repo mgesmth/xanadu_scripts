@@ -368,54 +368,54 @@ fi
 if [ -z "$read1files" ]
 then
 ## Check that fastq directory exists and has proper fastq files; only if necessary
-    if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" && -z "$merge" && -z "$mergeonly" ]]; then
-	if [ ! -d "$topDir/fastq" ]; then
-	    echo "Directory \"$topDir/fastq\" does not exist."
-	    echo "Create \"$topDir/fastq\" and put fastq files to be aligned there."
-	    echo "Type \"juicer.sh -h\" for help"
-	    exit 1
-	else
-	    if stat -t ${fastqdir} >/dev/null 2>&1
-	    then
-		echo "(-: Looking for fastq files...fastq files exist"
-		if [ ! $splitdirexists ]
-		then
-		    echo "(-: Created $splitdir."
-		    ln -s ${fastqdir} ${splitdir}/.
+	if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" && -z "$merge" && -z "$mergeonly" ]]; then
+		if [ ! -d "$topDir/fastq" ]; then
+			echo "Directory \"$topDir/fastq\" does not exist."
+			echo "Create \"$topDir/fastq\" and put fastq files to be aligned there."
+			echo "Type \"juicer.sh -h\" for help"
+			exit 1
 		else
-		    echo -e "---  Using already created files in $splitdir\n"
-		fi
-		testname=$(ls -lgG ${fastqdir} | awk 'NR==1{print $7}')
-		if [ "${testname: -3}" == ".gz" ]
-		then
-		    gzipped=1
-		else
-		fi
-	    else
-		if [ ! -d "$splitdir" ]; then
-		    echo "***! Failed to find any files matching ${fastqdir}"
-		    echo "***! Type \"juicer.sh -h \" for help"
-		    exit
-		fi
-	    fi
-	fi
-fi
+			if stat -t ${fastqdir} >/dev/null 2>&1
+	   		then
+				echo "(-: Looking for fastq files...fastq files exist"
+				if [ ! $splitdirexists ]
+				then
+					echo "(-: Created $splitdir."
+					ln -s ${fastqdir} ${splitdir}/.
+				else
+    					echo -e "---  Using already created files in $splitdir\n"
+				fi
+				testname=$(ls -lgG ${fastqdir} | awk 'NR==1{print $7}')
+				if [ "${testname: -3}" == ".gz" ]
+				then
+					gzipped=1
+				else
+					read1=${splitdir}"/*${read1str}*.fastq"
+				fi
 
-    read1files=()
-    read2files=()
-    for i in ${read1}
-    do
-	    ext=${i#*$read1str}
-	    name=${i%$read1str*}
-        # these names have to be right or it'll break   
-	    name1=${name}${read1str}
-	    name2=${name}${read2str}
-	    read1filesstr+=$name1$ext" "
-	    read2filesstr+=$name2$ext" "
-    done
-    read1files=( $read1filesstr )
-    read2files=( $read2filesstr )
- 
+			else
+				if [ ! -d "$splitdir" ]; then
+					echo "***! Failed to find any files matching ${fastqdir}"
+					echo "***! Type \"juicer.sh -h \" for help"
+					exit
+				fi
+			fi
+		fi
+	fi
+	read1files=()
+	read2files=()
+	for i in ${read1}
+	do
+		ext=${i#*$read1str}
+		name=${i%$read1str*}
+        	# these names have to be right or it'll break   
+		name1=${name}${read1str}
+		name2=${name}${read2str}
+		read1filesstr+=$name1$ext" "
+		read2filesstr+=$name2$ext" "
+	done
+	read1files=( $read1filesstr )
+	read2files=( $read2filesstr )
 else
     if [ -z "$read2files" ]
     then
