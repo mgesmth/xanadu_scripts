@@ -591,7 +591,7 @@ else
     qosstring="#SBATCH -q $queue"
 fi
 jid=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l 
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
@@ -666,7 +666,7 @@ then
                 if [ -z "$gzipped" ]
                 then	
 jid=`sbatch <<- SPLITEND | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
@@ -674,7 +674,7 @@ jid=`sbatch <<- SPLITEND | egrep -o -e "\b[0-9]+$"
 #SBATCH -o $debugdir/split-%j.out
 #SBATCH -e $debugdir/split-%j.err
 #SBATCH -J "${groupname}_split_${i}"
-$userstring			
+
 date
 echo "Split file: $filename"
 split -a 3 -l $splitsize -d --additional-suffix=.fastq $i $splitdir/$filename
@@ -682,14 +682,14 @@ date
 SPLITEND`
 		else
 jid=`sbatch <<- SPLITEND | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
 #SBATCH --mem=5G
 #SBATCH -o $debugdir/split-%j.out
 #SBATCH -e $debugdir/split-%j.err
-#SBATCH -J "${groupname}_split_${i}"		
+#SBATCH -J "${groupname}_split_${i}"
 date
 echo "Split file: $filename"
 zcat $i | split -a 3 -l $splitsize -d --additional-suffix=.fastq - $splitdir/$filename
@@ -765,14 +765,14 @@ srun -c 1 -p "$queue" -q "$queue" --mem=1G -o $debugdir/wait-%j.out -e $debugdir
 
 	    # count ligations
 jid=`sbatch <<- CNTLIG |  egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
 #SBATCH -o $debugdir/count_ligation-%j.out
 #SBATCH -e $debugdir/count_ligation-%j.err
 #SBATCH -J "${groupname}_${jname}_Count_Ligation"
-#SBATCH --mem=5G		
+#SBATCH --mem=5G
 
 date
 export usegzip=${usegzip}; export name=${name}; export name1=${name1}; export name2=${name2}; export ext=${ext}; export ligation=${ligation}; export singleend=${singleend}; ${juiceDir}/scripts/countligations.sh
@@ -782,7 +782,7 @@ CNTLIG`
 
 	    # align fastqs
 jid=`sbatch <<- ALGNR1 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/align1-%j.out
@@ -791,7 +791,7 @@ jid=`sbatch <<- ALGNR1 | egrep -o -e "\b[0-9]+$"
 #SBATCH --ntasks=1
 #SBATCH --mem=$alloc_mem
 #SBATCH -J "${groupname}_align1_${jname}"
-#SBATCH --threads-per-core=1				
+#SBATCH --threads-per-core=1
 
 ${load_bwa}
 # Align reads
@@ -838,7 +838,7 @@ ALGNR1`
 	    name=${i%.sam}
 	    ext=""
 jid=`sbatch <<- CNTLINE |  egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
@@ -860,8 +860,8 @@ CNTLINE`
 	# wait for alignment, chimeric read handling
 	if [ "$site" != "none" ] && [ -e "$site_file" ] 
 	then		
-	    jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- MRGALL | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merge-%j.out
@@ -888,8 +888,8 @@ MRGALL`
 	else
 	    if [ $singleend -eq 1 ]
 	    then
-		jid=`sbatch <<- MRGALL1 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- MRGALL1 | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merge1-%j.out
@@ -908,8 +908,8 @@ samtools view -b > ${name}${ext}_chimeric.bam && rm "${name}${ext}_in.bam"
 MRGALL1`
 		dependalign="afterok:$jid"
 	    else
-		jid=`sbatch <<- MRGALL1 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- MRGALL1 | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merge1-%j.out
@@ -927,8 +927,8 @@ time samtools -h "${name}${ext}_in.bam" | awk -v stem=${name}${ext}_norm -f $jui
 samtools view -b > "${name}${ext}_chimeric.bam" && rm "${name}${ext}_in.bam"
 MRGALL1`
 		dependalign="afterok:$jid"
-		jid=`sbatch <<- MRGALL3 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- MRGALL3 | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merge2-%j.out
@@ -948,7 +948,7 @@ MRGALL3`
 	fi
 	
 jid2=`sbatch <<- MRGALL2 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/mergesort-%j.out
@@ -956,7 +956,7 @@ jid2=`sbatch <<- MRGALL2 | egrep -o -e "\b[0-9]+$"
 #SBATCH --mem=20G
 #SBATCH -c $sortthreads
 #SBATCH --ntasks=1
-#SBATCH -d $dependalign 
+#SBATCH -d $dependalign
 #SBATCH -J "${groupname}_mergesort_${jname}"
 ${load_samtools}
 #we should probably set the -m based on memory / num of threads
@@ -986,7 +986,7 @@ MRGALL2`
 	
 	# check that alignment finished successfully
 jid=`sbatch <<- EOF
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -o $debugdir/aligncheck-%j.out
 #SBATCH -e $debugdir/aligncheck-%j.err
 #SBATCH -p general
@@ -1045,7 +1045,7 @@ jid=`sbatch <<- EOF
 #SBATCH -q himem
 #SBATCH -c 24
 #SBATCH -J "${groupname}_fragmerge"
-${sbatch_wait}		
+${sbatch_wait}
 
 date
 if [ -f "${errorfile}" ]
@@ -1087,7 +1087,7 @@ then
     # We keep the ID of this guard, so we can later alter dependencies of inner dedupping phase.
     # After dedup is done, this job will be released. 
 guardjid=`sbatch <<- DEDUPGUARD | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/dedupguard-%j.out
@@ -1096,7 +1096,7 @@ guardjid=`sbatch <<- DEDUPGUARD | egrep -o -e "\b[0-9]+$"
 #SBATCH --mem=1G
 #SBATCH --ntasks=1
 #SBATCH -J "${groupname}_dedup_guard"
-${sbatch_wait}			
+${sbatch_wait}
 
 date
 DEDUPGUARD`
@@ -1105,7 +1105,7 @@ dependguard="afterok:$guardjid"
 
     # if jobs succeeded, kill the cleanup job, remove the duplicates from the big sorted file
 jid=`sbatch <<- DEDUP | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH --mem=20G
@@ -1142,7 +1142,7 @@ DEDUP`
 
     #Wait for all parts of split_rmdups to complete:
 jid=`sbatch <<- MSPLITWAIT | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -p general
 #SBATCH -o $debugdir/post_dedup-%j.out
@@ -1151,7 +1151,7 @@ jid=`sbatch <<- MSPLITWAIT | egrep -o -e "\b[0-9]+$"
 #SBATCH -c 1
 #SBATCH --ntasks=1
 #SBATCH -J "${groupname}_post_dedup"
-#SBATCH -d ${dependguard}		
+#SBATCH -d ${dependguard}
 
 date
 rm -Rf $tmpdir;
@@ -1178,7 +1178,7 @@ if [ -z $postproc ] && [ -z $final ]
     # Check that dedupping worked properly
     awkscript='BEGIN{sscriptname = sprintf("%s/.%s_rmsplit.slurm", debugdir, groupname);}NR==1{if (NF == 2 && $1 == $2 ){print "Sorted and dups/no dups files add up"; printf("#!/bin/bash -l\n#SBATCH -o %s/dup-rm.out\n#SBATCH -e %s/dup-rm.err\n#SBATCH -p %s\n#SBATCH -J %s_msplit0\n#SBATCH -d singleton\n#SBATCH -t 1440\n#SBATCH -c 1\n#SBATCH --ntasks=1\ndate;\nrm %s/*_msplit*; rm %s/split*;\n rm %s/merged_sort.sam;\ndate\n", debugdir, debugdir, queue, groupname, dir, dir, dir) > sscriptname; sysstring = sprintf("sbatch %s", sscriptname); system(sysstring);close(sscriptname); }else{print "Problem"; print "***! Error! The sorted file and dups/no dups files do not add up, or were empty."; exit 1}}'
 jid=`sbatch <<- DUPCHECK | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/dupcheck-%j.out
@@ -1187,7 +1187,7 @@ jid=`sbatch <<- DUPCHECK | egrep -o -e "\b[0-9]+$"
 #SBATCH --ntasks=1
 #SBATCH --mem=8G
 #SBATCH -J "${groupname}_dupcheck"
-${sbatch_wait}		
+${sbatch_wait}
 ${load_samtools}
 date 
 samtools view -h ${outputdir}/merged_sort.bam | wc -l | awk '{printf("%s ", \\\$1)}' > $debugdir/dupcheck-${groupname}
@@ -1198,7 +1198,7 @@ DUPCHECK`
 
     sbatch_wait="#SBATCH -d afterok:$jid"
 jid1=`sbatch <<- MERGED1 | egrep -o -e "\b[0-9]+$" 
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merged1-%j.out
@@ -1215,8 +1215,8 @@ date
 MERGED1`
 
     sbatch_wait1="#SBATCH -d afterok:$jid1"
-jid2=`sbatch <<- MERGED30 | egrep -o -e "\b[0-9]+$" 
-#!/bin/bash -l
+jid2=`sbatch <<- MERGED30 | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merged30-%j.out
@@ -1236,12 +1236,12 @@ sbatch_wait2="#SBATCH -d afterok:$jid2"
 sbatch_wait0="#SBATCH -d afterok:$jid1:$jid2"
 
 jid=`sbatch <<- PRESTATS | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/prestats-%j.out
 #SBATCH -e $debugdir/prestats-%j.err
-${sbatch_cpu_alloc} 
+${sbatch_cpu_alloc}
 #SBATCH --ntasks=1
 #SBATCH --mem=80G
 #SBATCH -J "${groupname}_prestats"
@@ -1275,7 +1275,7 @@ PRESTATS`
     sbatch_wait000="${sbatch_wait1}:$jid"
 
 jid=`sbatch <<- BAMRM  | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/bamrm-%j.out
@@ -1295,7 +1295,7 @@ BAMRM`
     if [ "$methylation" = 1 ]
     then
 	tmpj=`sbatch <<- METH | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -o $debugdir/meth-%j.out
 #SBATCH -e $debugdir/meth-%j.err
@@ -1304,7 +1304,7 @@ ${sbatch_cpu_alloc}
 ${sbatch_mem_alloc}
 #SBATCH -J "${groupname}_meth"
 #SBATCH -d afterok:$jid
-${load_samtools}                            
+${load_samtools}           
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/gpfs0/home/neva/lib
 samtools sort $sthreadstring ${outputdir}/merged_dedup.bam > ${outputdir}/merged_dedup_sort.bam
 /gpfs0/home/neva/bin/MethylDackel extract -F 1024 --keepSingleton --keepDiscordant $refSeq ${outputdir}/merged_dedup_sort.bam 
@@ -1315,8 +1315,8 @@ METH`
     fi
 
     sbatch_wait00="${sbatch_wait2}:$jid"
-    jid=`sbatch <<- STATS | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- STATS | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/stats-%j.out
@@ -1346,8 +1346,8 @@ STATS`
     sbatch_wait1="#SBATCH -d afterok:$jid"
 
     dependstats="afterok:$jid"
-    jid=`sbatch <<- STATS30 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- STATS30 | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/stats30-%j.out
@@ -1385,8 +1385,8 @@ then
     then
 	if [ $assembly -eq 1 ]
 	then
-	    jid=`sbatch <<- MND | egrep -o -e "\b[0-9]+$" 
-#!/bin/bash -l
+jid=`sbatch <<- MND | egrep -o -e "\b[0-9]+$" 
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH --mem=80G
@@ -1394,7 +1394,7 @@ then
 #SBATCH -e $debugdir/mnd-%j.err
 #SBATCH -c 10
 #SBATCH --ntasks=1
-#SBATCH -J "${groupname}_mnd"     
+#SBATCH -J "${groupname}_mnd"
 ${sbatch_wait1}
 ${load_samtools}
 date
@@ -1405,8 +1405,8 @@ MND`
 	    sbatch_wait1="#SBATCH -d afterok:$jid"
 	fi
 
-	jid=`sbatch <<- FINCLN1 | egrep -o -e "\b[0-9]+$" 
-#!/bin/bash -l
+jid=`sbatch <<- FINCLN1 | egrep -o -e "\b[0-9]+$" 
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH --mem=2G
@@ -1414,7 +1414,7 @@ MND`
 #SBATCH -e $debugdir/fincln1-%j.err
 #SBATCH -c 1
 #SBATCH --ntasks=1
-#SBATCH -J "${groupname}_prep_done"     
+#SBATCH -J "${groupname}_prep_done"
 ${sbatch_wait1}
 
 date
@@ -1445,12 +1445,12 @@ fi
         fragstr="-f $site_file"
     fi
 
-    jid=`sbatch <<- HIC | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+jid=`sbatch <<- HIC | egrep -o -e "\b[0-9]+$"
+#!/bin/bash
 #SBATCH -p himem2
 #SBATCH -q himem
 #SBATCH -o $debugdir/hic-%j.out
-#SBATCH -e $debugdir/hic-%j.err	
+#SBATCH -e $debugdir/hic-%j.err
 #SBATCH -c $threadsHic
 #SBATCH --ntasks=1
 #SBATCH --mem=800G
@@ -1483,7 +1483,7 @@ HIC`
     dependhic="afterok:$jid"
 
 jid=`sbatch <<- HIC30 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p himem2
 #SBATCH -q himem
 #SBATCH -o $debugdir/hic30-%j.out
@@ -1531,7 +1531,7 @@ then
     if [ "$qc" != 1 ]
     then
 jid=`sbatch <<- HICCUPS | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH --mem-per-cpu=4G
@@ -1563,7 +1563,7 @@ fi
 if [ "$qc" != 1 ]
 then
 jid=`sbatch <<- ARROWS | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH --mem=80G
@@ -1592,7 +1592,7 @@ fi
 if [ "$qc_apa" = 1 ]
 then
     jid=`sbatch <<- QC | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 8
@@ -1612,7 +1612,7 @@ QC`
 fi
 
 jid=`sbatch <<- FINCLN1 | egrep -o -e "\b[0-9]+$"
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/fincln-%j.out
