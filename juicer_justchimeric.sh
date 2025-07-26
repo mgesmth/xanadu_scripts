@@ -434,29 +434,9 @@ then
     exit 1
 fi
 
+#Don't need headfile stuff here - deleted
 ## Arguments have been checked and directories created. Now begins 
 ## the real work of the pipeline
-headfile=${outputdir}/header
-date > $headfile
-# Experiment description
-if [ -n "${about}" ]
-then
-    echo -ne 'Experiment description: ${about}; ' >> $headfile
-else
-    echo -ne 'Experiment description: ' >> $headfile
-fi
-echo -ne "Sample name $sampleName;"  >> $headfile
-# Get version numbers of all software   
-echo -ne " Juicer version $juicer_version;" >> $headfile
-$bwa_cmd 2>&1 | awk '$1=="Version:"{printf(" BWA %s; ", $2)}' >> $headfile
-if [ "$methylation" = 1 ]
-then
-    $call_bwameth  --version 2>&1 | awk '{printf("%s; ",$0)}' >> $headfile
-fi  
-echo -ne "$threads threads; " >> $headfile
-java -version 2>&1 | awk 'NR==1{printf("%s; ", $0);}' >> $headfile
-${juiceDir}/scripts/common/juicer_tools -V 2>&1 | awk '$1=="Juicer" && $2=="Tools"{printf("%s; ", $0);}' >> $headfile
-echo "$0 $@" >> $headfile
 
 ######ARRAY -------
 file1=${read1files[$SLURM_ARRAY_TASK_ID]}
