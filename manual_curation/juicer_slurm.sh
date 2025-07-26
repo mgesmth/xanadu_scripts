@@ -1228,183 +1228,179 @@ DUPCHECK`
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -o $debugdir/merged1-%j.out
-	#SBATCH -e $debugdir/merged1-%j.err
-	${sbatch_cpu_alloc}
-	#SBATCH --ntasks=1
-	#SBATCH --mem-per-cpu=10G
-	#SBATCH -J "${groupname}_merged1"
-	${sbatch_wait}
-	$userstring
-	${load_samtools}
+#SBATCH -e $debugdir/merged1-%j.err
+${sbatch_cpu_alloc}
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=80G
+#SBATCH -J "${groupname}_merged1"
+${sbatch_wait}
+$userstring
+${load_samtools}
 
-	samtools view -F 1024 -O sam $sthreadstring ${outputdir}/merged_dedup.sam | awk -v mapq=1 -f ${juiceDir}/scripts/sam_to_pre.awk > ${outputdir}/merged1.txt
-        date
+samtools view -F 1024 -O sam $sthreadstring ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/sam_to_pre.awk > ${outputdir}/merged1.txt
+date
 MERGED1`
 
     sbatch_wait1="#SBATCH -d afterok:$jid1"
     jid2=`sbatch <<- MERGED30 | egrep -o -e "\b[0-9]+$" 
-	#!/bin/bash -l
-	#SBATCH -p $queue
-	#SBATCH -o $debugdir/merged30-%j.out
-	#SBATCH -e $debugdir/merged30-%j.err
-	#SBATCH -t $queue_time
-	${sbatch_cpu_alloc}
-	#SBATCH --ntasks=1
-	#SBATCH --mem-per-cpu=10G
-	#SBATCH -J "${groupname}_merged30"
-	${sbatch_wait}
-	$userstring
-	${load_samtools}
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -o $debugdir/merged30-%j.out
+#SBATCH -e $debugdir/merged30-%j.err
+${sbatch_cpu_alloc}
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH -J "${groupname}_merged30"
+${sbatch_wait}
+$userstring
+${load_samtools}
 
-	samtools view -F 1024 -O sam $sthreadstring ${outputdir}/merged_dedup.sam | awk -v mapq=30 -f ${juiceDir}/scripts/sam_to_pre.awk > ${outputdir}/merged30.txt 
-        date
+samtools view -F 1024 -O sam $sthreadstring ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/sam_to_pre.awk > ${outputdir}/merged30.txt 
+date
 MERGED30`
-    sbatch_wait2="#SBATCH -d afterok:$jid2"
+sbatch_wait2="#SBATCH -d afterok:$jid2"
 
-    sbatch_wait0="#SBATCH -d afterok:$jid1:$jid2"
+sbatch_wait0="#SBATCH -d afterok:$jid1:$jid2"
 
     jid=`sbatch <<- PRESTATS | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $queue
-	#SBATCH -o $debugdir/prestats-%j.out
-	#SBATCH -e $debugdir/prestats-%j.err
-	#SBATCH -t $queue_time
-	${sbatch_cpu_alloc} 
-	#SBATCH --ntasks=1
-	#SBATCH --mem-per-cpu=1G
-	#SBATCH -J "${groupname}_prestats"
-	${sbatch_wait}
-	$userstring
-	${load_awk}
-        date
-        ${load_java}
-	${load_samtools}
-        export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
-        export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
-        tail -n1 $headfile | awk '{printf"%-1000s\n", \\\$0}' > $outputdir/inter.txt
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -o $debugdir/prestats-%j.out
+#SBATCH -e $debugdir/prestats-%j.err
+${sbatch_cpu_alloc} 
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=1G
+#SBATCH -J "${groupname}_prestats"
+${sbatch_wait}
+$userstring
+date
+${load_java}
+${load_samtools}
+export IBM_JAVA_OPTIONS="-Xmx1024m -Xgcthreads1"
+export _JAVA_OPTIONS="-Xmx1024m -Xms1024m"
+tail -n1 $headfile | awk '{printf"%-1000s\n", \\\$0}' > $outputdir/inter.txt
 
-	# count duplicates via samtools view -c
-	# for paired end, count only first in pair to avoid double counting
-	if [ $singleend -eq 1 ] 
-	then 
-		if [ -f $outputdir/merged_dedup.bam ]
-		then
-			samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if (\\\$0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}' > $outputdir/tmp
-		else
-			awk 'and(\\\$2,1024)>0 && and(\\\$2,256)==0{if (\\\$0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}' $outputdir/merged_dedup.sam > $outputdir/tmp 
-		fi
-		cat $splitdir/*.res.txt | awk -v fname=$outputdir/tmp -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/stats_sub.awk >> $outputdir/inter.txt
-	else 
-		if [ -f $outputdir/merged_dedup.bam ] 
-		then
-			samtools view $sthreadstring -c -f 1089 -F 256 $outputdir/merged_dedup.bam > $outputdir/tmp
-		else
-		        awk 'and(\\\$2,1024)>0 && and(\\\$2,1)>0 && and(\\\$2,64)>0 && and(\\\$2,256)==0{dup++}END{print dup}' $outputdir/merged_dedup.sam > $outputdir/tmp
-		fi
-		cat $splitdir/*.res.txt | awk -v fname=$outputdir/tmp -v ligation=$ligation -f ${juiceDir}/scripts/stats_sub.awk >> $outputdir/inter.txt
-	fi
-        cp $outputdir/inter.txt $outputdir/inter_30.txt
+# count duplicates via samtools view -c
+# for paired end, count only first in pair to avoid double counting
+if [ $singleend -eq 1 ] 
+then 
 
-        date
+samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if (\\\$0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}' > $outputdir/tmp
+cat $splitdir/*.res.txt | awk -v fname=$outputdir/tmp -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/stats_sub.awk >> $outputdir/inter.txt
+
+else 
+
+samtools view $sthreadstring -c -f 1089 -F 256 $outputdir/merged_dedup.bam > $outputdir/tmp
+cat $splitdir/*.res.txt | awk -v fname=$outputdir/tmp -v ligation=$ligation -f ${juiceDir}/scripts/stats_sub.awk >> $outputdir/inter.txt
+	
+fi
+
+cp $outputdir/inter.txt $outputdir/inter_30.txt
+
+date
 PRESTATS`
     sbatch_wait000="${sbatch_wait1}:$jid"
 
     jid=`sbatch <<- BAMRM  | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $queue
-	#SBATCH -o $debugdir/bamrm-%j.out
-	#SBATCH -e $debugdir/bamrm-%j.err
-	#SBATCH -t $queue_time
-	${sbatch_cpu_alloc}
-	#SBATCH --ntasks=1
-	#SBATCH --mem-per-cpu=10G
-	#SBATCH -J "${groupname}_bamrm"
-	${sbatch_wait0}
-	$userstring
-	${load_samtools}
-	if samtools view -b $sthreadstring ${outputdir}/merged_dedup.sam > ${outputdir}/merged_dedup.bam
-	then
-		rm ${outputdir}/merged_dedup.sam
-	fi
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -o $debugdir/bamrm-%j.out
+#SBATCH -e $debugdir/bamrm-%j.err
+${sbatch_cpu_alloc}
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=1G
+#SBATCH -J "${groupname}_bamrm"
+${sbatch_wait0}
+$userstring
+${load_samtools}
+if samtools view -b $sthreadstring ${outputdir}/merged_dedup.sam > ${outputdir}/merged_dedup.bam
+then
+rm ${outputdir}/merged_dedup.sam
+fi
 BAMRM`
 
     if [ "$methylation" = 1 ]
     then
 	tmpj=`sbatch <<- METH | egrep -o -e "\b[0-9]+$"
-		#!/bin/bash -l
-		#SBATCH -p commons
-		#SBATCH -o $debugdir/meth-%j.out
-		#SBATCH -e $debugdir/meth-%j.err
-		#SBATCH -t $queue_time
-		${sbatch_cpu_alloc}
-		#SBATCH --ntasks=1
-  		${sbatch_mem_alloc}
-		#SBATCH --mem-per-cpu=10G
-		#SBATCH -J "${groupname}_meth"
-		#SBATCH -d afterok:$jid
-		$userstring
-		${load_samtools}                            
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/gpfs0/home/neva/lib
-		samtools sort $sthreadstring ${outputdir}/merged_dedup.bam > ${outputdir}/merged_dedup_sort.bam
-		/gpfs0/home/neva/bin/MethylDackel extract -F 1024 --keepSingleton --keepDiscordant $refSeq ${outputdir}/merged_dedup_sort.bam 
-		/gpfs0/home/neva/bin/MethylDackel extract -F 1024 --keepSingleton --keepDiscordant --cytosine_report --CHH --CHG $refSeq ${outputdir}/merged_dedup_sort.bam
-		${juiceDir}/scripts/conversion.sh ${outputdir}/merged_dedup_sort.cytosine_report.txt > ${outputdir}/conversion_report.txt
-		rm ${outputdir}/merged_dedup_sort.bam ${outputdir}/merged_dedup_sort.cytosine_report.txt*
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -o $debugdir/meth-%j.out
+#SBATCH -e $debugdir/meth-%j.err
+${sbatch_cpu_alloc}
+#SBATCH --ntasks=1
+${sbatch_mem_alloc}
+#SBATCH --mem-per-cpu=10G
+#SBATCH -J "${groupname}_meth"
+#SBATCH -d afterok:$jid
+$userstring
+${load_samtools}                            
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/gpfs0/home/neva/lib
+samtools sort $sthreadstring ${outputdir}/merged_dedup.bam > ${outputdir}/merged_dedup_sort.bam
+/gpfs0/home/neva/bin/MethylDackel extract -F 1024 --keepSingleton --keepDiscordant $refSeq ${outputdir}/merged_dedup_sort.bam 
+/gpfs0/home/neva/bin/MethylDackel extract -F 1024 --keepSingleton --keepDiscordant --cytosine_report --CHH --CHG $refSeq ${outputdir}/merged_dedup_sort.bam
+${juiceDir}/scripts/conversion.sh ${outputdir}/merged_dedup_sort.cytosine_report.txt > ${outputdir}/conversion_report.txt
+rm ${outputdir}/merged_dedup_sort.bam ${outputdir}/merged_dedup_sort.cytosine_report.txt*
 METH`
     fi
 
     sbatch_wait00="${sbatch_wait2}:$jid"
     jid=`sbatch <<- STATS | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $long_queue
- 	#SBATCH -q $long_queue
-	#SBATCH -o $debugdir/stats-%j.out
-	#SBATCH -e $debugdir/stats-%j.err
-	#SBATCH -c 1
-	#SBATCH --ntasks=1
-	#SBATCH --mem=25G
-	#SBATCH -J "${groupname}_stats"
-	${sbatch_wait000}
-        $userstring			
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -o $debugdir/stats-%j.out
+#SBATCH -e $debugdir/stats-%j.err
+#SBATCH -c 1
+#SBATCH --ntasks=1
+#SBATCH --mem=125G
+#SBATCH -J "${groupname}_stats"
+${sbatch_wait000}
+$userstring			
 
-	date
-	if [ -f "${errorfile}" ]
-	then 
-		echo "***! Found errorfile. Exiting." 
-		exit 1 
-	fi
-	if [ $assembly -eq 1 ]
-        then
-		${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
-	else
-		${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
-	fi
-	date
+date
+if [ -f "${errorfile}" ]
+then 
+echo "***! Found errorfile. Exiting." 
+exit 1 
+fi
+
+if [ $assembly -eq 1 ]
+then
+${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
+else
+${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
+fi
+date
 STATS`
+
     sbatch_wait1="#SBATCH -d afterok:$jid"
 
     dependstats="afterok:$jid"
     jid=`sbatch <<- STATS30 | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $long_queue
-	#SBATCH -o $debugdir/stats30-%j.out
-	#SBATCH -e $debugdir/stats30-%j.err
-	#SBATCH -q $long_queue
-	#SBATCH -c 1
-	#SBATCH --ntasks=1
-	#SBATCH --mem=25G
-	#SBATCH -J "${groupname}_stats30"
-	${sbatch_wait00}
-	$userstring
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -o $debugdir/stats30-%j.out
+#SBATCH -e $debugdir/stats30-%j.err
+#SBATCH -q $long_queue
+#SBATCH -c 8
+#SBATCH --ntasks=1
+#SBATCH --mem=125G
+#SBATCH -J "${groupname}_stats30"
+${sbatch_wait00}
+$userstring
 
-	date
-	if [ $assembly -eq 1 ]
-        then
-		${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
-	else
-	${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
-	fi
-	date
+date
+if [ $assembly -eq 1 ]
+then
+${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
+else
+${juiceDir}/scripts/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
+fi
+date
 STATS30`
 
     dependstats30="afterok:$jid"
@@ -1425,52 +1421,52 @@ then
 	if [ $assembly -eq 1 ]
 	then
 	    jid=`sbatch <<- MND | egrep -o -e "\b[0-9]+$" 
-	#!/bin/bash -l
-	#SBATCH -p $queue
- 	#SBATCH -q $queue
-	#SBATCH --mem=2G
-	#SBATCH -o $debugdir/mnd-%j.out
-	#SBATCH -e $debugdir/mnd-%j.err
-	#SBATCH -c 1
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_mnd"     
-	${sbatch_wait1}
-        $userstring	   
-	${load_samtools}
-	date
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH --mem=80G
+#SBATCH -o $debugdir/mnd-%j.out
+#SBATCH -e $debugdir/mnd-%j.err
+#SBATCH -c 10
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_mnd"     
+${sbatch_wait1}
+$userstring	   
+${load_samtools}
+date
 
-	samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/sam_to_pre.awk > ${outputdir}/merged_nodups.txt 
-	date
+samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.bam | awk -v mnd=1 -f ${juiceDir}/scripts/sam_to_pre.awk > ${outputdir}/merged_nodups.txt 
+date
 MND`
 	    sbatch_wait1="#SBATCH -d afterok:$jid"
 	fi
 
 	jid=`sbatch <<- FINCLN1 | egrep -o -e "\b[0-9]+$" 
-	#!/bin/bash -l
-	#SBATCH -p $queue
- 	#SBATCH -q $queue
-	#SBATCH --mem=2G
-	#SBATCH -o $debugdir/fincln1-%j.out
-	#SBATCH -e $debugdir/fincln1-%j.err
-	#SBATCH -c 1
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_prep_done"     
-	${sbatch_wait1}
-        $userstring	   
-	date
-	export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1; 
-	if ${juiceDir}/scripts/check.sh 
-	then 
-           if [ "$cleanup" = 1 ] 
-           then
-	      ${juiceDir}/scripts/cleanup.sh
-           fi
-	fi
-	date
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH --mem=2G
+#SBATCH -o $debugdir/fincln1-%j.out
+#SBATCH -e $debugdir/fincln1-%j.err
+#SBATCH -c 1
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_prep_done"     
+${sbatch_wait1}
+$userstring	   
+date
+export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1; 
+if ${juiceDir}/scripts/check.sh 
+then 
+if [ "$cleanup" = 1 ] 
+then
+${juiceDir}/scripts/cleanup.sh
+fi
+fi
+date
 FINCLN1`
-	echo "(-: Finished adding all jobs... Now is a good time to get that cup of coffee... Last job id $jid"
-	exit 0
-    fi
+echo "(-: Finished adding all jobs... Now is a good time to get that cup of coffee... Last job id $jid"
+exit 0
+fi
     
     if [ "$qc" = 1 ] || [ "$insitu" = 1 ]
     then
@@ -1486,77 +1482,76 @@ FINCLN1`
     fi
 
     jid=`sbatch <<- HIC | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $long_queue
- 	#SBATCH -q $long_queue
-	#SBATCH -o $debugdir/hic-%j.out
-	#SBATCH -e $debugdir/hic-%j.err	
-	#SBATCH -t $long_queue_time
-	#SBATCH -c $threadsHic
-	#SBATCH --ntasks=1
-	#SBATCH --mem=150G
-	#SBATCH -J "${groupname}_hic"
-	${sbatch_waitstats}
-        $userstring			
+#!/bin/bash -l
+#SBATCH -p himem2
+#SBATCH -q himem
+#SBATCH -o $debugdir/hic-%j.out
+#SBATCH -e $debugdir/hic-%j.err	
+#SBATCH -c $threadsHic
+#SBATCH --ntasks=1
+#SBATCH --mem=800G
+#SBATCH -J "${groupname}_hic"
+${sbatch_waitstats}
+$userstring			
 
-	${load_java}
-	export IBM_JAVA_OPTIONS="-Xmx150000m -Xgcthreads1"
-	export _JAVA_OPTIONS="-Xmx150000m -Xms150000m"
-	date
-	if [ -f "${errorfile}" ]
-	then 
-		echo "***! Found errorfile. Exiting." 
-		exit 1 
-	fi 
-	mkdir ${outputdir}"/HIC_tmp"
+${load_java}
+export IBM_JAVA_OPTIONS="-Xmx150000m -Xgcthreads1"
+export _JAVA_OPTIONS="-Xmx150000m -Xms150000m"
+date
+if [ -f "${errorfile}" ]
+then 
+echo "***! Found errorfile. Exiting." 
+exit 1 
+fi 
+mkdir ${outputdir}"/HIC_tmp"
 
-	# multithreaded and index doesn't exist yet
-	if [[ $threadsHic -gt 1 ]] && [[ ! -s ${outputdir}/merged1_index.txt ]] 
-	then
-	  time ${juiceDir}/scripts/index_by_chr.awk ${outputdir}/merged1.txt 500000 > ${outputdir}/merged1_index.txt
-	fi
+# multithreaded and index doesn't exist yet
+if [[ $threadsHic -gt 1 ]] && [[ ! -s ${outputdir}/merged1_index.txt ]] 
+then
+time ${juiceDir}/scripts/index_by_chr.awk ${outputdir}/merged1.txt 500000 > ${outputdir}/merged1_index.txt
+fi
 
-	time ${juiceDir}/scripts/juicer_tools pre -n -s $outputdir/inter.txt -g $outputdir/inter_hists.m -q 1 $resstr $fragstr $threadHicString $outputdir/merged1.txt $outputdir/inter.hic $genomePath
-	time ${juiceDir}/scripts/juicer_tools addNorm $threadNormString ${outputdir}/inter.hic 
-	rm -Rf ${outputdir}"/HIC_tmp"
-	date
+time ${juiceDir}/scripts/juicer_tools pre -n -s $outputdir/inter.txt -g $outputdir/inter_hists.m -q 1 $resstr $fragstr $threadHicString $outputdir/merged1.txt $outputdir/inter.hic $genomePath
+time ${juiceDir}/scripts/juicer_tools addNorm $threadNormString ${outputdir}/inter.hic 
+rm -Rf ${outputdir}"/HIC_tmp"
+date
 HIC`
 
     dependhic="afterok:$jid"
 
     jid=`sbatch <<- HIC30 | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $long_queue
- 	#SBATCH -q $long_queue
-	#SBATCH -o $debugdir/hic30-%j.out
-	#SBATCH -e $debugdir/hic30-%j.err
-	#SBATCH -c $threadsHic
-	#SBATCH --ntasks=1
-	#SBATCH --mem=150G
-	#SBATCH -J "${groupname}_hic30"
-	${sbatch_waitstats30}
-        $userstring	
+#!/bin/bash -l
+#SBATCH -p $himem2
+#SBATCH -q $himem
+#SBATCH -o $debugdir/hic30-%j.out
+#SBATCH -e $debugdir/hic30-%j.err
+#SBATCH -c $threadsHic
+#SBATCH --ntasks=1
+#SBATCH --mem=150G
+#SBATCH -J "${groupname}_hic30"
+${sbatch_waitstats30}
+$userstring	
 
-	${load_java}
-	export IBM_JAVA_OPTIONS="-Xmx150000m -Xgcthreads1"
-	export _JAVA_OPTIONS="-Xmx150000m -Xms150000m"
-	date
-        if [ -f "${errorfile}" ]
-        then 
-            echo "***! Found errorfile. Exiting." 
-            exit 1 
-        fi 
-	mkdir ${outputdir}"/HIC30_tmp"
-	# multithreaded and index doesn't exist yet
-	if [[ $threadsHic -gt 1 ]] && [[ ! -s ${outputdir}/merged30_index.txt ]] 
-	then
-	  time ${juiceDir}/scripts/index_by_chr.awk ${outputdir}/merged30.txt 500000 > ${outputdir}/merged30_index.txt
-	fi
+${load_java}
+export IBM_JAVA_OPTIONS="-Xmx150000m -Xgcthreads1"
+export _JAVA_OPTIONS="-Xmx150000m -Xms150000m"
+date
+if [ -f "${errorfile}" ]
+then 
+echo "***! Found errorfile. Exiting." 
+exit 1 
+fi 
+mkdir ${outputdir}"/HIC30_tmp"
+# multithreaded and index doesn't exist yet
+if [[ $threadsHic -gt 1 ]] && [[ ! -s ${outputdir}/merged30_index.txt ]] 
+then
+time ${juiceDir}/scripts/index_by_chr.awk ${outputdir}/merged30.txt 500000 > ${outputdir}/merged30_index.txt
+fi
 
-	time ${juiceDir}/scripts/juicer_tools pre -n -s $outputdir/inter_30.txt -g $outputdir/inter_30_hists.m -q 30 $resstr $fragstr $threadHic30String $outputdir/merged30.txt $outputdir/inter_30.hic $genomePath
-	time ${juiceDir}/scripts/juicer_tools addNorm $threadNormString ${outputdir}/inter_30.hic
-	rm -Rf ${outputdir}"/HIC30_tmp"
-	date
+time ${juiceDir}/scripts/juicer_tools pre -n -s $outputdir/inter_30.txt -g $outputdir/inter_30_hists.m -q 30 $resstr $fragstr $threadHic30String $outputdir/merged30.txt $outputdir/inter_30.hic $genomePath
+time ${juiceDir}/scripts/juicer_tools addNorm $threadNormString ${outputdir}/inter_30.hic
+rm -Rf ${outputdir}"/HIC30_tmp"
+date
 HIC30`
 
     dependhic30="${dependhic}:$jid"
@@ -1573,31 +1568,30 @@ then
     fi
     if [ "$qc" != 1 ]
     then
-	jid=`sbatch <<- HICCUPS | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $queue
- 	#SBATCH -q $queue
-	#SBATCH --mem-per-cpu=4G
-	${sbatch_req}
-	#SBATCH -o $debugdir/hiccups_wrap-%j.out
-	#SBATCH -e $debugdir/hiccups_wrap-%j.err
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_hiccups_wrap"
-	${sbatch_wait}
-        $userstring
+jid=`sbatch <<- HICCUPS | egrep -o -e "\b[0-9]+$"
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH --mem-per-cpu=4G
+#SBATCH -o $debugdir/hiccups_wrap-%j.out
+#SBATCH -e $debugdir/hiccups_wrap-%j.err
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_hiccups_wrap"
+${sbatch_wait}
+$userstring
 
-	${load_gpu}
-	echo "load: $load_gpu"
-	${load_java}
-	date
-	nvcc -V
-        if [ -f "${errorfile}" ]
-        then 
-            echo "***! Found errorfile. Exiting." 
-            exit 1 
-        fi 
-	${juiceDir}/scripts/juicer_hiccups.sh -j ${juiceDir}/scripts/juicer_tools -i $outputdir/inter_30.hic -m ${juiceDir}/references/motif -g $genomeID
-	date
+${load_gpu}
+echo "load: $load_gpu"
+${load_java}
+date
+nvcc -V
+if [ -f "${errorfile}" ]
+then 
+echo "***! Found errorfile. Exiting." 
+exit 1 
+fi 
+${juiceDir}/scripts/juicer_hiccups.sh -j ${juiceDir}/scripts/juicer_tools -i $outputdir/inter_30.hic -m ${juiceDir}/references/motif -g $genomeID
+date
 HICCUPS`
 	dependhiccups="afterok:$jid"
     fi
@@ -1608,26 +1602,29 @@ fi
 if [ "$qc" != 1 ]
 then
     jid=`sbatch <<- ARROWS | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $queue
-	#SBATCH --mem-per-cpu=8G
-	#SBATCH -o $debugdir/arrowhead_wrap-%j.out
-	#SBATCH -e $debugdir/arrowhead_wrap-%j.err
-	#SBATCH -t $queue_time
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_arrowhead_wrap"
-	${sbatch_wait}
-        $userstring			
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH --mem-per-cpu=8G
+#SBATCH --mem=80G
+#SBATCH -c 10
+#SBATCH -o $debugdir/arrowhead_wrap-%j.out
+#SBATCH -e $debugdir/arrowhead_wrap-%j.err
+#SBATCH -t $queue_time
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_arrowhead_wrap"
+${sbatch_wait}
+$userstring			
 
-	${load_java}
-	date
-        if [ -f "${errorfile}" ]
-        then 
-            echo "***! Found errorfile. Exiting." 
-            exit 1 
-        fi 
-	${juiceDir}/scripts/juicer_arrowhead.sh -j ${juiceDir}/scripts/juicer_tools -i $outputdir/inter_30.hic
-	date;
+${load_java}
+date
+if [ -f "${errorfile}" ]
+then 
+echo "***! Found errorfile. Exiting." 
+exit 1 
+fi 
+${juiceDir}/scripts/juicer_arrowhead.sh -j ${juiceDir}/scripts/juicer_tools -i $outputdir/inter_30.hic
+date;
 ARROWS`
     dependarrows="#SBATCH -d ${dependhiccups}:$jid"
 else
@@ -1637,51 +1634,52 @@ fi
 if [ "$qc_apa" = 1 ]
 then
     jid=`sbatch <<- QC | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $queue
-	#SBATCH --mem-per-cpu=4G
-	#SBATCH -o $debugdir/qc-%j.out
-	#SBATCH -e $debugdir/qc-%j.err
-	#SBATCH -t $queue_time
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_qc_apa"
-	${sbatch_wait}
-	$userstring
-	${load_java}
-	date
-	export IBM_JAVA_OPTIONS="-Xmx4000m -Xgcthreads1"                                                                    
-        export _JAVA_OPTIONS="-Xmx4000m -Xms4000m" 
-	java -jar ${juiceDir}/scripts/juicer_3.25.21_aggNormAPA.jar apa --ag-norm -k NONE -n 300 -w 100 -r 1000 -q 60 --threads 1 $outputdir/inter_30.hic ${juiceDir}/scripts/GSE63525_GM12878_primary_replicate_HiCCUPS_looplist_with_motifs_unique_localized.txt $outputdir/qc_apa
-	date
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH --mem-per-cpu=4G
+#SBATCH -o $debugdir/qc-%j.out
+#SBATCH -e $debugdir/qc-%j.err
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_qc_apa"
+${sbatch_wait}
+$userstring
+${load_java}
+date
+export IBM_JAVA_OPTIONS="-Xmx4000m -Xgcthreads1"                                                                    
+export _JAVA_OPTIONS="-Xmx4000m -Xms4000m" 
+java -jar ${juiceDir}/scripts/juicer_3.25.21_aggNormAPA.jar apa --ag-norm -k NONE -n 300 -w 100 -r 1000 -q 60 --threads 1 $outputdir/inter_30.hic ${juiceDir}/scripts/GSE63525_GM12878_primary_replicate_HiCCUPS_looplist_with_motifs_unique_localized.txt $outputdir/qc_apa
+date
 QC`
 fi
 
 jid=`sbatch <<- FINCLN1 | egrep -o -e "\b[0-9]+$"
-	#!/bin/bash -l
-	#SBATCH -p $queue
-	#SBATCH --mem-per-cpu=2G
-	#SBATCH -o $debugdir/fincln-%j.out
-	#SBATCH -e $debugdir/fincln-%j.err
-	#SBATCH -t 1200
-	#SBATCH -c 1
-	#SBATCH --ntasks=1
-	#SBATCH -J "${groupname}_prep_done"
-	$dependarrows
-        $userstring			
+#!/bin/bash -l
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH --mem-per-cpu=2G
+#SBATCH -o $debugdir/fincln-%j.out
+#SBATCH -e $debugdir/fincln-%j.err
+#SBATCH --mem=36G
+#SBATCH -c 10
+#SBATCH --ntasks=1
+#SBATCH -J "${groupname}_prep_done"
+$dependarrows
+$userstring			
 
-	date
-	export splitdir=${splitdir}
-	export outputdir=${outputdir}
+date
+export splitdir=${splitdir}
+export outputdir=${outputdir}
 
 
-	if ${juiceDir}/scripts/check.sh 
-        then
-           if [ "$cleanup" = 1 ] 
-           then
-	      ${juiceDir}/scripts/cleanup.sh
-           fi
-	fi
-	date
+if ${juiceDir}/scripts/check.sh 
+then
+if [ "$cleanup" = 1 ] 
+then
+${juiceDir}/scripts/cleanup.sh
+fi
+fi
+date
 FINCLN1`
 
 echo "(-: Finished adding all jobs... Now is a good time to get that cup of coffee... Last job id $jid"
