@@ -29,6 +29,7 @@ echo "[M]: Beginning juicer run."
 cd ${jd}
 #Okay - now run juicer (CPU version, modified for better handling of large files)
 scripts/juicer.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
+-q general -l himem -Q 2880 -L 7220 -T "$threads" -A msmith \
 -p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
 -z references/interior_primary_final.fa -D "$jd" -t "$threads"
 if [[ $? -e 0 ]] ; then
