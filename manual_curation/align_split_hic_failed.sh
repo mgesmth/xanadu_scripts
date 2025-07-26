@@ -5,15 +5,15 @@
 #SBATCH -n 1
 #SBATCH -c 12
 #SBATCH --mem=40G
-#SBATCH -o %x.%A.%a.out
-#SBATCH -e %x.%A.%a.err
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
 
 set -e
 
 date
 echo "[M]: Host Name: `hostname`"
 module load bwa/0.7.17
-module load samtools/1.19
+module load samtools/1.20
 
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
@@ -37,11 +37,11 @@ ref_name=$(basename ${ref})
 #fi
 
 cd ${fq_dir}
-r1=allhiC_R1.part_282.fastq.gz
+r1=allhiC_R1.part_300.fastq.gz
 r1_string="_R1"
 name=${r1//$r1_string/}
 r2=$(echo "$r1" | sed 's/R1/R2/')
-out=$(echo "$r1" | sed 's/fastq.gz/bam/')
+out=$(echo "$name" | sed 's/.gz/.gz.bam/')
 sampleName="HiC_sample"
 libraryName="HiC_library"
 
