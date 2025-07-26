@@ -6,8 +6,8 @@
 #SBATCH -n 1
 #SBATCH --mem=20G
 #SBATCH --array=[0-299]
-#SBATCH -o %x.%j.out
-#SBATCH -e %x.%j.err
+#SBATCH -o %x.%A.%a.out
+#SBATCH -e %x.%A.%a.err
 
 set -e
 
@@ -22,7 +22,7 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 gid="intdf137"
 site="Arima"
-threads=36
+threads=6
 jd=${scratch}/juicer_formanualcur
 
 export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
@@ -31,7 +31,6 @@ echo "[M]: Beginning juicer run."
 cd ${jd}
 #Okay - now run juicer (CPU version, modified for better handling of large files)
 scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
--q general -l himem -Q 2880 -L 7220 -T "$threads" -A msmith \
 -p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
 -z references/interior_primary_final.fa -D "$jd" -t "$threads"
 if [[ $? -e 0 ]] ; then
