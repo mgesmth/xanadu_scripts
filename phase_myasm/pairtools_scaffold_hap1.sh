@@ -12,7 +12,6 @@
 echo `hostname`
 
 module load samtools/1.20
-module load bwa/0.7.17
 module load pairtools/0.2.2
 module load YaHS/1.2.2
 module load quast/5.2.0
@@ -22,15 +21,12 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 INDEX=${home}/yahs/contigs/intDF011.asm.hic.hap1.p_ctg.fasta
 CHROM_SIZES=${home}/yahs/contigs/intDF011.asm.hic.hap1.p_ctg.chrom.sizes
-FASTQ1=${home}/hiC_data/allhiC_R1.fastq.gz
-FASTQ2=${home}/hiC_data/allhiC_R2.fastq.gz
 IN_BAM=${scratch}/aligned_hic_hap1.bam
 OUTPREFIX=${scratch}/intDF011_hap1
 NODUPS_SAM_PATH=${OUTPREFIX}.nodups.bam
 NODUPS_PAIRS_PATH=${OUTPREFIX}.nodups.pairs
 
-bwa index ${INDEX}
-bwa mem -SP5 -t 36 "${INDEX}" "${FASTQ1}" "${FASTQ2}" | samtools view -bh -o "${IN_BAM}"
+samtools merge 
 
 pairtools parse --chroms-path "${CHROM_SIZES}" "${IN_BAM}"
 } | {
