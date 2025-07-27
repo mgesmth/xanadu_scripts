@@ -34,7 +34,7 @@ out=$(echo "$name" | sed 's/fastq.gz/bam/')
 echo "[M]: Welcome to task $SLURM_ARRAY_TASK_ID. We are aligning ${R1} and ${R2} to ${base}."
 
 bwa mem -SP5M -t 4 -R "$hap1_ctg" "$R1" "$R2" | \
-samtools sort -n -@ 4 -m 2500M -O "bam" -o "${hic_splitout}/${out}"
+samtools sort -@ 4 -m 2500M -O "bam" -o "${hic_splitout}/${out}"
 
 if [[ $? -eq 0 ]] ; then
   if [[ $? -eq 0 ]] ; then
