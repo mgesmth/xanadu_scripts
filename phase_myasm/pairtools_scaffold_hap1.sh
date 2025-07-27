@@ -9,24 +9,40 @@
 #SBATCH -o pairscaff_hap1.%j.out
 #SBATCH -e pairscaff_hap1.%j.err
 
-echo `hostname`
+set -e 
+date
+echo "[M]: Host Name: `hostname`"
 
 module load samtools/1.20
 module load pairtools/0.2.2
 module load YaHS/1.2.2
 module load quast/5.2.0
+module load python/3.8.1
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 INDEX=${home}/yahs/contigs/intDF011.asm.hic.hap1.p_ctg.fasta
 CHROM_SIZES=${home}/yahs/contigs/intDF011.asm.hic.hap1.p_ctg.chrom.sizes
-IN_BAM=${scratch}/aligned_hic_hap1.bam
-OUTPREFIX=${scratch}/intDF011_hap1
+hicdir=${scratch}/hic_hap1
+split=${hicdir}/split
+IN_BAM=${hicdir}/aligned_hic_hap1.bam
+OUTPREFIX=${hicdir}/intDF011_hap1
 NODUPS_SAM_PATH=${OUTPREFIX}.nodups.bam
 NODUPS_PAIRS_PATH=${OUTPREFIX}.nodups.pairs
 
-samtools merge 
+echo "[M]: Beginning merge of split alignment files."
+
+samtools merge -o "$IN_BAM" ${split}/*.bam
+
+if [[ $? -eq 0 ]] ; then
+  echo "[M]: Merge complete. Moving on to Pairtools pipeline."
+  rm ${split}/*.bam
+  date
+else
+  echo "[E]: Merge failed. Exit code $?"
+  exit 1
+fi
 
 pairtools parse --chroms-path "${CHROM_SIZES}" "${IN_BAM}"
 } | {
@@ -39,6 +55,9 @@ pairtools split --output-pairs ${NODUPS_PAIRS_PATH} --output-sam ${NODUPS_SAM_PA
 
 out="intDF011_hap1"
 outdir=${core}/scaffold/withpairtools_noec_hap1
+if [[ ! -d ${outdir} ]] ; then
+  mkdir ${outdir}
+fi
 bam="${NODUPS_SAM_PATH}"
 juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
 juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
