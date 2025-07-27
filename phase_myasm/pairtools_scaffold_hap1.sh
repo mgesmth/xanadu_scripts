@@ -62,6 +62,9 @@ bam="${NODUPS_SAM_PATH}"
 juicer_tools_pre="java -jar /isg/shared/apps/juicer/1.8.9/scripts/juicer_tools.1.8.9_jcuda.0.8.jar pre --threads 36"
 juicer_pre="/isg/shared/apps/YaHS/1.2.2/juicer pre"
 quast_out=${home}/quast_out/1_3_hap1
+if [[ ! -d ${quast_out} ]] ; then
+  mkdir ${quast_out}
+fi
 
 yahs --no-contig-ec -l 10 -e GATC,GANTC -o ${outdir}/${out} ${INDEX} ${bam}
 
