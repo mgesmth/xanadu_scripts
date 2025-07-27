@@ -25,8 +25,8 @@ site="Arima"
 threads=36
 jd=${scratch}/juicer_formanualcur
 
-cd ${jd}/work/intdf137
-rm *_in.bam
+#cd ${jd}/work/intdf137/splits
+#rm *_in.bam
 
 echo "[M]: Beginning juicer run."
 
