@@ -17,107 +17,107 @@ for i in $(seq 1 15) ; do
       supercat="total"
       cat="retroelement"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ /SINEs/) {
       supercat="retroelement"
       cat="SINE"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ /Penelope/) {
       supercat="retroelement"
       cat="SINE"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ /LINEs/) {
       supercat="retroelement"
       cat="LINE"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ /LTR elements/) {
       supercat="retroelement"
       cat="LTR"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ /DNA transposon/) {
       supercat="total"
       cat="DNA"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "hobo-Activator") {
       supercat="DNA"
       cat="hobo-Activator"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Tc1-IS630-Pogo") {
       supercat="DNA"
       cat="Tc1-IS630-Pogo"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "En-Spm") {
       supercat="DNA"
       cat="En-Spm"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "MULE-MuDR") {
       supercat="DNA"
       cat="MULE-MuDR"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "PiggyBac") {
       supercat="DNA"
       cat="PiggyBac"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Tourist/Harbinger") {
       supercat="DNA"
       cat="Tourist/Harbinger"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Other") {
       supercat="DNA"
       cat="Other"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Rolling-circles") {
       supercat="Rolling-circles"
       cat="Rolling-circles"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Rolling-circles") {
       supercat="Rolling-circles"
       cat="Rolling-circles"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Unclassified") {
       supercat="Unclassified"
       cat="Unclassified"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Total interspersed repeats") {
       supercat="Unclassified"
       cat="Unclassified"
       num="NA"
-      length=$4
+      len=$4
     } else if ($0 ~ "Small RNA") {
       supercat="Small_RNA"
       cat="Small RNA"
       num=$3
-      length=$4
+      len=$4
     } else if ($0 ~ "Satellites") {
       supercat="Satellites"
       cat="Satellites"
       num=$2
-      length=$3
+      len=$3
     } else if ($0 ~ "Simple repeats") {
       supercat="Simple-repeats"
       cat="Simple-repeats"
       num=$3
-      length=$4
+      len=$4
     } else if ($0 ~ "Low complexity") {
       supercat="Low-complexity"
       cat="Low complexity-"
       num=$3
-      length=$4
+      len=$4
     }
     print supercat,cat,num,len}' "$file" > "$newfile"
 done
