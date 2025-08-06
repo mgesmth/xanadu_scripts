@@ -3,7 +3,7 @@
 for i in $(seq 1 15) ; do
   file=interior_primary_scaffold_${i}.fa.tbl
   newfile=interior_primary_scaffold_${i}_processed.tbl
-  awk -F " " 'NR < 11 {
+  awk -F " " 'BEGIN { OFS = "\t" } NR < 11 {
     #Handle total length figures
     if ($0 ~ /total length/) {
       total_len=$3
@@ -36,13 +36,13 @@ for i in $(seq 1 15) ; do
     } else if ($0 ~ /LTR elements/) {
       supercat="retroelement"
       cat="LTR"
-      num=$2
-      len=$3
+      num=$3
+      len=$4
     } else if ($0 ~ /DNA transposon/) {
       supercat="total"
       cat="DNA"
-      num=$2
-      len=$3
+      num=$3
+      len=$4
     } else if ($0 ~ "hobo-Activator") {
       supercat="DNA"
       cat="hobo-Activator"
@@ -76,8 +76,8 @@ for i in $(seq 1 15) ; do
     } else if ($0 ~ "Other") {
       supercat="DNA"
       cat="Other"
-      num=$2
-      len=$3
+      num=$5
+      len=$6
     } else if ($0 ~ "Rolling-circles") {
       supercat="Rolling-circles"
       cat="Rolling-circles"
@@ -115,7 +115,7 @@ for i in $(seq 1 15) ; do
       len=$4
     } else if ($0 ~ "Low complexity") {
       supercat="Low-complexity"
-      cat="Low complexity-"
+      cat="Low-complexity"
       num=$3
       len=$4
     }
