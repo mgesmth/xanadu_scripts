@@ -13,113 +13,111 @@ for i in $(seq 1 15) ; do
   }
   #Handle by feature type figures
   NR >= 11 {
-    if ($0 ~ /Retroelements/) {
+    if ($1 ~ /Retroelements/) {
       supercat="total"
-      cat="retroelement"
+      cate="retroelement"
       num=$2
       len=$3
-    } else if ($0 ~ /SINEs/) {
+    } else if ($1 ~ /SINEs/) {
       supercat="retroelement"
-      cat="SINE"
+      cate="SINE"
       num=$2
       len=$3
-    } else if ($0 ~ /Penelope/) {
+    } else if ($1 ~ /Penelope/) {
       supercat="retroelement"
-      cat="SINE"
+      cate="SINE"
       num=$2
       len=$3
-    } else if ($0 ~ /LINEs/) {
+    } else if ($1 ~ /LINEs/) {
       supercat="retroelement"
-      cat="LINE"
+      cate="LINE"
       num=$2
       len=$3
-    } else if ($0 ~ /LTR elements/) {
+    } else if ($1 ~ /LTR elements/) {
       supercat="retroelement"
-      cat="LTR"
+      cate="LTR"
       num=$3
       len=$4
-    } else if ($0 ~ /DNA transposon/) {
+    } else if ($1 ~ /DNA transposon/) {
       supercat="total"
-      cat="DNA"
+      cate="DNA"
       num=$3
       len=$4
-    } else if ($0 ~ "hobo-Activator") {
+    } else if ($1 ~ "hobo-Activator") {
       supercat="DNA"
-      cat="hobo-Activator"
+      cate="hobo-Activator"
       num=$2
       len=$3
-    } else if ($0 ~ "Tc1-IS630-Pogo") {
+    } else if ($1 ~ "Tc1-IS630-Pogo") {
       supercat="DNA"
-      cat="Tc1-IS630-Pogo"
+      cate="Tc1-IS630-Pogo"
       num=$2
       len=$3
-    } else if ($0 ~ "En-Spm") {
+    } else if ($1 ~ "En-Spm") {
       supercat="DNA"
-      cat="En-Spm"
+      cate="En-Spm"
       num=$2
       len=$3
-    } else if ($0 ~ "MULE-MuDR") {
+    } else if ($1 ~ "MULE-MuDR") {
       supercat="DNA"
-      cat="MULE-MuDR"
+      cate="MULE-MuDR"
       num=$2
       len=$3
-    } else if ($0 ~ "PiggyBac") {
+    } else if ($1 ~ "PiggyBac") {
       supercat="DNA"
-      cat="PiggyBac"
+      cate="PiggyBac"
       num=$2
       len=$3
-    } else if ($0 ~ "Tourist/Harbinger") {
+    } else if ($1 ~ "Tourist/Harbinger") {
       supercat="DNA"
-      cat="Tourist/Harbinger"
+      cate="Tourist/Harbinger"
       num=$2
       len=$3
-    } else if ($0 ~ "Other") {
+    } else if ($1 ~ "Other") {
       supercat="DNA"
-      cat="Other"
-      num=$5
-      len=$6
-    } else if ($0 ~ "Rolling-circles") {
+      cate="Other"
+      num=$4
+      len=$5
+    } else if ($1 ~ "Rolling-circles") {
       supercat="Rolling-circles"
-      cat="Rolling-circles"
+      cate="Rolling-circles"
       num=$2
       len=$3
-    } else if ($0 ~ "Rolling-circles") {
+    } else if ($1 ~ "Rolling-circles") {
       supercat="Rolling-circles"
-      cat="Rolling-circles"
+      cate="Rolling-circles"
       num=$2
       len=$3
-    } else if ($0 ~ "Unclassified") {
+    } else if ($1 ~ "Unclassified") {
       supercat="Unclassified"
-      cat="Unclassified"
+      cate="Unclassified"
       num=$2
       len=$3
-    } else if ($0 ~ "Total interspersed repeats") {
+    } else if ($1 ~ "Total interspersed repeats") {
       supercat="Unclassified"
-      cat="Unclassified"
+      cate="Unclassified"
       num="NA"
       len=$4
-    } else if ($0 ~ "Small RNA") {
-      supercat="Small_RNA"
-      cat="Small RNA"
+    } else if ($1 ~ "Small RNA") {
+      supercat="Small-RNA"
+      cate="Small-RNA"
       num=$3
       len=$4
-    } else if ($0 ~ "Satellites") {
+    } else if ($1 ~ "Satellites") {
       supercat="Satellites"
-      cat="Satellites"
+      cate="Satellites"
       num=$2
       len=$3
-    } else if ($0 ~ "Simple repeats") {
+    } else if ($1 ~ "Simple repeats") {
       supercat="Simple-repeats"
-      cat="Simple-repeats"
+      cate="Simple-repeats"
       num=$3
       len=$4
-    } else if ($0 ~ "Low complexity") {
+    } else if ($1 ~ "Low complexity") {
       supercat="Low-complexity"
-      cat="Low-complexity"
+      cate="Low-complexity"
       num=$3
       len=$4
     }
-    print supercat,cat,num,len}' "$file" > "$newfile"
+    print supercat,cate,num,len}' "$file" > "$newfile"
 done
-
-  
