@@ -22,10 +22,10 @@ topdir=${scratch}/juicer_formanualcur
 JUICER=${topdir}/scripts/common/juicer_tools.jar
 threads="36"
 tmpdir=${scratch}
-output="interior_primary_final"
+output="${scratch}/interior_primary_final.hic"
 chromsizes=${core}/CBP_assemblyfiles/interior_primary_final.chrom.sizes
 contacts=${topdir}/work/intdf137/aligned/merged_dedup.bam
 
 java -XX:+UseParallelGC -Xms250G -Xmx1200G -jar $JUICER pre -v --threads "${threads}" \
 -t "${tmpdir}" -f ${topdir}/restriction_sites/intdf137_Arima.txt \
-"${contacts}" "${output}.hic" "${chromsizes}"
+"${contacts}" "${output}" "${chromsizes}"
