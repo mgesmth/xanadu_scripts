@@ -83,11 +83,6 @@ for i in $(seq 1 15) ; do
       cate="Rolling-circles"
       num=$2
       len=$3
-    } else if ($1 ~ "Rolling-circles") {
-      supercat="Rolling-circles"
-      cate="Rolling-circles"
-      num=$2
-      len=$3
     } else if ($1 ~ "Unclassified") {
       supercat="Unclassified"
       cate="Unclassified"
@@ -119,5 +114,8 @@ for i in $(seq 1 15) ; do
       num=$3
       len=$4
     }
-    print supercat,cate,num,len}' "$file" > "$newfile"
+    if (supercat && cate && num && len) {
+      print supercat, cate, num, len
+    }
+  }' "$file" > "$newfile"
 done
