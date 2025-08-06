@@ -116,6 +116,7 @@ for i in $(seq 1 15) ; do
     }
     if (supercat && cate && num && len) {
       print supercat, cate, num, len
-    }
+    } else {
+next}
   }' "$file" > "$newfile"
 done
