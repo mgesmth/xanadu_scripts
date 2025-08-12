@@ -20,8 +20,10 @@ merge_nodups=${scratch}/juicer_formanualcur/work/intdf137/aligned/merged_nodups.
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
 export PATH="${core}/bin/3d-dna:$PATH"
+module load gnu-parallel/20160622
+export TMPDIR=/scratch/msmith
 
 #I just want the map that I can use to run JBAT with (-e, -r0)
 #Note: I modified 3DDNA visualizer scripts to accomodate a tmpdir in the juicertools pre command
 cd ${outdir}
-run-asm-pipeline.sh -e -r0 "$prim" "$merge_nodups"
+run-asm-pipeline.sh -e --rounds 0 "$prim" "$merge_nodups"
