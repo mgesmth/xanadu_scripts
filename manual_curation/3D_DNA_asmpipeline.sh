@@ -28,4 +28,5 @@ export TMPDIR=/scratch/msmith
 cd ${outdir}
 #run-asm-pipeline.sh -e --rounds 0 "$prim" "$merge_nodups"
 #visualize module failed bc of GNU parallel. Rerunning visualization step without it
-visualize/run-asm-visualizer.sh -p false -q 1 -i -c interior_primary_final.0.cprops interior_primary_final.0.asm interior_primary_final.mnd.txt 
+${core}/bin/3d-dna/visualize/run-asm-visualizer.sh -p false -q 1 -i -c interior_primary_final.0.cprops interior_primary_final.0.asm interior_primary_final.mnd.txt 
+
