@@ -1,8 +1,11 @@
 #!/bin/env python
 
-import os
-os.chdir('/home/FCAM/msmith/svs/minigraph_out/finalpangenome')
+import sys
 
+if __name__ == "__main__":
+	vcf=sys.argv[1]
+	outfile=sys.argv[2]
+	errfile=sys.argv[3]
 
 #functions
 def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
