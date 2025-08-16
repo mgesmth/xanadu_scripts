@@ -7,8 +7,10 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
+set -e
+set -a
 date
-echo "[M]: Host Name: `hostname"
+echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
@@ -35,6 +37,7 @@ jid_gfa=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #SBATCH -e ${log}/%x.%j.err
 	
 date
+set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph graph generation"
 module load zlib/1.2.11
@@ -70,6 +73,7 @@ jid_primcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #SBATCH -e ${log}/%x.%j.err
 	
 date
+set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph call path (prim)"
 module load zlib/1.2.11
@@ -102,6 +106,7 @@ jid_altcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #SBATCH -e ${log}/%x.%j.err
 	
 date
+set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph call path (alt)"
 module load zlib/1.2.11
@@ -134,6 +139,7 @@ jid_coastcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #SBATCH -e ${log}/%x.%j.err
 	
 date
+set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph call path (cost)"
 module load zlib/1.2.11
@@ -230,6 +236,7 @@ jid_catsvs=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #SBATCH -e ${log}/%x.%j.err
 
 date
+set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning categorization of SVs"
 module load python/3.8.1
