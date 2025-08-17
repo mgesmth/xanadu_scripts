@@ -108,7 +108,8 @@ with open("sv_allele_summary.tsv") as f, open("tmpnon_inverted_equal_lengths.tsv
 			alt_len=int(columns[6])
 			coast_allele=int(columns[4])
 			coast_len=int(columns[7])
-			inversion = bool(int(columns[8]))len_string=str(prim_len) + ":" + str(alt_len) + ":" + str(coast_len)
+			inversion = bool(int(columns[8]))
+			len_string=str(prim_len) + ":" + str(alt_len) + ":" + str(coast_len)
 			#There's definitely a more efficient way to do this, but here we are - pseudo-genotype for convenience
 			if alt_allele == 0 and coast_allele == 1:
 				genotype="0:0:1"
