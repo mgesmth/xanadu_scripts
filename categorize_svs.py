@@ -5,34 +5,24 @@ import os
 
 if __name__ == "__main__":
 	vcf=sys.argv[1]
-	bedfile1=sys.argv[2]
-	bedfile2=sys.argv[3]
-	bedfile3=sys.argv[4]
-	outfile=sys.argv[5]
+	primbedfile=sys.argv[2]
+	altbedfile=sys.argv[3]
+	coastbedfile=sys.argv[4]
+	bubblebedfile=sys.argv[5]
+	outfile=sys.argv[6]
 
 #functions
-def paste_files(file1, file2, file3=None, output_file, delimiter='\t'):
-	if file3 is None:
-		with open(file1, 'r') as f1, open(file2, 'r') as f2:
-			lines1 = f1.readlines()
-			lines2 = f2.readlines()
-			combined = [
-				line1.rstrip('\n') + delimiter + line2
-				for line1, line2 in zip(lines1, lines2)
-			]
-			with open(output_file, 'w') as out:
-				out.writelines(combined)
-	else:
-		with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
-			lines1 = f1.readlines()
-			lines2 = f2.readlines()
-			lines3 = f3.readlines()
-			combined = [
-				line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3
-				for line1, line2, line3 in zip(lines1, lines2, lines3)
-			]
-			with open(output_file, 'w') as out:
-				out.writelines(combined)
+def paste_files(file1, file2, file3, output_file, delimiter='\t'):
+	with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
+		lines1 = f1.readlines()
+		lines2 = f2.readlines()
+		lines3 = f3.readlines()
+		combined = [
+			line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3
+			for line1, line2, line3 in zip(lines1, lines2, lines3)
+		]
+		with open(output_file, 'w') as out:
+			out.writelines(combined)
 
 def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
 	global first_category, second_category
@@ -76,7 +66,7 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 		of.write('\t'.join(map(str, newline)) + '\n')
 
 #parse the bed files
-paste_files(bedfile1, bedfile2, file3=bedfile3, output_file="bed_paste.tmp")
+paste_files(primbedfile, altbedfile, coastbedfile, output_file="bed_paste.tmp")
 with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
 	header=["prim_length","alt_length","coast_length"]
 	of.write('\t'.join(header) + '\n')
@@ -88,27 +78,37 @@ with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
 		newline=[prim_len,alt_len,coast_len]
 		of.write('\t'.join(map(str, newline)) + '\n')
 
-#Combine
 os.remove("bed_paste.tmp")
-paste_files("prt1.tmp","prt2.tmp",output_file="sv_allele_summary.tsv")
+
+#Parse bubble bed file to get inversion info
+with open(bubblebedfile) as f, open("prt3.tmp", "w") as of:
+	#header
+	of.write("inversion" + '\n')
+	for line in f:
+		fields=line.strip().split('\t')
+		inversion=str(fields[5])
+		of.write(inversion + '\n')
+
+#Combine
+paste_files("prt1.tmp","prt2.tmp", "prt3.tmp", output_file="sv_allele_summary.tsv")
 os.remove("prt1.tmp")
 os.remove("prt2.tmp")
+os.remove("prt3.tmp")
 
 with open("sv_allele_summary.tsv") as f, open("tmpnon_inverted_equal_lengths.tsv", "a") as ef:
-    with open("sv_categorized.tsv", "w") as fw:
-        #skip header
-        f.readline()
-        for line in f:
-            #define variables
-            columns=line.strip().split('\t')
-            prim_allele=int(0)
-            prim_len=int(columns[5])
-            alt_allele=int(columns[3])
-            alt_len=int(columns[6])
-            coast_allele=int(columns[4])
-            coast_len=int(columns[7])
-            inversion = bool(int(columns[8]))
-            len_string=str(prim_len) + ":" + str(alt_len) + ":" + str(coast_len)
+	with open("sv_categorized.tsv", "w") as fw:
+		#skip header
+		f.readline()
+		for line in f:
+			#define variables
+			columns=line.strip().split('\t')
+			prim_allele=int(0)
+			prim_len=int(columns[5])
+			alt_allele=int(columns[3])
+			alt_len=int(columns[6])
+			coast_allele=int(columns[4])
+			coast_len=int(columns[7])
+			inversion = bool(int(columns[8]))len_string=str(prim_len) + ":" + str(alt_len) + ":" + str(coast_len)
 
             #There's definitely a more efficient way to do this, but here we are
 
