@@ -13,15 +13,15 @@ if __name__ == "__main__":
 #functions
 def paste_files(file1, file2, file3=None, output_file, delimiter='\t'):
 	if file3 is None:
-    	with open(file1, 'r') as f1, open(file2, 'r') as f2:
-        	lines1 = f1.readlines()
-        	lines2 = f2.readlines()
+		with open(file1, 'r') as f1, open(file2, 'r') as f2:
+			lines1 = f1.readlines()
+			lines2 = f2.readlines()
 			combined = [
-        	line1.rstrip('\n') + delimiter + line2
-        	for line1, line2 in zip(lines1, lines2)
-    		]
+				line1.rstrip('\n') + delimiter + line2
+				for line1, line2 in zip(lines1, lines2)
+			]
 			with open(output_file, 'w') as out:
-            	out.writelines(combined)
+				out.writelines(combined)
 	else:
 		with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
         	lines1 = f1.readlines()
@@ -35,9 +35,9 @@ def paste_files(file1, file2, file3=None, output_file, delimiter='\t'):
             	out.writelines(combined)
 
 def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
-    global first_category, second_category
-    if ref_allele_length > query_allele_length:
-        first_category="DEL"
+	global first_category, second_category
+	if ref_allele_length > query_allele_length:
+		first_category="DEL"
         second_category="SIMPLE"
 	return True
     elif ref_allele_length < query_allele_length:
@@ -94,7 +94,7 @@ paste_files("prt1.tmp","prt2.tmp",output_file="sv_allele_summary.tsv")
 os.remove("prt1.tmp")
 os.remove("prt2.tmp")
 
-with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
+with open("sv_allele_summary.tsv") as f, open("tmpnon_inverted_equal_lengths.tsv", "a") as ef:
     with open("sv_categorized.tsv", "w") as fw:
         #skip header
         f.readline()
