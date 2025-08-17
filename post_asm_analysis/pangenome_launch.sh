@@ -40,15 +40,21 @@ date
 set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph graph generation"
+
+#executables
 module load zlib/1.2.11
 export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
+
 threads="$(getconf _NPROCESSORS_ONLN)"
 prx="final_finalpangenome"
 outdir=${core}/manual_curation_files/minigraph
 
+#pangenome graph:
 minigraph -cxggs -t 24 ${prim} ${alt} ${coast} > "${outdir}/${prx}.gfa"
+#call bubbles (SVs)
 gfatools bubble "${outdir}/${prx}.gfa" > "${outdir}/${prx}_unfiltered.bed"
+#get stats on the pangenome graph (number of nodes/edges, etc.)
 gfatools stat "${outdir}/${prx}.gfa" > "${outdir}/${prx}.stat"
 
 if [[ $? -eq 0 ]] ; then
@@ -59,7 +65,7 @@ echo "[E]: Graph generation failed. Exit code $?"
 fi
 HEADER`
 
-#Call paths through pangenome
+#Call paths through pangenome - neccesary to get the VCF files
 ##Call primary ----
 jid_primcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
@@ -76,13 +82,17 @@ date
 set -e
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph call path (prim)"
+
+#executables
 module load zlib/1.2.11
 export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
+
 threads="$(getconf _NPROCESSORS_ONLN)"
 prx="final_finalpangenome"
 outdir=${core}/manual_curation_files/minigraph
 
+#call primary path
 minigraph -cxasm --call -t "$threads" "${outdir}/${prx}.gfa" $prim > "${outdir}/${prx}_primcall.bed"
 
 if [[ $? -eq 0 ]] ; then
@@ -164,10 +174,10 @@ jid_vcf=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
 #SBATCH -J minigraph_bed2vcf
 #SBATCH -d afterok:${jid_primcall},${jid_altcall},${jid_coastcall}
-#SBATCH -p himem
-#SBATCH -q himem
-#SBATCH -c 18
-#SBATCH --mem=400G
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 8
+#SBATCH --mem=40G
 #SBATCH -o ${log}/%x.%j.out
 #SBATCH -e ${log}/%x.%j.err
 
@@ -175,15 +185,18 @@ set -e
 date
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Beginning minigraph call path (cost)"
+
+#executables
 module load java/17.0.2
 export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/minigraph-0.21/mg-cookbook-v1_x64-linux:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
 k8_dir=/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
 misc_dir=${core}/bin/minigraph-0.21/misc
+module load bedtools/2.29.0
+
 prx="final_finalpangenome"
 outdir=${core}/manual_curation_files/minigraph
-
 prim_prefix=$(basename "$prim" | sed 's/.fa//')
 alt_prefix=$(basename "$alt" | sed 's/.fa//')
 coast_prefix=$(basename "$coast" | sed 's/.fa//')
@@ -197,18 +210,43 @@ if [[ -f "${prx}_primcall.bed" && -f "${prx}_altcall.bed" && -f "${prx}_coastcal
 echo -e "${prim_prefix}.bed\n${alt_prefix}.bed\n${coast_prefix}.bed" > samples.txt
 paste *.bed | ${k8_dir}/k8 ${misc_dir}/mgutils.js merge -s samples.txt - | gzip -c > "${prx}.sv.bed.gz"
 if [[ $? -eq 0 ]] ; then
-${k8_dir}/k8 ${misc_dir}/mgutils-es6.js merge2vcf -r0 "${prx}.sv.bed.gz" > "${outdir}/${prx}_unfiltered.sv.vcf"
+${k8_dir}/k8 ${misc_dir}/mgutils-es6.js merge2vcf -a2 -r0 "${prx}.sv.bed.gz" > "${outdir}/${prx}_unfiltered.sv.vcf"
 if [[ $? -eq 0 ]] ; then
+
 date
 echo "[M]: SV VCF created. Filtering and cleaning up..."
 unfvcf="${outdir}/${prx}_unfiltered.sv.vcf"
+
 #Filtering for missing data then for where all three alleles are the reference allele
 awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." && $12 != "." {print}' ${unfvcf} | \
 awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ || $12 ~ /1:1/ {print}' > "${outdir}/${prx}_filtered1.sv.vcf"
+
 #one additional filter at the summary step, bear in mind
 cd ..
 rm -r minigraph_tmp
+
+echo "[M]: Done cleanup. Beginning to filter bed files..."
+cd ${outdir}
+
+#get a bedfile with the coordinates of processed SVs (VCF file doesnt have end coordinate accessible for bedtools intersect)
+awk 'BEGIN { OFS="\t" } /^#/ {next} !/^#/ {
+split($8,m,";")
+split(m[1],n,"=")
+print $1,$2,n[2] }' "${prx}_filtered1.sv.vcf" > filtered_coordinates.bed
+
+#intersect the path bedfiles with filtered coordinates to get only the SVs that are valid
+bedtools intersect -F 1 -wa -a "${prx}_primcall.bed" -b filtered_coordinates.bed  > "${prx}_primcall_verified.bed" && \
+bedtools intersect -F 1 -wa -a "${prx}_altcall.bed" -b filtered_coordinates.bed > "${prx}_altcall_verified.bed" && \
+bedtools intersect -F 1 -wa -a "${prx}_coastcall.bed" -b filtered_coordinates.bed > "${prx}_coastcall_verified.bed" && \
+bedtools intersect -F 1 -wa -a "${prx}_unfiltered.bed" -b filtered_coordinates.bed > "${prx}_verified.bed"
+
+if [[ $? -eq 0 ]] ; then
 echo "[M]: Done."
+else
+echo "[E]: Filtering of bed files failed. Exit code $?"
+exit 1
+fi
+
 else
 echo "[E]: Conversion of merged bed file to VCF failed. Exiting code $?"
 exit 1
@@ -230,8 +268,8 @@ jid_catsvs=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #SBATCH -d afterok:${jid_vcf}
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 12
-#SBATCH --mem=100G
+#SBATCH -c 8
+#SBATCH --mem=48G
 #SBATCH -o ${log}/%x.%j.out
 #SBATCH -e ${log}/%x.%j.err
 
@@ -244,7 +282,12 @@ cd ${core}/manual_curation_files/minigraph
 cat_svs=${home}/scripts/categorize_svs.py
 prx="final_finalpangenome"
 
-python ${cat_svs} "${prx}_filtered1.sv.vcf"
+python ${cat_svs} "${prx}_filtered1.sv.vcf" \
+"${prx}_primcall_verified.bed" \
+"${prx}_altcall_verified.bed" \
+"${prx}_coastcall_verified.bed" \
+"${prx}_verified.bed" \
+"svs_categorized.tsv"
 
 if [[ $? -eq 0 ]] ; then
 echo "[M]: Done."
