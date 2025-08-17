@@ -24,6 +24,7 @@ def paste_files(file1, file2, file3, output_file, delimiter='\t'):
 		with open(output_file, 'w') as out:
 			out.writelines(combined)
 
+#this function handles the rare case where all alleles are the same length but aren't inversions (i.e., not insertion, deletion, or inversion)
 def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
 	global first_category, second_category
 	if ref_allele_length > query_allele_length:
@@ -95,7 +96,7 @@ os.remove("prt1.tmp")
 os.remove("prt2.tmp")
 os.remove("prt3.tmp")
 
-with open("sv_allele_summary.tsv") as f, open("tmpnon_inverted_equal_lengths.tsv", "a") as ef:
+with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
 	with open("sv_categorized.tsv", "w") as fw:
 		#skip header
 		f.readline()
