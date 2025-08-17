@@ -65,7 +65,12 @@ echo "[E]: Graph generation failed. Exit code $?"
 fi
 HEADER`
 
-#Call paths through pangenome - neccesary to get the VCF files
+if [[ $? -ne 0 ]] ; then
+	echo "[E]: Job number 1 (creating pangenome) failed to submit."
+ 	exit 1
+fi
+
+#Call paths through all asms in pangenome (including reference) - neccesary to get the VCF files
 ##Call primary ----
 jid_primcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
@@ -103,6 +108,11 @@ echo "[E]: Prim call path failed. Exit code $?"
 fi
 HEADER`
 
+if [[ $? -ne 0 ]] ; then
+	echo "[E]: Job number 2 (calling primary path) failed to submit."
+ 	exit 1
+fi
+
 ##Call alternate ----
 jid_altcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
@@ -135,6 +145,11 @@ else
 echo "[E]: Alt call path failed. Exit code $?"
 fi
 HEADER`
+
+if [[ $? -ne 0 ]] ; then
+	echo "[E]: Job number 3 (calling alternate path) failed to submit."
+ 	exit 1
+fi
 
 ##Call coastal ----
 jid_coastcall=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
@@ -169,6 +184,11 @@ echo "[E]: Coast call path failed. Exit code $?"
 fi
 HEADER`
 
+if [[ $? -ne 0 ]] ; then
+	echo "[E]: Job number 4 (calling coastal path) failed to submit."
+ 	exit 1
+fi
+
 #Generate VCF
 jid_vcf=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
@@ -193,6 +213,8 @@ export PATH="${core}/bin/minigraph-0.21/mg-cookbook-v1_x64-linux:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
 k8_dir=/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
 misc_dir=${core}/bin/minigraph-0.21/misc
+#NOTE: only k8_dir has the k8 module, but the minigraph misc dir has a bug fix necessary to genotype the SVs properly. refer accordingly. 
+
 module load bedtools/2.29.0
 
 prx="final_finalpangenome"
@@ -201,11 +223,15 @@ prim_prefix=$(basename "$prim" | sed 's/.fa//')
 alt_prefix=$(basename "$alt" | sed 's/.fa//')
 coast_prefix=$(basename "$coast" | sed 's/.fa//')
 
+#Copy beds to a temp dir because you need to paste *.bed as part of the command
 mkdir ${scratch}/minigraph_tmp
 cd ${scratch}/minigraph_tmp
 cp "${outdir}/${prx}_primcall.bed" .
 cp "${outdir}/${prx}_altcall.bed" .
 cp "${outdir}/${prx}_coastcall.bed" .
+
+#check if the files were properly copied over (i.e, no upstream syntax issue), if good then execute
+#this code is from the minigraph github
 if [[ -f "${prx}_primcall.bed" && -f "${prx}_altcall.bed" && -f "${prx}_coastcall.bed" ]] ; then
 echo -e "${prim_prefix}.bed\n${alt_prefix}.bed\n${coast_prefix}.bed" > samples.txt
 paste *.bed | ${k8_dir}/k8 ${misc_dir}/mgutils.js merge -s samples.txt - | gzip -c > "${prx}.sv.bed.gz"
@@ -217,15 +243,15 @@ date
 echo "[M]: SV VCF created. Filtering and cleaning up..."
 unfvcf="${outdir}/${prx}_unfiltered.sv.vcf"
 
-#Filtering for missing data then for where all three alleles are the reference allele
+#Filtering for missing data then for where all three alleles are the reference allele and all three alleles have a genotype
 awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." && $12 != "." {print}' ${unfvcf} | \
 awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ || $12 ~ /1:1/ {print}' > "${outdir}/${prx}_filtered1.sv.vcf"
 
-#one additional filter at the summary step, bear in mind
+#one additional filter at the summary step (note on that filter in the categorize_svs.py script)
 cd ..
 rm -r minigraph_tmp
 
-echo "[M]: Done cleanup. Beginning to filter bed files..."
+echo "[M]: Done cleanup. Beginning to filter bed files according to filtered vcf..."
 cd ${outdir}
 
 #get a bedfile with the coordinates of processed SVs (VCF file doesnt have end coordinate accessible for bedtools intersect)
@@ -235,10 +261,10 @@ split(m[1],n,"=")
 print $1,$2,n[2] }' "${prx}_filtered1.sv.vcf" > filtered_coordinates.bed
 
 #intersect the path bedfiles with filtered coordinates to get only the SVs that are valid
-bedtools intersect -F 1 -wa -a "${prx}_primcall.bed" -b filtered_coordinates.bed  > "${prx}_primcall_verified.bed" && \
-bedtools intersect -F 1 -wa -a "${prx}_altcall.bed" -b filtered_coordinates.bed > "${prx}_altcall_verified.bed" && \
-bedtools intersect -F 1 -wa -a "${prx}_coastcall.bed" -b filtered_coordinates.bed > "${prx}_coastcall_verified.bed" && \
-bedtools intersect -F 1 -wa -a "${prx}_unfiltered.bed" -b filtered_coordinates.bed > "${prx}_verified.bed"
+bedtools intersect -F 1 -wa -a "${prx}_primcall.bed" -b filtered_coordinates.bed  > "${prx}_primcall_filtered.bed" && \
+bedtools intersect -F 1 -wa -a "${prx}_altcall.bed" -b filtered_coordinates.bed > "${prx}_altcall_filtered.bed" && \
+bedtools intersect -F 1 -wa -a "${prx}_coastcall.bed" -b filtered_coordinates.bed > "${prx}_coastcall_filtered.bed" && \
+bedtools intersect -F 1 -wa -a "${prx}_unfiltered.bed" -b filtered_coordinates.bed > "${prx}_filtered.bed"
 
 if [[ $? -eq 0 ]] ; then
 echo "[M]: Done."
@@ -261,6 +287,11 @@ exit 1
 fi
 
 HEADER`
+
+if [[ $? -ne 0 ]] ; then
+	echo "[E]: Job number 5 (creating VCF) failed to submit."
+ 	exit 1
+fi
 
 jid_catsvs=`sbatch <<- HEADER | egrep -o -e "\b[0-9]+$"
 #!/bin/bash
@@ -297,3 +328,10 @@ echo "[E]: SV Categorization failed. Exit code $?"
 fi
 HEADER`
 
+if [[ $? -eq 0 ]] ; then
+	echo "[M]: All pangenome jobs submitted. Good luck!"
+ 	exit 0
+else
+	echo "[E]: Last job (categorize SVs) submission failed. Exiting."
+ 	exit 1
+fi
