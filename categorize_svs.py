@@ -38,25 +38,25 @@ def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
 	global first_category, second_category
 	if ref_allele_length > query_allele_length:
 		first_category="DEL"
-        second_category="SIMPLE"
-	return True
-    elif ref_allele_length < query_allele_length:
-        first_category="INS"
-        second_category="SIMPLE"
-	return True
-    else:
-	ef.write(line)
-	return False
+		second_category="SIMPLE"
+		return True
+	elif ref_allele_length < query_allele_length:
+		first_category="INS"
+		second_category="SIMPLE"
+		return True
+	else:
+		ef.write(line)
+		return False
 
 def handle_twoallele_inversion(ref_allele_length, query_allele_length):
-    global first_category, second_category
-    first_category="INV"
-    if ref_allele_length > query_allele_length:
-        second_category="DEL"
-    elif query_allele_length > ref_allele_length:
-        second_category="INS"
-    else:
-        second_category="SIMPLE"
+	global first_category, second_category
+	first_category="INV"
+	if ref_allele_length > query_allele_length:
+		second_category="DEL"
+	elif query_allele_length > ref_allele_length:
+		second_category="INS"
+	else:
+		second_category="SIMPLE"
 
 #parse the vcf
 with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
