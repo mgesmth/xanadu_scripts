@@ -24,15 +24,15 @@ def paste_files(file1, file2, file3=None, output_file, delimiter='\t'):
 				out.writelines(combined)
 	else:
 		with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
-        	lines1 = f1.readlines()
-        	lines2 = f2.readlines()
+			lines1 = f1.readlines()
+			lines2 = f2.readlines()
 			lines3 = f3.readlines()
 			combined = [
-        	line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3
-        	for line1, line2, line3 in zip(lines1, lines2, lines3)
-    		]
+				line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3
+				for line1, line2, line3 in zip(lines1, lines2, lines3)
+			]
 			with open(output_file, 'w') as out:
-            	out.writelines(combined)
+				out.writelines(combined)
 
 def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
 	global first_category, second_category
