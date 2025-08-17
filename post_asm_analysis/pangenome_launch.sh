@@ -180,7 +180,7 @@ export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/minigraph-0.21/mg-cookbook-v1_x64-linux:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
 k8_dir=/core/projects/EBP/smith/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
-misc_dir=$(core}/bin/minigraph-0.21/misc
+misc_dir=${core}/bin/minigraph-0.21/misc
 prx="final_finalpangenome"
 outdir=${core}/manual_curation_files/minigraph
 
