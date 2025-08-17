@@ -53,15 +53,13 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 	header=["scaffold","start","end","alt_allele","coast_allele"]
 	of.write('\t'.join(header) + '\n')
 	for line in f:
-		if "##" in line:
+		if "#" in line:
 			continue
 		fields=line.strip().split('\t')
 		scaffold=fields[0]
 		start=fields[1]
 		info_fields=fields[7].split(';')
-		if not end=info_fields[0].split('=')[1]:
-			print(line)
-			raise Exception("fail")
+		end=info_fields[0].split('=')[1]
 		alt_allele=fields[10].split(':')[0]
 		coast_allele=fields[11].split(':')[0]
 		newline=[scaffold,start,end,alt_allele,coast_allele]
