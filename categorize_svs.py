@@ -56,7 +56,7 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 		if "##" in line:
 			continue
 		fields=line.strip().split('\t')
-		scaffold=fields[0])
+		scaffold=fields[0]
 		start=fields[1]
 		info_fields=fields[7].split(';')
 		end=info_fields[0].split('=')[1]
