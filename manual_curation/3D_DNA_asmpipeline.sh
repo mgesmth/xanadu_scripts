@@ -21,6 +21,7 @@ prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
 export PATH="${core}/bin/3d-dna:$PATH"
 module load gnu-parallel/20160622
+module load java/22
 export TMPDIR=/scratch/msmith
 
 #I just want the map that I can use to run JBAT with (-e, -r0)
