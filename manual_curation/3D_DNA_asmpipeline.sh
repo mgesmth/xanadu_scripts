@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J 3DDNA
-#SBATCH -p himem2
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -c 36
-#SBATCH --mem=1000G
+#SBATCH --mem=500G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=END,FAIL
 #SBATCH -o /core/projects/EBP/smith/manual_curation_log/%x.%j.out
@@ -28,5 +28,5 @@ export TMPDIR=/scratch/msmith
 cd ${outdir}
 #run-asm-pipeline.sh -e --rounds 0 "$prim" "$merge_nodups"
 #visualize module failed bc of GNU parallel. Rerunning visualization step without it
-${core}/bin/3d-dna/visualize/run-asm-visualizer.sh -p false -q 1 -i -c interior_primary_final.0.cprops interior_primary_final.0.asm interior_primary_final.mnd.txt 
+${core}/bin/3d-dna/visualize/run-asm-visualizer.sh -p true -q 1 -i -c interior_primary_final.0.cprops interior_primary_final.0.asm interior_primary_final.mnd.txt 
 
