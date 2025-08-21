@@ -19,4 +19,4 @@ uc_out=${dir}/uc_clustered.uc
 
 #Cluster search with VSearch
 module load vsearch/2.22.1
-vsearch --threads 12 --cluster_fast "$cat_fa" --centroids "$centroids_out" --uc "$uc_out"
+vsearch --threads 12 --cluster_fast "$cat_fa" --centroids "$centroids_out" --uc "$uc_out" --id 0.95
