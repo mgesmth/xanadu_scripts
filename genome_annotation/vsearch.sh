@@ -9,6 +9,8 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
+#Cluster transcripts based on similarity (0.95) from the multiple sources
+
 set -e
 date
 echo "[M]: Host Name: `hostname`"
