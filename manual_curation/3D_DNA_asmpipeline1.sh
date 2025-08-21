@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J 3DDNA
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem2
+#SBATCH -q himem
 #SBATCH -c 36
-#SBATCH --mem=500G
+#SBATCH --mem=1000G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=END,FAIL
 #SBATCH -o /core/projects/EBP/smith/manual_curation_log/%x.%j.out
