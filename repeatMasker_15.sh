@@ -3,7 +3,7 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 6
-#SBATCH --mem=10G
+#SBATCH --mem=60G
 #SBATCH --array=[0-14]
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
