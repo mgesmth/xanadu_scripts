@@ -17,7 +17,6 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 repdir=${home}/repeats
 db=${repdir}/primary_db
-prim=interior_primary_final.fa
 tetools=${core}/bin/dfam-tetools-latest.sif
 
 #I guess RepeatMasker needs the genome to be in the workingdir?
