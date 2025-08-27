@@ -23,7 +23,8 @@ totallen=$(wc -l ${primary} | cut -d ' ' -f1)
 tailnum=$(echo $((${totallen}-${linenum})))
 tail -n ${tailnum} ${primary} > ${scratch}/allelse_tmp.fa
 rm linenum.tmp
-#split rest of scaffolds into above 1Mb and below 1Mb - will be run in separate slurm arrays
+
+#split rest of scaffolds into above 1Mb and below 1Mb - will be run in separate slurm arrays with different resource requests
 if [[ ! -f "${scratch}/allelse_tmp.fa.fai" ]] ; then
   module load samtools/1.19
   samtools faidx "${scratch}/allelse_tmp.fa.fai"
@@ -33,15 +34,18 @@ awk '{
   if ($2 > 1000000) { 
     prevline=1 
   } else if ($2 < 1000000 && prevline=1) {
+    #print the name of the scaffold that is the first to be less than a Mb long
     print $1
     exit
   }
 }' "${scratch}/allelse_tmp.fa.fai" > first_small_scaffold.tmp
 scaffnum=$(tr -d '\n' < first_small_scaffold.tmp)
+#get the line number in the fasta file corresponding to this scaffold; we need all line preceeding it for >1Mb scaffolds
 awk -v scaffnum="$scaffnum" '{if ($1 ~ scaffnum) { ; print NR-1 ; exit }}' ${scratch}/allelse_tmp.fa > linenum1.tmp
 linenum1=$(tr -d '\n' < linenum1.tmp)
 head -n ${linenum1} ${scratch}/allelse_tmp.fa > ${scratch}/above1Mb_tmp.fa
 totallen1=$(wc -l ${scratch}/allelse_tmp.fa | cut -d ' ' -f1)
+#get the number of the remaining lines ; these are the 
 tailnum1=$(echo $((${totallen1}-${linenum1})))
 tail -n ${tailnum1} ${scratch}/allelse_tmp.fa > ${scratch}/below1Mb_tmp.fa
 rm ${scratch}/allelse_tmp.fa
