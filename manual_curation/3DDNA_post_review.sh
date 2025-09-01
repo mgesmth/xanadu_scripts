@@ -26,7 +26,7 @@ export TMPDIR=${core}
 
 cd ${outdir}
 
-${core}/bin/3d-dna/run-asm-pipeline-post-review.sh -g 200 --sort-outout -r ${asm} ${prim} ${merge_nodups}
+${core}/bin/3d-dna/run-asm-pipeline-post-review.sh -g 200 --sort-output -r ${asm} ${prim} ${merge_nodups}
 
 if [[ $? -eq 0 ]] ; then
   echo "[M]: Post review pipeline complete. Bye!"
