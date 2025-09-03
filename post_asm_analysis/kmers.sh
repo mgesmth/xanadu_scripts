@@ -4,8 +4,8 @@
 #SBATCH -q general
 #SBATCH -c 4
 #SBATCH --mem=10G
-#SBATCH -o ${log}/%x.%j.out
-#SBATCH -e ${log}/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/manual_curation_files/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/manual_curation_files/%x.%j.err
 
 set -e
 date
@@ -16,7 +16,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 outdir=${core}/manual_curation_files
-prim=${outdir}/interior_primary_final_mancur.fa
+prim=${outdir}/interior_primary_final_mancur2.fa
 baseprim=$(basename ${prim})
 alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
 
@@ -30,6 +30,8 @@ export PATH="/core/projects/EBP/smith/bin/genomescope2.0:$PATH"
 outmerq=${outdir}/merqury
 outfix=${outmerq}/prim_mancur_kmers
 sub_merqury=${outdir}/merqury/_submit_merqury.sh
+
+cd $outmerq
 
 ${sub_merqury} "${outfix}.meryl" ${prim} ${alt} ${outfix}
 if [[ $? -eq 0 ]] ; then
