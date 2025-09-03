@@ -14,10 +14,10 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-outdir=${core}/3DDNA
+outdir=${core}/3DDNA/mancur2
 merge_nodups=${scratch}/juicer_formanualcur/work/intdf137/aligned/merged_nodups.txt
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
-asm=${outdir}/interior_primary_final.0.review.assembly
+asm=${outdir}/interior_primary_final.1.review.assembly
 
 export PATH="${core}/bin/3d-dna:$PATH"
 module load gnu-parallel/20160622

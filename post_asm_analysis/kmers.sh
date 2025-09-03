@@ -31,7 +31,7 @@ outmerq=${outdir}/merqury
 outfix=${outmerq}/prim_mancur_kmers
 sub_merqury=${outdir}/merqury/_submit_merqury.sh
 
-${sub_merqury} "${outfix}.meryl" ${prim} ${alt} ${output}
+${sub_merqury} "${outfix}.meryl" ${prim} ${alt} ${outfix}
 if [[ $? -eq 0 ]] ; then
 echo "[M]: Done."
 exit 0
