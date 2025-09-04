@@ -4,8 +4,8 @@
 #SBATCH -q general
 #SBATCH -c 4
 #SBATCH --mem=10G
-#SBATCH -o /core/projects/EBP/smith/manual_curation_files/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/manual_curation_files/%x.%j.err
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
 
 set -e
 date
@@ -16,7 +16,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 outdir=${core}/manual_curation_files
-prim=${outdir}/interior_primary_final_mancur2.fa
+prim=${core}/3DDNA/mancur2/interior_primary_final_mancur2.fa
 baseprim=$(basename ${prim})
 alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
 
@@ -24,19 +24,14 @@ export PATH="${home}/scripts/post_asm_analysis:$PATH"
 log=${core}/manual_curation_files/log
 
 #Module files
-module load R/4.2.2 meryl/1.4.1 merqury/1.3
+module load R/4.2.2 meryl/1.4.1 merqury/1.3 java/17.0.2 samtools/1.20 bedtools/2.29.0
 export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
 export PATH="/core/projects/EBP/smith/bin/genomescope2.0:$PATH"
+#export MERQURY=/isg/shared/apps/merqury/1.3/merqury.sh
 outmerq=${outdir}/merqury
-outfix=${outmerq}/prim_mancur_kmers
-sub_merqury=${outdir}/merqury/_submit_merqury.sh
-
+outfix=prim_mancur_kmers
+sub_merqury=${outmerq}/_submit_merqury.sh
+meryldb=${core}/merqury_out/intDF_hifi_CBP.meryl
 cd $outmerq
 
-${sub_merqury} "${outfix}.meryl" ${prim} ${alt} ${outfix}
-if [[ $? -eq 0 ]] ; then
-echo "[M]: Done."
-exit 0
-else
-echo "[E]: Merqury run failed. Exit code $?"
-fi
+${sub_merqury} ${meryldb} ${prim} ${alt} ${outfix}
