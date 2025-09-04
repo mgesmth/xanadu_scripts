@@ -4,8 +4,8 @@
 #SBATCH -q himem
 #SBATCH -c 36
 #SBATCH --mem=1000G
-#SBATCH -o ${log}/%x.%j.out
-#SBATCH -e ${log}/%x.%j.err
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
 
 date
 set -e
