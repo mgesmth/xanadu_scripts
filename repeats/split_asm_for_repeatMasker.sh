@@ -68,7 +68,7 @@ done
 
 samtools faidx ${home}/above1Mb_tmp.fa
 #Get the number of the last above 1Mb scaffold - this will be added to the split scaffold names
-last_above=$(tail -n1 ${home}/above1Mb_tmp.fa | awk '{split($1,m,"_") ; print m[3]}')
+last_above=$(tail -n1 ${home}/above1Mb_tmp.fa.fai | awk '{split($1,m,"_") ; print m[3]}')
 seqkit split -s 1 ${home}/below1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O ${splitdir}/below_1Mb
 cd ${splitdir}/below_1Mb
 ls -1 * | while read -r file ; do
