@@ -14,9 +14,9 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 primary=${core}/3DDNA/mancur2/interior_primary_final_mancur2.fa
-splitdir=${home}/mancur_splitasm
+splitdir=${home}/repeats_mancur/mancur_splitasm
 
-module load samtools/1.19
+module load samtools/1.20
 module load seqkit/2.10.0
 
 #find where the first 20 scaffolds end in fasta file and send to tmp 20 scaffold file, and all else to another file
@@ -49,7 +49,7 @@ head -n ${linenum1} ${home}/allelse_tmp.fa > ${home}/above1Mb_tmp.fa
 totallen1=$(wc -l ${home}/allelse_tmp.fa | cut -d ' ' -f1)
 #get the number of the remaining lines ; these are the 
 tailnum1=$(echo $((${totallen1}-${linenum1})))
-tail -n ${tailnum1} ${home}/allelse_tmp.fa > ${scratch}/below1Mb_tmp.fa
+tail -n ${tailnum1} ${home}/allelse_tmp.fa > ${home}/below1Mb_tmp.fa
 rm ${home}/allelse_tmp.fa* linenum1.tmp
 
 #split the tmp fasta files into 20 parts for each scaffold
