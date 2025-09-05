@@ -17,9 +17,9 @@ echo "[M]: Beginning categorization of SVs"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-prim=${scratch}/interior_primary_final_mancur_bigscaffoldsplit.fa
-alt=${scratch}/interior_alternate_1Mb.fa
-coast=${scratch}/coastal_1Mb.fa
+prim=${core}/manual_curation_files/interior_primary_final_mancur_bigscaffoldsplit.fa
+alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
+coast=${core}/coastal/coastalDF_scaffrenamed_sorted.fa
 prx="final_finalpangenome"
 outdir=${core}/manual_curation_files/minigraph
 
