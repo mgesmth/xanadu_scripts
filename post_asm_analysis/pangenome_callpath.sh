@@ -4,6 +4,8 @@
 #SBATCH -q himem
 #SBATCH -c 24
 #SBATCH --mem=1000G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
