@@ -76,7 +76,7 @@ ls -1 * | while read -r file ; do
   new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+last".fa"}')
     mv ${file} ${new_name}
 done
-rm ${home}/above1Mb_tmp.fa* ${home}/below1Mb_tmp.fa
+#rm ${home}/above1Mb_tmp.fa* ${home}/below1Mb_tmp.fa
 
 
 
