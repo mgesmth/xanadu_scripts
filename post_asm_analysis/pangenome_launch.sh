@@ -22,7 +22,7 @@ scripts=${home}/scripts/post_asm_analysis
 
 ##Generate pangenome graph ----
 sbatch ${scripts}/pangenome_graph_generation.sh > pangen.jid
-pangen_jid=$(cat pangen_jid.txt | cut -d ' ' -f4)
+pangen_jid=$(cat pangen.jid | cut -d ' ' -f4)
 
 #Call paths through all asms in pangenome (including reference) - neccesary to get the VCF files
 ##Call primary ----
