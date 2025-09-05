@@ -38,8 +38,9 @@ alt_prefix=$(basename "$alt" | sed 's/.fa//')
 coast_prefix=$(basename "$coast" | sed 's/.fa//')
 
 #Copy beds to a temp dir because you need to paste *.bed as part of the command
-mkdir ${scratch}/minigraph_tmp
-cd ${scratch}/minigraph_tmp
+cd ${outdir}
+mkdir minigraph_tmp
+cd minigraph_tmp
 cp "${outdir}/${prx}_primcall.bed" .
 cp "${outdir}/${prx}_altcall.bed" .
 cp "${outdir}/${prx}_coastcall.bed" .
