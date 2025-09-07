@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH -J repeatMasker
+#SBATCH -J repeatMasker_redo
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 6
 #SBATCH --mem=60G
-#SBATCH --array=[0-19]
+#SBATCH --array=[0-3]
 #SBATCH -o %x.%a.%j.out
 #SBATCH -e %x.%a.%j.err
 
@@ -19,7 +19,7 @@ tetools=${core}/bin/dfam-tetools-latest.sif
 
 cd ${repdir}
 
-files=($(ls -1 interior*))
+files=($(cat redo.txt))
 file=${files[$SLURM_ARRAY_TASK_ID]}
 
 singularity exec $tetools \

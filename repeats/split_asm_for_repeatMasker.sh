@@ -49,7 +49,7 @@ totallen1=$(wc -l ${home}/allelse_tmp.fa | cut -d ' ' -f1)
 #get the number of the remaining lines ; these are the 
 tailnum1=$(echo $((${totallen1}-${linenum1})))
 tail -n ${tailnum1} ${home}/allelse_tmp.fa > ${home}/below1Mb_tmp.fa
-rm ${home}/allelse_tmp.fa* linenum1.tmp
+rm ${home}/allelse_tmp.fa* linenum1.tmp first_small_scaffold.tmp
 
 #split the tmp fasta files into 20 parts for each scaffold
 seqkit split -s 1 ${home}/20_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O ${splitdir}/first_20
@@ -66,13 +66,12 @@ no_suf=${file/.fa/}
 new_name=$(echo "$no_suf" | awk '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+20".fa"}')
 mv ${file} tmp/${new_name}
 done
-rm *.fa
 mv tmp/*.fa .
 rm -r tmp/
 
 samtools faidx ${home}/above1Mb_tmp.fa
 #Get the number of the last above 1Mb scaffold - this will be added to the split scaffold names
-last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") ; print m[2]}')
+last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") ; print m[2]+20}')
 seqkit split -s 1 ${home}/below1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O ${splitdir}/below_1Mb
 cd ${splitdir}/below_1Mb
 ls -1 * > below.txt
@@ -82,7 +81,6 @@ no_suf=${file/.fa/}
 new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+last".fa"}')
 mv ${file} tmp/${new_name}
 done
-rm *.fa
 mv tmp/*.fa .
 rm -r tmp/
 rm ${home}/above1Mb_tmp.fa* ${home}/below1Mb_tmp.fa
