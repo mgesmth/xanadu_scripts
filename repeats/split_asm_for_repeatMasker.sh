@@ -59,14 +59,16 @@ rm ${home}/20_tmp.fa
 seqkit split -s 1 ${home}/above1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O ${splitdir}/above_1Mb
 cd ${splitdir}/above_1Mb
 ls -1 * > above.txt
+mkdir tmp
 cat above.txt | while read -r file ; do
 no_suf=${file/.fa/}
 #scaffold number will be the original number plus 20 (since the first 20 are already split)
 new_name=$(echo "$no_suf" | awk '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+20".fa"}')
-echo $no_suf
-echo $new_name
-mv ${file} ${new_name}
+mv ${file} tmp/${new_name}
 done
+rm *.fa
+mv tmp/*.fa .
+rm -r tmp/
 
 samtools faidx ${home}/above1Mb_tmp.fa
 #Get the number of the last above 1Mb scaffold - this will be added to the split scaffold names
@@ -74,13 +76,15 @@ last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") 
 seqkit split -s 1 ${home}/below1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O ${splitdir}/below_1Mb
 cd ${splitdir}/below_1Mb
 ls -1 * > below.txt
+mkdir tmp
 cat below.txt | while read -r file ; do
 no_suf=${file/.fa/}
 new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+last".fa"}')
-mv ${file} ${new_name}
-echo $no_suf
-echo $new_name
+mv ${file} tmp/${new_name}
 done
+rm *.fa
+mv tmp/*.fa .
+rm -r tmp/
 rm ${home}/above1Mb_tmp.fa* ${home}/below1Mb_tmp.fa
 
 
