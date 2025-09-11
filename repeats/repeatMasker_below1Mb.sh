@@ -13,7 +13,7 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-repdir=${home}/repeats_mancur/above_1Mb
+repdir=${home}/repeats_mancur/below_1Mb
 db=${home}/repeats/primary_db
 tetools=${core}/bin/dfam-tetools-latest.sif
 
