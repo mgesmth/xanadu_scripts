@@ -24,5 +24,5 @@ fi
 module load seqkit/2.10.0
 
 seqkit split2 ${hifi} -p 300 --by-part-prefix "$prx" -O ${outdir}
-cd ${oudir}
+cd ${outdir}
 ls *.fastq.gz > chunks.txt
