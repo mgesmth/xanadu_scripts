@@ -5,7 +5,7 @@
 #SBATCH -c 8
 #SBATCH -n 1
 #SBATCH --mem=15G
-#SBATCH --array=[0-287]%100
+#SBATCH --array=[0-299]
 #SBATCH -d afterok:<ITERATOR>
 #SBATCH -o %x.%a.%A.out
 #SBATCH -e %x.%a.%A.err
