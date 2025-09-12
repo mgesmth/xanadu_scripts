@@ -17,7 +17,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP
 scratch=/scratch/msmith
 mancur=${core}/manual_curation_files
-asm=${mancur}/interior_primary_mancur.fa
+asm=${mancur}/interior_primary_final_mancur2.fa
 outdir=${home}/transcriptome/01_transcriptome_alignment/GMAP
 
 #Small minor scaffolds are most likely to be repetitive and tf not euchromatic
@@ -53,7 +53,7 @@ head -n ${line_num} "$asm" > interior_primary_mancur_500kb.fa
 #Get preferred scaffold names for gmap index build
 samtools faidx interior_primary_mancur_500kb.fa
 cut -f1 interior_primary_mancur_500kb.fa.fai > ${outdir}/old_scaffold_names.txt
-cut -f1 interior_primary_mancur_500kb.fa.fai | sed 's/_primary//g' > ${outdir}/new_scaffold_names.txt
+cut -f1 interior_primary_mancur_500kb.fa.fai | sed 's/HiC_//g' > ${outdir}/new_scaffold_names.txt
 paste ${outdir}/old_scaffold_names.txt ${outdir}/new_scaffold_names.txt > ${outdir}/scaffolds.txt && \
 rm ${outdir}/new_scaffold_names.txt ${outdir}/old_scaffold_names.txt
 #reset asm
@@ -77,5 +77,3 @@ cd ${outdir}
 gmapl -K 1000000 -L 10000000 --cross-species -F -D ${outdir}/db -d "intdf137" \
 -f gff3_gene --min-trimmed-coverage=0.95 --min-identity=0.95 -n1 -T \
 "$transcripts" > intdf137_gmap_genomeannotation_00.gff3
-
-
