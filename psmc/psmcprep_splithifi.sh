@@ -9,7 +9,7 @@
 
 set -e
 date
-echo "[M]: Host Namer: `hostname`"
+echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/msmith
@@ -17,7 +17,7 @@ scratch=/scratch/msmith
 hifi=/seqdata/EBP/plant/Pseudotsuga_menziesii/allhifi_merged_trimmed.fastq.gz
 prx="hifi_split"
 outdir=${scratch}/hifi_split
-if [[ ! -d ${outdir}]] ; then
+if [[ ! -d ${outdir} ]] ; then
   mkdir ${outdir}
 fi
 
