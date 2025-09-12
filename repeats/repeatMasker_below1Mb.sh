@@ -4,7 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 3
 #SBATCH --mem=8G
-#SBATCH --array=[0-1600]
+#SBATCH --array=[0-1600]%20
 #SBATCH -o %x.%a.%A.out
 #SBATCH -e %x.%a.%A.err
 
