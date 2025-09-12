@@ -5,7 +5,6 @@
 #SBATCH -n 1
 #SBATCH -c 8
 #SBATCH --mem=40G
-#SBATCH -d afterok:<SPLIT HIFI>
 #SBATCH --array=[0-299]
 #SBATCH -o %j.%A.%a.out
 #SBATCH -e %j.%A.%a.err
