@@ -27,7 +27,7 @@ FILES=($(cat ${hifidir}/chunks.txt))
 FQ=${FILES[$SLURM_ARRAY_TASK_ID]}
 base_fq=$(basename ${FQ})
 base_prim=$(basename ${prim})
-outfile="${outdir}/hifialn_${base}.bam"
+outfile="${outdir}/hifialn_${SLURM_ARRAY_TASK_ID}.bam"
 tmpfile="${core}/hifi_tmp/minitmp_${SLURM_ARRAY_TASK_ID}"
 
 echo "[M]: Welcome to minimap alignment task ${SLURM_ARRAY_TASK_ID}."
