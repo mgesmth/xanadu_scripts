@@ -7,8 +7,8 @@
 #SBATCH --mem=15G
 #SBATCH --array=[0-299]
 #SBATCH -d afterok:<ITERATOR>
-#SBATCH -o %x.%a.%A.out
-#SBATCH -e %x.%a.%A.err
+#SBATCH -o %j.%a.%A.out
+#SBATCH -e %j.%a.%A.err
 
 set -e
 date
