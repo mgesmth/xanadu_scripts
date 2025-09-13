@@ -4,6 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 1
 #SBATCH --mem=1G
+#SBATCH -d afterok:9365832
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
