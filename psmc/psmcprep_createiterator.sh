@@ -4,7 +4,6 @@
 #SBATCH -q general
 #SBATCH -c 1
 #SBATCH --mem=1G
-#SBATCH -d afterok:<ALIGNARRAY>
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 

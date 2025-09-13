@@ -6,7 +6,6 @@
 #SBATCH -n 1
 #SBATCH --mem=15G
 #SBATCH --array=[0-299]
-#SBATCH -d afterok:<ITERATOR>
 #SBATCH -o %j.%a.%A.out
 #SBATCH -e %j.%a.%A.err
 
@@ -17,7 +16,7 @@ echo "[M]: Host Name: `hostname`"
 #Module files
 module load psmc/0.6.5
 module load samtools/1.20
-module load bcftools/1.19
+module load bcftools/1.20
 module load tabix/0.2.6
 
 #Variables
@@ -36,12 +35,12 @@ echo "[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo "[M]: We are transforming "$BAM" to "$VCFGZ""
 echo "[M]: Beginning..."
 
-bcftools mpileup -q 30 -Q 30 -f "$prim" "${bams}/${BAM}" | bcftools call -c -Ov | \
-bcftools sort -T ${scratch}/msmith/sortb | bgzip -c > "${vcfs}/${VCFGZ}"
+bcftools mpileup -q 30 -Q 30 -f "$prim" "${hifi_aln}/${BAM}" | bcftools call -c -Ov | \
+bcftools sort -T ${scratch}/msmith/sortb | bgzip -c > "${vcf_dir}/${VCFGZ}"
 if [[ $? -eq 0 ]] ; then
   date
   echo "[M]: VCF created. Indexing..."
-  bcftools index -p "vcf" "${vcfs}/${VCFGZ}"
+  bcftools index -p "vcf" "${vcf_dir}/${VCFGZ}"
   if [[ $? -eq 0 ]] ; then
     echo "[M]: Index created. Bye!"
     exit 0
