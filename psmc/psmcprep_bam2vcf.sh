@@ -6,9 +6,8 @@
 #SBATCH -n 1
 #SBATCH --mem=15G
 #SBATCH --array=[0-299]
-#SBATCH -d afterok:9366837
-#SBATCH -o %j.%a.%A.out
-#SBATCH -e %j.%a.%A.err
+#SBATCH -o %x.%A.%a.out
+#SBATCH -e %x.%A.%a.err
 
 set -e
 date
@@ -37,7 +36,7 @@ echo "[M]: We are transforming "$BAM" to "$VCFGZ""
 echo "[M]: Beginning..."
 
 bcftools mpileup -q 30 -Q 30 -f "$prim" "${hifi_aln}/${BAM}" | bcftools call -c -Ov | \
-bcftools sort -T ${scratch}/msmith/sortb | bgzip -c > "${vcf_dir}/${VCFGZ}"
+bcftools sort -T ${scratch}/sortb | bgzip -c > "${vcf_dir}/${VCFGZ}"
 if [[ $? -eq 0 ]] ; then
   date
   echo "[M]: VCF created. Indexing..."
