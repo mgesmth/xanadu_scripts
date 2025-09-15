@@ -6,7 +6,7 @@
 #SBATCH -n 1
 #SBATCH --mem=15G
 #SBATCH --array=[0-299]
-#SBATCH -d afterok:9365833
+#SBATCH -d afterok:9366837
 #SBATCH -o %j.%a.%A.out
 #SBATCH -e %j.%a.%A.err
 
