@@ -66,7 +66,7 @@ seqkit split -s 1 "$asm" -O ${outdir}/split_fa
 module unload seqkit/2.10.0
 
 #Okay start with GMAP
-export PATH="${core}/bin/gmap-2025-07-31/bin:$PATH"
+export PATH="${core}/bin/gmap-gmap_2017_03_17/bin:$PATH"
 transcripts=${home}/transcriptome/01_transcriptome_alignment/centroids_clustered.fasta
 #Build DB
 cd ${outdir}/split_fa

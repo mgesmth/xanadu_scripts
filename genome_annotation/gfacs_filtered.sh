@@ -17,6 +17,11 @@ scratch=/scratch/msmith
 mancur=${core}/manual_curation_files
 asm=${mancur}/interior_primary_final_mancur2.fa
 outdir=${home}/transcriptome/01_transcriptome_alignment/GMAP
+gfacs=${home}/transcriptome/01_transcriptome_alignment/gFACs/filtered
+if [[ ! -d ${gfacs} ]] ; then
+  mkdir ${gfacs}
+fi
+gmap=${home}/transcriptome/01_transcriptome_alignment/GMAP
 
 module load gFACs/1.1.2
 gfacs_script=/isg/shared/apps/gFACs/1.1.2/gFACs.pl
@@ -32,8 +37,8 @@ perl ${gfacs_script} \
 --allowed-inframe-stop-codons 0 \
 --min-exon-size 9 \
 --min-intron-size 9 \
---create-gtf \
--p transcriptome \
---fasta /isg/shared/databases/alignerIndex/plant/Psme/genome/v1.0.5000/Psme_v1.0.5000.genome.masked.fa \
--O /labs/Wegrzyn/ConiferGenomes/Psme/analysis/SURF_annotation/23_Fixed_Gmap/gFACs/filtered_in_frame_stop \
-/labs/Wegrzyn/ConiferGenomes/Psme/analysis/SURF_annotation/23_Fixed_Gmap/run_gmap/updated_gmap_genes_psme.gff3
+--create-gtf --create-gff3 \
+-p "intdf137_filtered" \
+--fasta ${asm} \
+-O ${gfacs} \
+${gmap}/intdf137_gmap_genomeannotation_00.gff3
