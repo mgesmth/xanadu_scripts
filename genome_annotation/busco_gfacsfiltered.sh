@@ -8,6 +8,9 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
+#Get BUSCO completeness on first filter of transcriptome alignment
+#Sixth step in genome annotation 
+
 set -e
 date
 echo "[M]: Host Name: `hostname`"

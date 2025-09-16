@@ -7,6 +7,10 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
+#Extract transcriptome alignment and filter
+#Fifth step in genome annotation
+#Adapted from https://gitlab.com/PlantGenomicsLab/genome-annotation-of-douglas-fir/-/blob/master/0_Transcriptome_Alignment/scripts/filtered_gfacs.sh?ref_type=heads
+
 set -e
 date
 echo "[M]: Host Name: `hostname`"

@@ -8,6 +8,8 @@
 #SBATCH -e %x.%j.err
 
 #Align clustered transcripts to new genome
+#Third step in genome annotation
+#Adapted from https://gitlab.com/PlantGenomicsLab/genome-annotation-of-douglas-fir/-/blob/master/0_Transcriptome_Alignment/scripts/gmap.sh?ref_type=heads
 
 set -e
 date
