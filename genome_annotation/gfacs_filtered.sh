@@ -26,6 +26,8 @@ gmap=${home}/transcriptome/01_transcriptome_alignment/GMAP
 module load gFACs/1.1.2
 gfacs_script=/isg/shared/apps/gFACs/1.1.2/gFACs.pl
 
+#filtering out non-uniqe genes, genes with CDS smaller than 300, genes without start and stop codons, genes with introns or exons smaller than 9 bp, and any genes with inframe stop codons (i.e., stop codon is not the last codon)
+
 perl ${gfacs_script} \
 -f gmap_2017_03_17_gff3 \
 --statistics \
