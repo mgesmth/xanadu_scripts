@@ -8,6 +8,8 @@
 #SBATCH -e %x.%j.err
 
 #Align clustered transcripts to new genome
+#Third step in genome annotation
+#Adapted from https://gitlab.com/PlantGenomicsLab/genome-annotation-of-douglas-fir/-/blob/master/0_Transcriptome_Alignment/scripts/gmap.sh?ref_type=heads
 
 set -e
 date
@@ -66,7 +68,7 @@ seqkit split -s 1 "$asm" -O ${outdir}/split_fa
 module unload seqkit/2.10.0
 
 #Okay start with GMAP
-export PATH="${core}/bin/gmap-2025-07-31/bin:$PATH"
+export PATH="${core}/bin/gmap-gmap_2017_03_17/bin:$PATH"
 transcripts=${home}/transcriptome/01_transcriptome_alignment/centroids_clustered.fasta
 #Build DB
 cd ${outdir}/split_fa
