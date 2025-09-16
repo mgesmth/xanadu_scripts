@@ -29,7 +29,7 @@ export PATH="${core}/bin/minigraph-0.21:$PATH"
 export PATH="${core}/bin/gfatools:$PATH"
 
 #call path
-minigraph -cxasm --call -t "$threads" "${outdir}/${prx}.gfa" $asm > "${outdir}/${outfix}.bed"
+minigraph -cxasm --call -t "$threads" "${outdir}/${prx}.gfa" ${asm} > "${outdir}/${outfix}.bed"
 
 if [[ $? -eq 0 ]] ; then
 echo "[M]: Done."
