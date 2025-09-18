@@ -63,16 +63,16 @@ asm=${mancur}/interior_primary_mancur_500kb.fa
 rm line_number.tmp
 
 #to build index, must have scaffolds in individual fasta files
-module load seqkit/2.10.0
-seqkit split -s 1 "$asm" -O ${outdir}/split_fa
-module unload seqkit/2.10.0
+#module load seqkit/2.10.0
+#seqkit split -s 1 "$asm" -O ${outdir}/split_fa
+#module unload seqkit/2.10.0
 
 #Okay start with GMAP
 export PATH="${core}/bin/gmap-gmap_2017_03_17/bin:$PATH"
 transcripts=${home}/transcriptome/01_transcriptome_alignment/centroids_clustered.fasta
 #Build DB
-cd ${outdir}/split_fa
-cat *.fa | gmap_build -D ${outdir}/db -E -d "intdf137" -n ${outdir}/scaffolds.txt -s names
+#cd ${outdir}/split_fa
+gmap_build -D ${outdir}/db -E -d "intdf137" -n ${outdir}/scaffolds.txt -s names ${asm}
 #this command is taken from here https://gitlab.com/PlantGenomicsLab/genome-annotation-of-douglas-fir/-/blob/master/0_Transcriptome_Alignment/scripts/gmap.sh
 #the original transcriptome paper
 cd ${outdir}
