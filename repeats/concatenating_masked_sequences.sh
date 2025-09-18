@@ -55,4 +55,4 @@ done
 
 #Concatenate all
 cd ..
-cat first_20/first20_masked.fa above_1Mb/above1Mb_masked.fa below_1Mb/below1Mb_masked.fa > interior_primary_final_mancur2_masked.fa
+cat first_20/first20_masked.fa above_1Mb/above1Mb_masked.fa below_1Mb/below1Mb_masked.fa > interior_primary_mancur_masked.fa
