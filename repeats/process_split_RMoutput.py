@@ -57,48 +57,46 @@ for file in outfiles:
 tbl_files=glob.glob(os.path.join(in_dir,"interior_primary_mancur_scaffold*.fa.tbl"))
 merged_tbl=sep.join((out_path, 'merged.fa.tbl'))
 
-with open(merged_tbl, "w") as of:
-    pass
-    #add some header system here
+repeat_classes=['retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
+toplevel_classes=['genome_total','masked_total']
 
-#initialize sum variables
-total_length=0
-bases_masked=0
-##retrotransposons
-retro_length=0
-retro_num=0
-sine_length=0
-sine_num=0
-penelope_length=0
-penelope_num=0
-line_length=0
-line_num=0
-ltr_length=0
-ltr_num=0
-belpao_length=0
-belpao_num=0
-copia_length=0
-copia_num=0
-gypsy_length=0
-gypsy_num=0
-retroviral_length=0
-retroviral_num=0
-##dna_transposons
-dna_length=0
-dna_num=0
-#other
-circle_length=0
-circle_num=0
-unclassified_length=0
-unclassified_num=0
-srna_length=0
-srna_num=0
-satellites_length=0
-satellites_num=0
-simple_length=0
-simple_num=0
-lowcomp_length=0
-lowcomp_num=0
+#create dictionary to store repeat class values
+global tbl_values = {
+    "total_length": 0
+    "bases_masked": 0
+    "retro_length": 0
+    "retro_num": 0
+    "sine_length": 0
+    sine_num": 0
+    "penelope_length": 0
+    "penelope_num": 0
+    "line_length": 0
+    "line_num": 0
+    "ltr_length": 0
+    "ltr_num": 0
+    "belpao_length": 0
+    "belpao_num": 0
+    "copia_length": 0
+    "copia_num": 0
+    "gypsy_length": 0
+    "gypsy_num": 0
+    "retroviral_length": 0
+    "retroviral_num": 0
+    "dna_length": 0
+    "dna_num": 0
+    "circle_length": 0
+    "circle_num": 0
+    "unclassified_length": 0
+    "unclassified_num": 0
+    "srna_length": 0
+    "srna_num": 0
+    "satellites_length": 0
+    "satellites_num": 0
+    "simple_length": 0
+    "simple_num": 0
+    "lowcomp_length": 0
+    "lowcomp_num": 0
+}
 
 for file in tbl_files:
     with open(file, "r") as f:
@@ -128,8 +126,8 @@ for file in tbl_files:
                     toplevel_check=0
                     #turn on retro check to process all retro elements
                     retro_check=1
-                    retro_length+=float(fields[2])
-                    retro_num+=float(fields[1])
+                    tbl_values["retro_length"]+=int(fields[2])
+                    tbl_values["retro_num"]+=int(fields[1])
                     #this section of code will not be entered again for the rest of the file
                 elif fields[0] != 'Retroelements':
                     #If top level check is on, haven't gotten to Retroelement line yet, get total length info I want
@@ -239,4 +237,5 @@ for file in tbl_files:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
 with open(merged_tbl, "w"):
-    
+    header=['class','number_of_elements','length_of_sequence']
+    of.write('\t'.join(header))
