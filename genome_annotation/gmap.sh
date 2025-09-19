@@ -16,6 +16,7 @@ date
 echo "[M]: Host Name: `hostname`"
 
 module load samtools/1.19
+module load gmap/2017-03-17
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
