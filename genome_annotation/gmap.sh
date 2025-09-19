@@ -27,6 +27,7 @@ outdir=${home}/transcriptome/01_transcriptome_alignment/GMAP
 #saving to a dummy file for speed in next step
 
 cd ${mancur}
+echo "[M]: Finding correct line number in asm."
 awk '
 #process index - get the scaffold after the last scaffold that is 500kb or bigger (we need to cut off the asm a line above that header)
 FNR==NR {
@@ -48,10 +49,13 @@ FNR!=NR {
     next
   }
 }' "${asm}.fai" ${asm} > line_number.tmp
+echo "[M]: Done."
 
 line_num=$(tr -d '\n' < line_number.tmp)
+echo "[M]: Creating 500kb assembly."
 head -n ${line_num} "$asm" > interior_primary_mancur_500kb.fa
 
+echo "[M]: Getting scaffold names"
 #Get preferred scaffold names for gmap index build
 samtools faidx interior_primary_mancur_500kb.fa
 cut -f1 interior_primary_mancur_500kb.fa.fai > ${outdir}/old_scaffold_names.txt
@@ -67,6 +71,7 @@ rm line_number.tmp
 #seqkit split -s 1 "$asm" -O ${outdir}/split_fa
 #module unload seqkit/2.10.0
 
+echo "[M]: Starting with GMAP"
 #Okay start with GMAP
 export PATH="${core}/bin/gmap-gmap_2017_03_17/bin:$PATH"
 transcripts=${home}/transcriptome/01_transcriptome_alignment/centroids_clustered.fasta
