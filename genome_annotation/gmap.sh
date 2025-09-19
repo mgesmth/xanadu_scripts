@@ -15,6 +15,8 @@ set -e
 date
 echo "[M]: Host Name: `hostname`"
 
+module load samtools/1.19
+
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
