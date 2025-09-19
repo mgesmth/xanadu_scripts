@@ -27,7 +27,7 @@ echo "[M]: Downloading accession ${acc} (Slurm task ${SLURM_ARRAY_TASK_ID})"
 
 #the core directory presently has more disk space than scratch, so using that
 
-fasterq-dump -v -O ${outdir} -e 6 -t ${scratch} "$acc"
+#fasterq-dump -v -O ${outdir} -e 6 -t ${scratch} "$acc"
 #remove the prefetch sra directory
 rm -r ${outdir}/"$acc"
 gzip "${acc}.fastq"
