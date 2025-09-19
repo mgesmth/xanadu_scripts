@@ -101,11 +101,12 @@ lowcomp_length=0
 lowcomp_num=0
 
 for file in tbl_files:
-    with open(file, "r") as f, open(merged_table, "a") as of:
+    with open(file, "r") as f:
 
         #set checks to starting state
         toplevel_check=1
         retro_check=0
+        line_check=0
         dna_check=0
         other_check=0
 
@@ -120,10 +121,10 @@ for file in tbl_files:
             fields=line.strip().split()
 
 
-            #The retroelement line is the first line in the main body of the file. Above it, lines need to be processed differently. When Retroelement is reached, turn off "top level" check
             if toplevel_check=1:
                 #process turn off line first
                 if fields[0] == 'Retroelements':
+                    #turn off toplevel_check
                     toplevel_check=0
                     #turn on retro check to process all retro elements
                     retro_check=1
@@ -143,6 +144,7 @@ for file in tbl_files:
 
             #if past retroelement line
             elif toplevel_check=0:
+                #first section (retrotransposons)
                 if retro_check=1 and dna_check=0 and other_check=0:
                     #process turn off line first
                     if fields[0] == 'DNA' and fields[1] == 'transposons':
@@ -153,17 +155,29 @@ for file in tbl_files:
                         dna_check=1
                         dna_length+=float(fields[3])
                         dna_num+=float(fields[2])
-                        #this block won't be entered again until next file
+                        #this block won't be entered again
                     elif fields[0] == 'SINEs:':
                         sine_num+=float(fields[1])
                         sine_length+=float(fields[2])
                     elif fields[0] == 'Penelope:':
                         penelope_num+=float(fields[1])
                         penelope_length+=float(fields[2])
+
                     elif fields[0] == 'LINEs:':
                         #I'm combining all the lines categories
                         line_num+=float(fields[1])
                         line_length+=float(fields[2])
+                        line_check=1
+                    elif line_check=1 and fields[0] != "L1/CIN4":
+                        #lines b/w LINE and last LINE subcategory
+                        line_num+=float(fields[1])
+                        line_length+=float(fields[2])
+                    elif line_check=1 and fields[0] == "L1/CIN4":
+                        #last LINE subcategory
+                        line_num+=float(fields[1])
+                        line_length+=float(fields[2])
+                        line_check=0
+
                     elif fields[0] == 'LTR':
                         ltr_num+=float(fields[2])
                         ltr_length+=float(fields[4])
@@ -224,4 +238,5 @@ for file in tbl_files:
             else:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
-        
+with open(merged_tbl, "w"):
+    
