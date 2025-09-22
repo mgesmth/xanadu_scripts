@@ -116,7 +116,7 @@ for file in tbl_files:
                         dna_check=1
                         tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
                         tbl_values.at['DNA_transposons', 'length'] += int(fields[3])
-                        af.write("dna_transposon" + "\n")
+                        #af.write("dna_transposon" + "\n")
                         #this block won't be entered again
                     elif fields[0] == 'SINEs:':
                         tbl_values.at['SINE', 'number'] += int(fields[1])
@@ -171,6 +171,7 @@ for file in tbl_files:
                         #This category name has whitespace, so has to be handled differently
                         tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
                         tbl_values.at['DNA_transposons', 'length'] += int(fields[3])
+                        af.write('other' + '\n')
                     elif fields[0] == 'P-element,':
                         #the Other DNA transposon category name runs onto two lines; skipping this line as there's no data
                         continue
@@ -178,6 +179,7 @@ for file in tbl_files:
                         #else it will be any other DNA transposon category
                         tbl_values.at['DNA_transposons', 'number'] += int(fields[1])
                         tbl_values.at['DNA_transposons', 'length'] += int(fields[2])
+                        af.write('dna_transposon_subcat' + '\n')
 
                 #Process all other repeat elements
             elif retro_check == 0 and dna_check == 0 and other_check == 1:
@@ -185,24 +187,24 @@ for file in tbl_files:
                 if fields[0] == 'Unclassified:':
                     tbl_values.at['unclassified', 'number'] += int(fields[1])
                     tbl_values.at['unclassified', 'length'] += int(fields[2])
-                    af.write("unclassified" + "\n")
+                    #af.write("unclassified" + "\n")
                 elif fields[0] == 'Small' and fields[1] == 'RNA:':
                     tbl_values.at['sRNA', 'number'] += int(fields[2])
                     tbl_values.at['sRNA', 'length'] += int(fields[3])
-                    af.write("sRNA" + "\n")
+                    #af.write("sRNA" + "\n")
                 elif fields[0] == 'Satellites:':
                     tbl_values.at['satellites', 'number'] += int(fields[1])
                     tbl_values.at['satellites', 'length'] += int(fields[2])
-                    af.write("satellites" + "\n")
+                    #af.write("satellites" + "\n")
                 elif fields[0] == 'Simple' and fields[1] == 'repeats:':
                     tbl_values.at['simple_repeats', 'number'] += int(fields[2])
                     tbl_values.at['simple_repeats', 'length'] += int(fields[3])
-                    af.write("simple" + "\n")
+                    #af.write("simple" + "\n")
                 else:
                     #else it will be low complexity
                     tbl_values.at['low_complexity', 'number'] += int(fields[2])
                     tbl_values.at['low_complexity', 'length'] += int(fields[3])
-                    af.write("lowcomp" + "\n")
+                    #af.write("lowcomp" + "\n")
             else:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
