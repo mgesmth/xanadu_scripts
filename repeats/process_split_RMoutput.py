@@ -46,10 +46,15 @@ for file in out_files:
                     fields.append('F')
                 else:
                     raise Exception('[E]: Error parsing better_match field')
-                of.write('\t'.join(map(str, fields) + "\n")
-                
-repeat_classes=['genome_total','masked_total','retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
+                of.write('\t'.join(map(str, fields)) + "\n")
 
+'''
+
+Process *.tbl files
+
+'''
+
+repeat_classes=['genome_total','masked_total','retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
 #create dictionary to store repeat class values
 #initialize empty (with nans)
 df = pd.DataFrame(columns=['number','length'], index=repeat_classes)
