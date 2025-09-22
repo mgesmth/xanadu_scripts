@@ -4,6 +4,8 @@ import glob
 import os
 import sys
 import re
+import pandas as pd
+import numpy as np
 
 if __name__ == "__main__":
 	in_dir=sys.argv[1]
@@ -57,46 +59,13 @@ for file in outfiles:
 tbl_files=glob.glob(os.path.join(in_dir,"interior_primary_mancur_scaffold*.fa.tbl"))
 merged_tbl=sep.join((out_path, 'merged.fa.tbl'))
 
-repeat_classes=['retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
-toplevel_classes=['genome_total','masked_total']
+repeat_classes=['genome_total','masked_total','retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
 
 #create dictionary to store repeat class values
-global tbl_values = {
-    "total_length": 0
-    "bases_masked": 0
-    "retro_length": 0
-    "retro_num": 0
-    "sine_length": 0
-    sine_num": 0
-    "penelope_length": 0
-    "penelope_num": 0
-    "line_length": 0
-    "line_num": 0
-    "ltr_length": 0
-    "ltr_num": 0
-    "belpao_length": 0
-    "belpao_num": 0
-    "copia_length": 0
-    "copia_num": 0
-    "gypsy_length": 0
-    "gypsy_num": 0
-    "retroviral_length": 0
-    "retroviral_num": 0
-    "dna_length": 0
-    "dna_num": 0
-    "circle_length": 0
-    "circle_num": 0
-    "unclassified_length": 0
-    "unclassified_num": 0
-    "srna_length": 0
-    "srna_num": 0
-    "satellites_length": 0
-    "satellites_num": 0
-    "simple_length": 0
-    "simple_num": 0
-    "lowcomp_length": 0
-    "lowcomp_num": 0
-}
+#initialize empty (with nans)
+df = pd.DataFrame(columns=['class','number','length'], index=repeat_classes)
+#change nans to 0s
+tbl_values = df.fillna(0)
 
 for file in tbl_files:
     with open(file, "r") as f:
@@ -126,15 +95,15 @@ for file in tbl_files:
                     toplevel_check=0
                     #turn on retro check to process all retro elements
                     retro_check=1
-                    tbl_values["retro_length"]+=int(fields[2])
-                    tbl_values["retro_num"]+=int(fields[1])
+                    tbl_values['retrotransposons','number'] += int(fields[1])
+                    tbl_values['retrotransposons','length'] += int(fields[2])
                     #this section of code will not be entered again for the rest of the file
                 elif fields[0] != 'Retroelements':
                     #If top level check is on, haven't gotten to Retroelement line yet, get total length info I want
                     if fields[0] == 'total' and fields[1] == 'length:':
-                        total_length+=float(fields[2])
+                        tbl_values['genome_total', 'length'] += int(fields[2])
                     elif fields[0] == 'bases' and fields[1] == 'masked:':
-                        bases_masked+=float(fields[2])
+                        tbl_values['masked_total', 'length'] += int(fields[2])
                     else:
                         continue
                 else:
@@ -151,46 +120,46 @@ for file in tbl_files:
                         #I can always go back and get those if I feel it's important
                         retro_check=0
                         dna_check=1
-                        dna_length+=float(fields[3])
-                        dna_num+=float(fields[2])
+                        tbl_values['DNA_transposons', 'number'] += int(fields[2])
+                        tbl_values['DNA_transposons', 'length'] += int(fields[3])
                         #this block won't be entered again
                     elif fields[0] == 'SINEs:':
-                        sine_num+=float(fields[1])
-                        sine_length+=float(fields[2])
+                        tbl_values['SINE', 'number'] += int(fields[1])
+                        tbl_values['SINE', 'length'] += int(fields[2])
                     elif fields[0] == 'Penelope:':
-                        penelope_num+=float(fields[1])
-                        penelope_length+=float(fields[2])
+                        tbl_values['Penelope', 'number'] += int(fields[1])
+                        tbl_values['Penelope', 'length'] += int(fields[2])
 
                     elif fields[0] == 'LINEs:':
                         #I'm combining all the lines categories
-                        line_num+=float(fields[1])
-                        line_length+=float(fields[2])
+                        tbl_values['LINE', 'number'] += int(fields[1])
+                        tbl_values['LINE', 'length'] += int(fields[2])
                         line_check=1
                     elif line_check=1 and fields[0] != "L1/CIN4":
                         #lines b/w LINE and last LINE subcategory
-                        line_num+=float(fields[1])
-                        line_length+=float(fields[2])
+                        tbl_values['LINE', 'number'] += int(fields[1])
+                        tbl_values['LINE', 'length'] += int(fields[2])
                     elif line_check=1 and fields[0] == "L1/CIN4":
                         #last LINE subcategory
-                        line_num+=float(fields[1])
-                        line_length+=float(fields[2])
+                        tbl_values['LINE', 'number'] += int(fields[1])
+                        tbl_values['LINE', 'length'] += int(fields[2])
                         line_check=0
 
                     elif fields[0] == 'LTR':
-                        ltr_num+=float(fields[2])
-                        ltr_length+=float(fields[4])
+                        tbl_values['LTR', 'number'] += int(fields[2])
+                        tbl_values['LTR', 'length'] += int(fields[3])
                     elif fields[0] == 'BEL/Pao':
-                        belpao_num+=float(fields[1])
-                        belpao_length+=float(fields[2])
+                        tbl_values['Bel/Pao', 'number'] += int(fields[1])
+                        tbl_values['Bel/Pao', 'length'] += int(fields[2])
                     elif fields[0] == 'Ty1/Copia':
-                        copia_num+=float(fields[1])
-                        copia_length+=float(fields[2])
+                        tbl_values['Ty1/Copia', 'number'] += int(fields[1])
+                        tbl_values['Ty1/Copia', 'length'] += int(fields[2])
                     elif fields[0] == 'Gypsy/DIRS1':
-                        gypsy_num+=float(fields[1])
-                        gypsy_length+=float(fields[2])
+                        tbl_values['Gypsy/DIRS1', 'number'] += int(fields[1])
+                        tbl_values['Gypsy/DIRS1', 'length'] += int(fields[2])
                     elif fields[0] == 'Retroviral':
-                        retroviral_num+=float(fields[1])
-                        retroviral_length+=float(fields[2])
+                        tbl_values['Retroviral', 'number'] += int(fields[1])
+                        tbl_values['Retroviral', 'length'] += int(fields[2])
                     else:
                         raise Exception("[E]: Category not recognized. Maybe Retro check wasn't turned off?")
 
@@ -200,42 +169,41 @@ for file in tbl_files:
                     if fields[0] == 'Rolling-circles':
                         dna_check=0
                         other_check=1
-                        circle_num+=float(fields[1])
-                        circle_length+=float(fields[2])
+                        tbl_values['rolling_circles', 'number'] += int(fields[1])
+                        tbl_values['rolling_circles', 'length'] += int(fields[2])
                     elif fields[0] == 'Other' and fields[1] == '(Mirage,':
                         #This category name has whitespace, so has to be handled differently
-                        dna_num+=float(fields[2])
-                        dna_length+=float(fields[3])
+                        tbl_values['DNA_transposons', 'number'] += int(fields[2])
+                        tbl_values['DNA_transposons', 'length'] += int(fields[3])
                     elif fields[0] == 'P-element,':
                         #the Other DNA transposon category name runs onto two lines; skipping this line as there's no data
                         continue
                     else:
                         #else it will be any other DNA transposon category
-                        dna_num+=float(fields[1])
-                        dna_length+=float(fields[2])
+                        tbl_values['DNA_transposons', 'number'] += int(fields[1])
+                        tbl_values['DNA_transposons', 'length'] += int(fields[2])
 
                 #Process all other repeat elements
             elif retro_check=0 and dna_check=0 and other_check=1:
                 #rolling circles has already been processed
                 if fields[0] == 'Unclassified:':
-                    unclassified_num+=float(fields[1])
-                    unclassified_length+=float(fields[2])
+                    tbl_values['unclassified', 'number'] += int(fields[1])
+                    tbl_values['unclassified', 'length'] += int(fields[2])
                 elif fields[0] == 'Small' and fields[1] == 'RNA:':
-                    srna_num+=float(fields[2])
-                    srna_length+=float(fields[3])
+                    tbl_values['sRNA', 'number'] += int(fields[2])
+                    tbl_values['sRNA', 'length'] += int(fields[3])
                 elif fields[0] == 'Satellites:':
-                    satellites_num+=float(fields[1])
-                    satellites_length+=float(fields[2])
+                    tbl_values['satellites', 'number'] += int(fields[1])
+                    tbl_values['satellites', 'length'] += int(fields[2])
                 elif fields[0] == 'Simple' and fields[1] == 'repeats:':
-                    simple_num+=float(fields[2])
-                    simple_length+=float(fields[3])
+                    tbl_values['simple_repeats', 'number'] += int(fields[2])
+                    tbl_values['simple_repeats', 'length'] += int(fields[3])
                 else:
                     #else it will be low complexity
-                    lowcomp_num+=float(fields[2])
-                    lowcomp_length+=float(fields[3])
+                    tbl_values['low_complexity', 'number'] += int(fields[2])
+                    tbl_values['low_complexity', 'length'] += int(fields[3])
             else:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
-with open(merged_tbl, "w"):
-    header=['class','number_of_elements','length_of_sequence']
-    of.write('\t'.join(header))
+#write out dataframe:
+tbl_values.to_csv(merged_tbl, index=True)
