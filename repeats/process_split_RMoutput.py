@@ -82,7 +82,7 @@ for file in tbl_files:
             fields=line.strip().split()
 
 
-            if toplevel_check=1:
+            if toplevel_check == 1:
                 #process turn off line first
                 if fields[0] == 'Retroelements':
                     #turn off toplevel_check
@@ -104,9 +104,9 @@ for file in tbl_files:
                     raise Exception("[E]: Error while processing top level information.")
 
             #if past retroelement line
-            elif toplevel_check=0:
+            elif toplevel_check == 0:
                 #first section (retrotransposons)
-                if retro_check=1 and dna_check=0 and other_check=0:
+                if retro_check == 1 and dna_check == 0 and other_check == 0:
                     #process turn off line first
                     if fields[0] == 'DNA' and fields[1] == 'transposons':
                         #dna line in output will include all sub-categories in original files
@@ -129,11 +129,11 @@ for file in tbl_files:
                         tbl_values['LINE', 'number'] += int(fields[1])
                         tbl_values['LINE', 'length'] += int(fields[2])
                         line_check=1
-                    elif line_check=1 and fields[0] != "L1/CIN4":
+                    elif line_check == 1 and fields[0] != "L1/CIN4":
                         #lines b/w LINE and last LINE subcategory
                         tbl_values['LINE', 'number'] += int(fields[1])
                         tbl_values['LINE', 'length'] += int(fields[2])
-                    elif line_check=1 and fields[0] == "L1/CIN4":
+                    elif line_check == 1 and fields[0] == "L1/CIN4":
                         #last LINE subcategory
                         tbl_values['LINE', 'number'] += int(fields[1])
                         tbl_values['LINE', 'length'] += int(fields[2])
@@ -158,7 +158,7 @@ for file in tbl_files:
                         raise Exception("[E]: Category not recognized. Maybe Retro check wasn't turned off?")
 
                 #process DNA transposons
-            elif retro_check=0 and other_check=0 and dna_check=1:
+            elif retro_check == 0 and other_check == 0 and dna_check == 1:
                     #if dna_check is on, DNA transposon line has past, just waiting for rolling circles
                     if fields[0] == 'Rolling-circles':
                         dna_check=0
@@ -178,7 +178,7 @@ for file in tbl_files:
                         tbl_values['DNA_transposons', 'length'] += int(fields[2])
 
                 #Process all other repeat elements
-            elif retro_check=0 and dna_check=0 and other_check=1:
+            elif retro_check == 0 and dna_check == 0 and other_check == 1:
                 #rolling circles has already been processed
                 if fields[0] == 'Unclassified:':
                     tbl_values['unclassified', 'number'] += int(fields[1])
