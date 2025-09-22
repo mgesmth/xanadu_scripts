@@ -46,7 +46,7 @@ for file in out_files:
                     fields.append('F')
                 else:
                     raise Exception('[E]: Error parsing better_match field')
-                of.write('\t'.join(map(str, fields)))
+                of.write('\t'.join(map(str, fields) + '\n')
 
 
 '''

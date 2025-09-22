@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#Had to run on Mantis not Xanadu - kept being unable to call on pandas due to, I think, a root package issue
+
 module load python/3.8.1
 
 home=/home/FCAM/msmith
