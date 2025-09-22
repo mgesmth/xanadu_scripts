@@ -91,13 +91,16 @@ for file in tbl_files:
                     retro_check=1
                     tbl_values.at['retrotransposons','number'] += int(fields[1])
                     tbl_values.at['retrotransposons','length'] += int(fields[2])
+                    af.write("retrotransposon" + "\n")
                     #this section of code will not be entered again for the rest of the file
                 elif fields[0] != 'Retroelements':
                     #If top level check is on, haven't gotten to Retroelement line yet, get total length info I want
                     if fields[0] == 'total' and fields[1] == 'length:':
                         tbl_values.at['genome_total', 'length'] += int(fields[2])
+                        af.write("genome_total" + "\n")
                     elif fields[0] == 'bases' and fields[1] == 'masked:':
                         tbl_values.at['masked_total', 'length'] += int(fields[2])
+                        af.write("masked_total"" + "\n")
                     else:
                         continue
                 else:
@@ -116,50 +119,60 @@ for file in tbl_files:
                         dna_check=1
                         tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
                         tbl_values.at['DNA_transposons', 'length'] += int(fields[3])
-                        #af.write("dna_transposon" + "\n")
+                        af.write("dna_transposon" + "\n")
                         #this block won't be entered again
                     elif fields[0] == 'SINEs:':
                         tbl_values.at['SINE', 'number'] += int(fields[1])
                         tbl_values.at['SINE', 'length'] += int(fields[2])
+                        af.write("sine" + "\n")
                     elif fields[0] == 'Penelope:':
                         tbl_values.at['Penelope', 'number'] += int(fields[1])
                         tbl_values.at['Penelope', 'length'] += int(fields[2])
+                        af.write("penelope" + "\n")
 
                     elif fields[0] == 'LINEs:':
                         #I'm combining all the lines categories
                         tbl_values.at['LINE', 'number'] += int(fields[1])
                         tbl_values.at['LINE', 'length'] += int(fields[2])
                         line_check=1
+                        af.write("line" + "\n")
                     elif line_check == 1 and fields[0] != "L1/CIN4":
                         #lines b/w LINE and last LINE subcategory
                         tbl_values.at['LINE', 'number'] += int(fields[1])
                         tbl_values.at['LINE', 'length'] += int(fields[2])
+                        af.write("line" + "\n")
                     elif line_check == 1 and fields[0] == "L1/CIN4":
                         #last LINE subcategory
                         tbl_values.at['LINE', 'number'] += int(fields[1])
                         tbl_values.at['LINE', 'length'] += int(fields[2])
+                        af.write("line" + "\n")
                         line_check=0
 
                     elif fields[0] == 'LTR':
                         tbl_values.at['LTR', 'number'] += int(fields[2])
                         tbl_values.at['LTR', 'length'] += int(fields[3])
+                        af.write("ltr" + "\n")
                     elif fields[0] == 'BEL/Pao':
                         tbl_values.at['Bel/Pao', 'number'] += int(fields[1])
                         tbl_values.at['Bel/Pao', 'length'] += int(fields[2])
+                        af.write("bel_pao" + "\n")
                     elif fields[0] == 'Ty1/Copia':
                         tbl_values.at['Ty1/Copia', 'number'] += int(fields[1])
                         tbl_values.at['Ty1/Copia', 'length'] += int(fields[2])
+                        af.write("copia" + "\n")
                     elif fields[0] == 'Gypsy/DIRS1':
                         tbl_values.at['Gypsy/DIRS1', 'number'] += int(fields[1])
                         tbl_values.at['Gypsy/DIRS1', 'length'] += int(fields[2])
+                        af.write("gypsy" + "\n")
                     elif fields[0] == 'Retroviral':
                         tbl_values.at['Retroviral', 'number'] += int(fields[1])
                         tbl_values.at['Retroviral', 'length'] += int(fields[2])
+                        af.write("retroviral" + "\n")
                     else:
                         raise Exception("[E]: Category not recognized. Maybe Retro check wasn't turned off?")
 
                 #process DNA transposons
-            elif retro_check == 0 and other_check == 0 and dna_check == 1:
+                elif retro_check == 0 and other_check == 0 and dna_check == 1:
                     #if dna_check is on, DNA transposon line has past, just waiting for rolling circles
                     if fields[0] == 'Rolling-circles':
                         dna_check=0
@@ -182,33 +195,34 @@ for file in tbl_files:
                         af.write('dna_transposon_subcat' + '\n')
 
                 #Process all other repeat elements
-            elif retro_check == 0 and dna_check == 0 and other_check == 1:
+                elif retro_check == 0 and dna_check == 0 and other_check == 1:
                 #rolling circles has already been processed
-                if fields[0] == 'Unclassified:':
-                    tbl_values.at['unclassified', 'number'] += int(fields[1])
-                    tbl_values.at['unclassified', 'length'] += int(fields[2])
-                    #af.write("unclassified" + "\n")
-                elif fields[0] == 'Small' and fields[1] == 'RNA:':
-                    tbl_values.at['sRNA', 'number'] += int(fields[2])
-                    tbl_values.at['sRNA', 'length'] += int(fields[3])
-                    #af.write("sRNA" + "\n")
-                elif fields[0] == 'Satellites:':
-                    tbl_values.at['satellites', 'number'] += int(fields[1])
-                    tbl_values.at['satellites', 'length'] += int(fields[2])
-                    #af.write("satellites" + "\n")
-                elif fields[0] == 'Simple' and fields[1] == 'repeats:':
-                    tbl_values.at['simple_repeats', 'number'] += int(fields[2])
-                    tbl_values.at['simple_repeats', 'length'] += int(fields[3])
-                    #af.write("simple" + "\n")
+                    if fields[0] == 'Unclassified:':
+                        tbl_values.at['unclassified', 'number'] += int(fields[1])
+                        tbl_values.at['unclassified', 'length'] += int(fields[2])
+                        af.write("unclassified" + "\n")
+                    elif fields[0] == 'Small' and fields[1] == 'RNA:':
+                        tbl_values.at['sRNA', 'number'] += int(fields[2])
+                        tbl_values.at['sRNA', 'length'] += int(fields[3])
+                        af.write("sRNA" + "\n")
+                    elif fields[0] == 'Satellites:':
+                        tbl_values.at['satellites', 'number'] += int(fields[1])
+                        tbl_values.at['satellites', 'length'] += int(fields[2])
+                        af.write("satellites" + "\n")
+                    elif fields[0] == 'Simple' and fields[1] == 'repeats:':
+                        tbl_values.at['simple_repeats', 'number'] += int(fields[2])
+                        tbl_values.at['simple_repeats', 'length'] += int(fields[3])
+                        af.write("simple" + "\n")
+                    else:
+                        #else it will be low complexity
+                        tbl_values.at['low_complexity', 'number'] += int(fields[2])
+                        tbl_values.at['low_complexity', 'length'] += int(fields[3])
+                        af.write("lowcomp" + "\n")
                 else:
-                    #else it will be low complexity
-                    tbl_values.at['low_complexity', 'number'] += int(fields[2])
-                    tbl_values.at['low_complexity', 'length'] += int(fields[3])
-                    #af.write("lowcomp" + "\n")
-            else:
-                raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
+                    raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
             af.write('\t'.join(map(str, [retro_check, dna_check, other_check])) + '\n')
+            af.write("--------------" + '\n')
 
 #write out dataframe:
 tbl_values.to_csv(merged_tbl, index=True)
