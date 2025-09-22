@@ -7,20 +7,17 @@ import re
 import pandas as pd
 import numpy as np
 
-if __name__ == "__main__":
-	in_dir=sys.argv[1]
-	out_path=sys.argv[2]
+out_dir='/home/FCAM/msmith/repeats_mancur/concatenated_results/fa.out_files'
+out_files=glob.glob(os.path.join(out_dir,"interior_primary_mancur_scaffold*.fa.out"))
+tbl_dir='/home/FCAM/msmith/repeats_mancur/concatenated_results/fa.tbl_files'
+tbl_files=glob.glob(os.path.join(tbl_dir,"interior_primary_mancur_scaffold*.fa.tbl"))
+merged_out='/home/FCAM/msmith/repeats_mancur/concatenated_results/repeatMasker_merged.out'
+merged_tbl='/home/FCAM/msmith/repeats_mancur/concatenated_results/repeatMasker_merged.tbl'
 
-prefix=out_dir.rsplit('/',1)[1]
-outdir=out_dir.rsplit('/',1)[0]
-sep="_"
 
 '''
  Proccess *.out file
 '''
-
-out_files=glob.glob(os.path.join(in_dir,"interior_primary_mancur_scaffold*.fa.out"))
-merged_out=sep.join((out_path, 'merged.fa.out'))
 
 ##Write header
 with open(merged_out, "w") as of:
@@ -56,14 +53,11 @@ for file in outfiles:
  Proccess *.tbl file
 '''
 
-tbl_files=glob.glob(os.path.join(in_dir,"interior_primary_mancur_scaffold*.fa.tbl"))
-merged_tbl=sep.join((out_path, 'merged.fa.tbl'))
-
 repeat_classes=['genome_total','masked_total','retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
 
 #create dictionary to store repeat class values
 #initialize empty (with nans)
-df = pd.DataFrame(columns=['class','number','length'], index=repeat_classes)
+df = pd.DataFrame(columns=['number','length'], index=repeat_classes)
 #change nans to 0s
 tbl_values = df.fillna(0)
 
