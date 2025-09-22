@@ -116,6 +116,7 @@ for file in tbl_files:
                         dna_check=1
                         tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
                         tbl_values.at['DNA_transposons', 'length'] += int(fields[3])
+                        af.write("dna_transposon" + "\n")
                         #this block won't be entered again
                     elif fields[0] == 'SINEs:':
                         tbl_values.at['SINE', 'number'] += int(fields[1])
