@@ -40,9 +40,9 @@ for file in out_files:
             elif fields[0] == "score":
                 continue
             else:
-                if len(fields == 16):
+                if len(fields) == 16:
                     fields[15] == 'T'
-                elif len(fields == 15):
+                elif len(fields) == 15:
                     fields[15] == 'F'
                 else:
                     raise Exception('[E]: Error parsing better_match field')
