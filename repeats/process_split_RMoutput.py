@@ -47,11 +47,7 @@ for file in out_files:
                 else:
                     raise Exception('[E]: Error parsing better_match field')
                 of.write('\t'.join(map(str, fields) + "\n")
-
-
-#process *.tbl files
-
-
+                
 repeat_classes=['genome_total','masked_total','retrotransposons','SINE','Penelope','LINE','LTR','Bel/Pao','Ty1/Copia','Gypsy/DIRS1','Retroviral','DNA_transposons','rolling_circles','unclassified','sRNA','satellites','simple_repeats','low_complexity']
 
 #create dictionary to store repeat class values
