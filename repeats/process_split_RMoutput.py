@@ -74,7 +74,7 @@ for file in tbl_files:
         for line in f:
             #skip useless lines
             #if a separator line
-            if re.match(r'=+', line) or re.match(r'-+', line'):
+            if re.match(r'=+', line) or re.match(r'-+', line):
                 continue
             #if an empty line
             elif not line.strip():
