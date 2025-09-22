@@ -24,7 +24,7 @@ with open(merged_out, "w") as of:
     header=('SW_score','perc_div','perc_del','perc_ins','query','query_start','query_end','query_left', 'orient','matching_repeat','repeat_family','repeat_begin','repeat_end','repeat_left','id','better_match')
     of.write('\t'.join(header) + '\n')
 
-for file in outfiles:
+for file in out_files:
     with open(file, "r") as f, open(merged_out, "a") as of:
         for line in f:
             strip=line.strip()
