@@ -218,11 +218,9 @@ for file in tbl_files:
                         tbl_values.at['low_complexity', 'number'] += int(fields[2])
                         tbl_values.at['low_complexity', 'length'] += int(fields[3])
                         af.write("lowcomp" + "\n")
-                    elif fields[0] == 'Total' and fields[1] == 'interspersed':
-                        continue
                     else:
-                        print(line)
-                        raise Exception('[E]: Error while parsing "other" repeat categories. Exiting.')
+                        continue
+                        #this will be all the trailing lines of the output
                 else:
                     raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
