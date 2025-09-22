@@ -62,7 +62,7 @@ df = pd.DataFrame(columns=['number','length'], index=repeat_classes)
 tbl_values = df.fillna(0)
 
 for file in tbl_files:
-    with open(file, "r") as f:
+    with open(file, "r") as f, open("checkfile.err","a") as af:
 
         #set checks to starting state
         toplevel_check=1
@@ -165,6 +165,7 @@ for file in tbl_files:
                         other_check=1
                         tbl_values.at['rolling_circles', 'number'] += int(fields[1])
                         tbl_values.at['rolling_circles', 'length'] += int(fields[2])
+                        af.write("rolling_circle" + "\n")
                     elif fields[0] == 'Other' and fields[1] == '(Mirage,':
                         #This category name has whitespace, so has to be handled differently
                         tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
@@ -183,19 +184,24 @@ for file in tbl_files:
                 if fields[0] == 'Unclassified:':
                     tbl_values.at['unclassified', 'number'] += int(fields[1])
                     tbl_values.at['unclassified', 'length'] += int(fields[2])
+                    af.write("unclassified" + "\n")
                 elif fields[0] == 'Small' and fields[1] == 'RNA:':
                     tbl_values.at['sRNA', 'number'] += int(fields[2])
                     tbl_values.at['sRNA', 'length'] += int(fields[3])
+                    af.write("sRNA" + "\n")
                 elif fields[0] == 'Satellites:':
                     tbl_values.at['satellites', 'number'] += int(fields[1])
                     tbl_values.at['satellites', 'length'] += int(fields[2])
+                    af.write("satellites" + "\n")
                 elif fields[0] == 'Simple' and fields[1] == 'repeats:':
                     tbl_values.at['simple_repeats', 'number'] += int(fields[2])
                     tbl_values.at['simple_repeats', 'length'] += int(fields[3])
+                    af.write("simple" + "\n")
                 else:
                     #else it will be low complexity
                     tbl_values.at['low_complexity', 'number'] += int(fields[2])
                     tbl_values.at['low_complexity', 'length'] += int(fields[3])
+                    af.write("lowcomp" + "\n")
             else:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
