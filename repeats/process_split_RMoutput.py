@@ -41,9 +41,9 @@ for file in out_files:
                 continue
             else:
                 if len(fields) == 16:
-                    fields[15] == 'T'
+                    fields[15] = 'T'
                 elif len(fields) == 15:
-                    fields=fields.append('F')
+                    fields.append('F')
                 else:
                     raise Exception('[E]: Error parsing better_match field')
                 of.write('\t'.join(map(str, fields)))
