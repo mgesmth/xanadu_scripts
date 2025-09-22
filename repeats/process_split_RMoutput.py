@@ -20,33 +20,33 @@ merged_tbl='/home/FCAM/msmith/repeats_mancur/concatenated_results/repeatMasker_m
 '''
 
 ##Write header
-with open(merged_out, "w") as of:
-    header=('SW_score','perc_div','perc_del','perc_ins','query','query_start','query_end','query_left', 'orient','matching_repeat','repeat_family','repeat_begin','repeat_end','repeat_left','id','better_match')
-    of.write('\t'.join(header) + '\n')
+#with open(merged_out, "w") as of:
+#    header=('SW_score','perc_div','perc_del','perc_ins','query','query_start','query_end','query_left', 'orient','matching_repeat','repeat_family','repeat_begin','repeat_end','repeat_left','id','better_match')
+#    of.write('\t'.join(header) + '\n')
 
-for file in out_files:
-    with open(file, "r") as f, open(merged_out, "a") as of:
-        for line in f:
-            strip=line.strip()
+#for file in out_files:
+#    with open(file, "r") as f, open(merged_out, "a") as of:
+#        for line in f:
+#            strip=line.strip()
             #if line is empty, don't process
-            if not strip:
-                continue
-
-            fields=strip.split()
+#            if not strip:
+#                continue
+#
+#            fields=strip.split()
 
             #If either of the header lines, don't process
-            if fields[0] == "SW":
-                continue
-            elif fields[0] == "score":
-                continue
-            else:
-                if len(fields) == 16:
-                    fields[15] = 'T'
-                elif len(fields) == 15:
-                    fields.append('F')
-                else:
-                    raise Exception('[E]: Error parsing better_match field')
-                of.write('\t'.join(map(str, fields)) + "\n")
+#            if fields[0] == "SW":
+#                continue
+#            elif fields[0] == "score":
+#                continue
+#            else:
+#                if len(fields) == 16:
+#                    fields[15] = 'T'
+#                elif len(fields) == 15:
+#                    fields.append('F')
+#                else:
+#                    raise Exception('[E]: Error parsing better_match field')
+#                of.write('\t'.join(map(str, fields)) + "\n")
 
 '''
 
