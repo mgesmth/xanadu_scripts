@@ -206,5 +206,7 @@ for file in tbl_files:
             else:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
+            af.write('\t'.join(map(str, [retro_check, dna_check, other_check])))
+
 #write out dataframe:
 tbl_values.to_csv(merged_tbl, index=True)
