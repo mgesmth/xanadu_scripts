@@ -218,7 +218,7 @@ for file in tbl_files:
                         tbl_values.at['low_complexity', 'number'] += int(fields[2])
                         tbl_values.at['low_complexity', 'length'] += int(fields[3])
                         af.write("lowcomp" + "\n")
-                    elif fields[0] == 'Total' and fields[0] == 'interspersed':
+                    elif fields[0] == 'Total' and fields[1] == 'interspersed':
                         continue
                     else:
                         print(line)
