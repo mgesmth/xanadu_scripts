@@ -100,7 +100,7 @@ for file in tbl_files:
                         af.write("genome_total" + "\n")
                     elif fields[0] == 'bases' and fields[1] == 'masked:':
                         tbl_values.at['masked_total', 'length'] += int(fields[2])
-                        af.write("masked_total"" + "\n")
+                        af.write("masked_total" + "\n")
                     else:
                         continue
                 else:
