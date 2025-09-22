@@ -89,15 +89,15 @@ for file in tbl_files:
                     toplevel_check=0
                     #turn on retro check to process all retro elements
                     retro_check=1
-                    tbl_values['retrotransposons','number'] += int(fields[1])
-                    tbl_values['retrotransposons','length'] += int(fields[2])
+                    tbl_values.at['retrotransposons','number'] += int(fields[1])
+                    tbl_values.at['retrotransposons','length'] += int(fields[2])
                     #this section of code will not be entered again for the rest of the file
                 elif fields[0] != 'Retroelements':
                     #If top level check is on, haven't gotten to Retroelement line yet, get total length info I want
                     if fields[0] == 'total' and fields[1] == 'length:':
-                        tbl_values['genome_total', 'length'] += int(fields[2])
+                        tbl_values.at['genome_total', 'length'] += int(fields[2])
                     elif fields[0] == 'bases' and fields[1] == 'masked:':
-                        tbl_values['masked_total', 'length'] += int(fields[2])
+                        tbl_values.at['masked_total', 'length'] += int(fields[2])
                     else:
                         continue
                 else:
@@ -114,46 +114,46 @@ for file in tbl_files:
                         #I can always go back and get those if I feel it's important
                         retro_check=0
                         dna_check=1
-                        tbl_values['DNA_transposons', 'number'] += int(fields[2])
-                        tbl_values['DNA_transposons', 'length'] += int(fields[3])
+                        tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
+                        tbl_values.at['DNA_transposons', 'length'] += int(fields[3])
                         #this block won't be entered again
                     elif fields[0] == 'SINEs:':
-                        tbl_values['SINE', 'number'] += int(fields[1])
-                        tbl_values['SINE', 'length'] += int(fields[2])
+                        tbl_values.at['SINE', 'number'] += int(fields[1])
+                        tbl_values.at['SINE', 'length'] += int(fields[2])
                     elif fields[0] == 'Penelope:':
-                        tbl_values['Penelope', 'number'] += int(fields[1])
-                        tbl_values['Penelope', 'length'] += int(fields[2])
+                        tbl_values.at['Penelope', 'number'] += int(fields[1])
+                        tbl_values.at['Penelope', 'length'] += int(fields[2])
 
                     elif fields[0] == 'LINEs:':
                         #I'm combining all the lines categories
-                        tbl_values['LINE', 'number'] += int(fields[1])
-                        tbl_values['LINE', 'length'] += int(fields[2])
+                        tbl_values.at['LINE', 'number'] += int(fields[1])
+                        tbl_values.at['LINE', 'length'] += int(fields[2])
                         line_check=1
                     elif line_check == 1 and fields[0] != "L1/CIN4":
                         #lines b/w LINE and last LINE subcategory
-                        tbl_values['LINE', 'number'] += int(fields[1])
-                        tbl_values['LINE', 'length'] += int(fields[2])
+                        tbl_values.at['LINE', 'number'] += int(fields[1])
+                        tbl_values.at['LINE', 'length'] += int(fields[2])
                     elif line_check == 1 and fields[0] == "L1/CIN4":
                         #last LINE subcategory
-                        tbl_values['LINE', 'number'] += int(fields[1])
-                        tbl_values['LINE', 'length'] += int(fields[2])
+                        tbl_values.at['LINE', 'number'] += int(fields[1])
+                        tbl_values.at['LINE', 'length'] += int(fields[2])
                         line_check=0
 
                     elif fields[0] == 'LTR':
-                        tbl_values['LTR', 'number'] += int(fields[2])
-                        tbl_values['LTR', 'length'] += int(fields[3])
+                        tbl_values.at['LTR', 'number'] += int(fields[2])
+                        tbl_values.at['LTR', 'length'] += int(fields[3])
                     elif fields[0] == 'BEL/Pao':
-                        tbl_values['Bel/Pao', 'number'] += int(fields[1])
-                        tbl_values['Bel/Pao', 'length'] += int(fields[2])
+                        tbl_values.at['Bel/Pao', 'number'] += int(fields[1])
+                        tbl_values.at['Bel/Pao', 'length'] += int(fields[2])
                     elif fields[0] == 'Ty1/Copia':
-                        tbl_values['Ty1/Copia', 'number'] += int(fields[1])
-                        tbl_values['Ty1/Copia', 'length'] += int(fields[2])
+                        tbl_values.at['Ty1/Copia', 'number'] += int(fields[1])
+                        tbl_values.at['Ty1/Copia', 'length'] += int(fields[2])
                     elif fields[0] == 'Gypsy/DIRS1':
-                        tbl_values['Gypsy/DIRS1', 'number'] += int(fields[1])
-                        tbl_values['Gypsy/DIRS1', 'length'] += int(fields[2])
+                        tbl_values.at['Gypsy/DIRS1', 'number'] += int(fields[1])
+                        tbl_values.at['Gypsy/DIRS1', 'length'] += int(fields[2])
                     elif fields[0] == 'Retroviral':
-                        tbl_values['Retroviral', 'number'] += int(fields[1])
-                        tbl_values['Retroviral', 'length'] += int(fields[2])
+                        tbl_values.at['Retroviral', 'number'] += int(fields[1])
+                        tbl_values.at['Retroviral', 'length'] += int(fields[2])
                     else:
                         raise Exception("[E]: Category not recognized. Maybe Retro check wasn't turned off?")
 
@@ -163,39 +163,39 @@ for file in tbl_files:
                     if fields[0] == 'Rolling-circles':
                         dna_check=0
                         other_check=1
-                        tbl_values['rolling_circles', 'number'] += int(fields[1])
-                        tbl_values['rolling_circles', 'length'] += int(fields[2])
+                        tbl_values.at['rolling_circles', 'number'] += int(fields[1])
+                        tbl_values.at['rolling_circles', 'length'] += int(fields[2])
                     elif fields[0] == 'Other' and fields[1] == '(Mirage,':
                         #This category name has whitespace, so has to be handled differently
-                        tbl_values['DNA_transposons', 'number'] += int(fields[2])
-                        tbl_values['DNA_transposons', 'length'] += int(fields[3])
+                        tbl_values.at['DNA_transposons', 'number'] += int(fields[2])
+                        tbl_values.at['DNA_transposons', 'length'] += int(fields[3])
                     elif fields[0] == 'P-element,':
                         #the Other DNA transposon category name runs onto two lines; skipping this line as there's no data
                         continue
                     else:
                         #else it will be any other DNA transposon category
-                        tbl_values['DNA_transposons', 'number'] += int(fields[1])
-                        tbl_values['DNA_transposons', 'length'] += int(fields[2])
+                        tbl_values.at['DNA_transposons', 'number'] += int(fields[1])
+                        tbl_values.at['DNA_transposons', 'length'] += int(fields[2])
 
                 #Process all other repeat elements
             elif retro_check == 0 and dna_check == 0 and other_check == 1:
                 #rolling circles has already been processed
                 if fields[0] == 'Unclassified:':
-                    tbl_values['unclassified', 'number'] += int(fields[1])
-                    tbl_values['unclassified', 'length'] += int(fields[2])
+                    tbl_values.at['unclassified', 'number'] += int(fields[1])
+                    tbl_values.at['unclassified', 'length'] += int(fields[2])
                 elif fields[0] == 'Small' and fields[1] == 'RNA:':
-                    tbl_values['sRNA', 'number'] += int(fields[2])
-                    tbl_values['sRNA', 'length'] += int(fields[3])
+                    tbl_values.at['sRNA', 'number'] += int(fields[2])
+                    tbl_values.at['sRNA', 'length'] += int(fields[3])
                 elif fields[0] == 'Satellites:':
-                    tbl_values['satellites', 'number'] += int(fields[1])
-                    tbl_values['satellites', 'length'] += int(fields[2])
+                    tbl_values.at['satellites', 'number'] += int(fields[1])
+                    tbl_values.at['satellites', 'length'] += int(fields[2])
                 elif fields[0] == 'Simple' and fields[1] == 'repeats:':
-                    tbl_values['simple_repeats', 'number'] += int(fields[2])
-                    tbl_values['simple_repeats', 'length'] += int(fields[3])
+                    tbl_values.at['simple_repeats', 'number'] += int(fields[2])
+                    tbl_values.at['simple_repeats', 'length'] += int(fields[3])
                 else:
                     #else it will be low complexity
-                    tbl_values['low_complexity', 'number'] += int(fields[2])
-                    tbl_values['low_complexity', 'length'] += int(fields[3])
+                    tbl_values.at['low_complexity', 'number'] += int(fields[2])
+                    tbl_values.at['low_complexity', 'length'] += int(fields[3])
             else:
                 raise Exception('[E]: Error processing repeat categories (past top level). Checks not recognized.')
 
