@@ -62,7 +62,7 @@ df = pd.DataFrame(columns=['number','length'], index=repeat_classes)
 tbl_values = df.fillna(0)
 
 for file in tbl_files:
-    with open(file, "r") as f, open("checkfile.err","a") as af:
+    with open(file, "r") as f, open("checkfile.err","w") as af:
 
         #set checks to starting state
         toplevel_check=1
