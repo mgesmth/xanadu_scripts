@@ -213,7 +213,7 @@ for file in tbl_files:
                         tbl_values.at['simple_repeats', 'number'] += int(fields[2])
                         tbl_values.at['simple_repeats', 'length'] += int(fields[3])
                         af.write("simple" + "\n")
-                    elif fields[0] == "Low" and fields[1] == "complexity:"
+                    elif fields[0] == "Low" and fields[1] == "complexity:":
                         #else it will be low complexity
                         tbl_values.at['low_complexity', 'number'] += int(fields[2])
                         tbl_values.at['low_complexity', 'length'] += int(fields[3])
