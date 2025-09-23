@@ -87,4 +87,4 @@ transcripts=${home}/transcriptome/01_transcriptome_alignment/vsearch/centroids_c
 cd ${outdir}
 gmapl -K 1000000 -L 10000000 --cross-species -F -D ${outdir}/db -d "intdf137" \
 -f gff3_gene --min-trimmed-coverage=0.95 --min-identity=0.95 -n1 -T \
-"$transcripts" > intdf137_gmap_genomeannotation_00.gff3
+"$transcripts" > intdf137_gmap_genomeannotation_00.gff3 2> gmap.error
