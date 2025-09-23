@@ -16,7 +16,7 @@ date
 echo "[M]: Host Name: `hostname`"
 
 module load samtools/1.19
-module load gmap/2017-03-17
+#module load gmap/2017-03-17
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
@@ -24,6 +24,7 @@ scratch=/scratch/msmith
 mancur=${core}/manual_curation_files
 asm=${mancur}/interior_primary_final_mancur2.fa
 outdir=${home}/transcriptome/01_transcriptome_alignment/GMAP
+export PATH="${core}/bin/gmap-2025-07-31/bin:$PATH"
 
 #Small minor scaffolds are most likely to be repetitive and tf not euchromatic
 #Filtering out scaffolds smaller than 500kb
