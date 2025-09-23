@@ -79,7 +79,7 @@ echo "[M]: Starting with GMAP"
 transcripts=${home}/transcriptome/01_transcriptome_alignment/vsearch/centroids_clustered.fasta
 #Build DB
 cd ${outdir}/split_fa
-ls *.fa | gmap_build -D ${outdir}/db -d intdf137 -n ${outdir}/scaffolds.txt -s names -
+ls *.fa | gmap_build -D ${outdir}/db -d intdf137 -n ${outdir}/scaffolds.txt -s names
 #this command is taken from here https://gitlab.com/PlantGenomicsLab/genome-annotation-of-douglas-fir/-/blob/master/0_Transcriptome_Alignment/scripts/gmap.sh
 #the original transcriptome paper
 cd ${outdir}
