@@ -20,10 +20,10 @@ fastq_dir=${se_dir}/fastqc
 module load fastqc/0.12.1
 module load MultiQC/1.29
 
-cd $fastq_dir
-
+cd ${se_dir}
 ls *.fastq.gz > files.tmp
 files=$(cat files.tmp)
-fastqc -o ./ -t 24 ${files}
+fastqc -o ${fastq_dir} -t 24 ${files}
+cd ${fastq_dir}
 multiqc .
-rm files.tmp
+rm ../files.tmp
