@@ -23,10 +23,18 @@ cd ${outdir}
 for acc in $(cat SraAccList.csv) ; do
   echo "[M]: Downloading accession ${acc}"
   prefetch -v --max-size 100G -O ${outdir}/"$acc" "$acc"
-  fasterq-dump -v -O ${outdir} -e 8 -t ${scratch} "$acc"
-  rm -r ${outdir}/"$acc"
-  gzip "${acc}.fastq"
-  echo "[M]: Done downloading ${acc}."
+  if [[ $? -eq 0 ]] ; then
+    fasterq-dump -v -O ${outdir} -b 1GB -c 10GB -m 70GB -e 8 -t ${scratch} "$acc"
+    if [[ $? -eq 0 ]] ; then
+      rm -r ${outdir}/"$acc"
+      gzip "${acc}.fastq"
+      echo "[M]: Done downloading ${acc}."
+    else
+      echo "[E]: Conversion to fastq failed."
+      exit 1
+    fi
+  else
+    echo "[E]: Download of SRA failed."
+    exit 1
+  fi
 done
-
-echo "[M]: All done. Bye!"
