@@ -21,6 +21,7 @@ outdir=${core}/genome_annotation_shortread_data/pe_reads_trim
 adaptors=${home}/transcriptome/00_process_sequencingdata/NEBNext_dual_adaptors.fasta
 
 module load Trimmomatic/0.39
+module load java/22
 
 cd ${pe_dir}
 ls -1 *R1.fastq.gz > files.tmp
@@ -35,6 +36,6 @@ for R1 in $(cat files.tmp) ; do
   ${outdir}/${base}_trim_R1_unpaired.fastq.gz \
   ${outdir}/${base}_trim_R2_paired.fastq.gz \
   ${outdir}/${base}_trim_R2_unpaired.fastq.gz \
-  ILLUMINACLIP:NEBNext_dual_adaptor.fasta:2:30:10:2:keepBothReads \
+  ILLUMINACLIP:${adaptors}:2:30:10:2:keepBothReads \
   LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:30
 done
