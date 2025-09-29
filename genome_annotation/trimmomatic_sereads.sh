@@ -27,7 +27,7 @@ module load Trimmomatic/0.39
 module load java/22
 
 cd ${se_dir}
-ls -1 *R1.fastq.gz > files.tmp
+ls -1 *fastq.gz > files.tmp
 for fastq in $(cat files.tmp) ; do
   base=${fastq/.fastq.gz/}
 
