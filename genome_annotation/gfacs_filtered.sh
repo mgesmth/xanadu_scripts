@@ -19,13 +19,12 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP
 scratch=/scratch/msmith
 mancur=${core}/manual_curation_files
-asm=${mancur}/interior_primary_final_mancur2.fa
-outdir=${home}/transcriptome/01_transcriptome_alignment/GMAP
+asm=${core}/manual_curation_files/interior_primary_mancur_masked.fa
 gfacs=${home}/transcriptome/01_transcriptome_alignment/gFACs/filtered
+gmap=${home}/transcriptome/01_transcriptome_alignment/GMAP
 if [[ ! -d ${gfacs} ]] ; then
   mkdir ${gfacs}
 fi
-gmap=${home}/transcriptome/01_transcriptome_alignment/GMAP
 
 module load gFACs/1.1.2
 gfacs_script=/isg/shared/apps/gFACs/1.1.2/gFACs.pl
