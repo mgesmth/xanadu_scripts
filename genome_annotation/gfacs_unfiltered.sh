@@ -25,7 +25,7 @@ gfacs=${home}/transcriptome/01_transcriptome_alignment/gFACs/unfiltered
 if [[ ! -d ${gfacs} ]] ; then
   mkdir ${gfacs}
 fi
-asm=${core}/manual_curation_files/interior_primary_mancur2_masked.fa
+asm=${core}/manual_curation_files/interior_primary_mancur_masked.fa
 
 module load gFACs/1.1.2
 gfacs_script=/isg/shared/apps/gFACs/1.1.2/gFACs.pl
