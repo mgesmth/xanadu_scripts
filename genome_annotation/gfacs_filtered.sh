@@ -16,7 +16,7 @@ date
 echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
-core=/core/projects/EBP
+core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 mancur=${core}/manual_curation_files
 asm=${core}/manual_curation_files/interior_primary_mancur_masked.fa
