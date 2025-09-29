@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J GMAP
+#SBATCH -J gFACs
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 24
@@ -45,5 +45,5 @@ perl ${gfacs_script} \
 --create-gtf --create-gff3 \
 -p "intdf137_filtered" \
 --fasta ${asm} \
--O ${gfacs} \
+-O ${gfacs}/ \
 ${gmap}/intdf137_gmap_genomeannotation_00.gff3
