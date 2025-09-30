@@ -2,7 +2,6 @@
 #SBATCH -J fastqc
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -d afterok:792458
 #SBATCH -c 24
 #SBATCH --mem=150G
 #SBATCH -o %x.%j.out
