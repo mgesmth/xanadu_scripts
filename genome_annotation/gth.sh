@@ -17,12 +17,12 @@ asm=${core}/manual_curation_files/interior_primary_mancur_masked_500kb.fa
 transcripts=${home}/transcriptome/02_braker_annotation/vsearch/all.95.centroids.80.centroids.fasta
 protein_transcripts=${home}/transcriptome/02_braker_annotation/all.95.centroids.80.centroids.pep.fasta
 
-module load genomethreader/1.7.3 
+module load genomethreader/1.7.3
 
 gth \
 -genomic ${asm} \
 -cdna ${transcripts} \
--proteins ${protein_transcripts} \
+-protein ${protein_transcripts} \
 -startcodon -finalstopcodon
 #-prseedlength 20 -prhdist 2 -prminmatchlen 20 \
 #-gcmincoverage 80 -gcmaxgapwidth 1000000 -dpminexonlen 20 \
