@@ -13,8 +13,7 @@ if __name__ == "__main__":
     filt_bed=sys.argv[1]
     out_file=sys.argv[2]
 
-sv_catalog=pd.DataFrame(columns=["variant","scaffold","segment","inner_outer"])
-with open(filt_bed, "r") as f:
+with open(filt_bed, "r") as f, open(out_file, "w") as of:
     sv_num=0
     for line in f:
         sv_num+=1
@@ -31,6 +30,6 @@ with open(filt_bed, "r") as f:
         scaffold_aslist=np.repeat([scaffold],[len(seg_aslist)])
 
         df=pd.DataFrame({"variant":variant_aslist, "scaffold":scaffold_aslist, "segment":seg_aslist, "inner_outer":io_aslist})
-        sv_catalog=pd.concat([sv_catalog,df], ignore_index=True)
-
-sv_catalog.to_csv(out_file, sep='\t', index=False)
+        for i in range(len(df)):
+            out_fields=df.iloc[i].values.flatten().tolist()
+            of.write('\t'.join(map(str, out_fields)) + '\n')
