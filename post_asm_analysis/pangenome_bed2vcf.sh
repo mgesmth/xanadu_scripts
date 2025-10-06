@@ -4,6 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 8
 #SBATCH --mem=40G
+#SBATCH -d afterok:9369142,9369143,9369145
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o ${log}/%x.%j.out
