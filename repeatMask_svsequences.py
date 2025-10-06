@@ -10,7 +10,7 @@ building a catalog of the SVs essentially so that after RepeatMasker is over I c
 """
 
 if __name__ == "__main__":
-	filt_bed=sys.argv[1]
+    filt_bed=sys.argv[1]
     out_file=sys.argv[2]
 
 sv_catalog=pd.DataFrame(columns=["variant","scaffold","segment","inner_outer"])
