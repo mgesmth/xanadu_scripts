@@ -17,6 +17,7 @@ echo "[M]: Beginning minigraph graph generation"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
+#largest scaffolds broken:
 prim=${core}/manual_curation_files/interior_primary_final_mancur_1Mb.fa
 alt=${core}/CBP_assemblyfiles/interior_alternate_1Mb.fa
 coast=${core}/coastal/coastalDF_scaffrenamed_sorted_1Mb.fa
