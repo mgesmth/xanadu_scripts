@@ -5,6 +5,7 @@
 #SBATCH -c 10
 #SBATCH --mem=56G
 #SBATCH --array=[0-3]
+#SBATCH -d afterok:827313
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
