@@ -24,11 +24,11 @@ gth \
 -cdna ${transcripts} \
 -protein ${protein_transcripts} \
 -startcodon -finalstopcodon
-#-prseedlength 20 -prhdist 2 -prminmatchlen 20 \
-#-gcmincoverage 80 -gcmaxgapwidth 1000000 -dpminexonlen 20 \
+-prseedlength 20 -prhdist 2 -prminmatchlen 20 \
+-gcmincoverage 80 -gcmaxgapwidth 1000000 -dpminexonlen 20 \
 -introncutout -skipalignmentout -force \
 -exondistri -introndistri -refseqcovdistri \
--gff3out -o gth_trial_longreadaln.gff3
+-gff3out -o ${home}/transcriptome/02_braker_annotation/gth_full_longreadaln.gff3
 
 #prseedlength = specify seed length for protein matching (default 10); increasing it to 20 (default 10) increases the stringency of matches, I imagine - potentially good for large number of conifer genes?
 #prhdist = maximum Hamming distance a protein match is allowed to have (a measure of how exact the match between sequences are): 2 is half the default, 4 which would allow more nucleotide mismatches between the transcript and putative gene

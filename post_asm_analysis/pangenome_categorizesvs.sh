@@ -26,7 +26,7 @@ outdir=${core}/manual_curation_files/minigraph
 
 module load python/3.8.1
 cd ${core}/manual_curation_files/minigraph
-cat_svs=${home}/scripts/categorize_svs.py
+cat_svs=${home}/scripts/pangenome/categorize_svs.py
 
 python ${cat_svs} "${prx}_filtered1.sv.vcf" \
 "${prx}_primcall_verified.bed" \
