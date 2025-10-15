@@ -23,4 +23,4 @@ conifer_db=${home}/transcriptome/02_braker_annotation/conifer_geneSet_protein_v2
 module load python/3.10.1 biopython/1.70 perl/5.36.0 bamtools/2.5.1 blast/2.13.0 genomethreader/1.7.3
 
 braker.pl --species=int_Doug_fir --genome=${asm} \
---hints=${se_hints},${pe_hints}
+--bam
