@@ -1,4 +1,15 @@
 #!/bin/bash
+#SBATCH -J braker_lr
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 36
+#SBATCH --mem=500G
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
+
+set -e
+date
+echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
