@@ -12,7 +12,7 @@ date
 echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
-core=/core/projects/EBP/msmith
+core=/core/projects/EBP/smith
 genome=${core}/manual_curation_files/interior_primary_mancur_masked_500kb.fa
 workdir=${core}/genome_annotation_isoseq_data/test
 transcript_file=${workdir}/test_eviann_evidence.txt
