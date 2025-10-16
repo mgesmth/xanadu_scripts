@@ -15,9 +15,16 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/msmith
 genome=${core}/manual_curation_files/interior_primary_mancur_masked_500kb.fa
 transcript_file=${home}/transcriptome/02_braker_annotation/evidence_files.txt
+protein_db=${home}/transcriptome/02_braker_annotation/conifer_geneSet_protein_v2_150.faa
+workdir=${core}/eviann
+if [[ ! -d ${workdir} ]] ; then
+  mkdir ${workdir}
+fi
+
+cd ${workdir}
 
 export PATH="${core}/bin/EviAnn-2.0.4/bin:$PATH"
 module load minimap2/2.28 hisat2/2.2.1 samtools/1.19
 #all other dependencies are within the Eviann package itself
 
-eviann.sh -t 36 -g ${genome} -r
+eviann.sh -t 36 -g ${genome} -r ${transcript_file} -p ${protein_db} -m 100000
