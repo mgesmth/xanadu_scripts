@@ -3,7 +3,7 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 10
-#SBATCH --mem=48G
+#SBATCH --mem=80G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
