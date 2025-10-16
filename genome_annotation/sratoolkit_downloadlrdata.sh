@@ -5,7 +5,7 @@
 #SBATCH -n 1
 #SBATCH -c 6
 #SBATCH --mem=56G
-#SBATCH --array=[0-3]
+#SBATCH --array=[0-1]
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -28,8 +28,8 @@ echo "[M]: Downloading accession ${acc} (Slurm task ${SLURM_ARRAY_TASK_ID})"
 
 #the core directory presently has more disk space than scratch, so using that
 
-prefetch -v -O ${outdir}/"$acc" "$acc"
-fasterq-dump -v -O ${outdir} -e 12 -t ${scratch} "$acc"
+prefetch -v "$acc"
+fasterq-dump -v -e 12 -t ${scratch} "$acc"
 #remove the prefetch sra directory
 rm -r ${outdir}/"$acc"
 gzip "${acc}.fastq"
