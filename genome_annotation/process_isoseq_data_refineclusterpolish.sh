@@ -4,7 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 10
 #SBATCH --mem=56G
-#SBATCH --array=[0-3]
+#SBATCH --array=[0-1]
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
@@ -15,8 +15,8 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 topdir=${core}/genome_annotation_isoseq_data
-rawread_dir=${topdir}/raw_reads
-iterator=${rawread_dir}/isoseq_accessions.txt
+ccsread_dir=${topdir}/ccs
+iterator=${ccsread_dir}/iterator.txt
 primers=${home}/transcriptome/00_process_sequencingdata/isoseq_primers.fasta
 
 module load isoseq3/3.1.2
@@ -55,7 +55,7 @@ date
 echo "[M]: Polishing, and all processing, complete."
 echo "[M]: Generating summary..."
 
-isoseq3 summarize ${acc}.polished.bam ${acc}.summary.csv --verbose;
+isoseq3 summarize ${acc}.polished.bam ${acc}.summary.csv --verbose
 
 echo ""
 date
