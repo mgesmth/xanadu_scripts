@@ -4,8 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 10
 #SBATCH --mem=56G
-#SBATCH --array=[0-3]
-#SBATCH -d afterok:827313
+#SBATCH --array=[0-1]
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
@@ -16,8 +15,8 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 topdir=${core}/genome_annotation_isoseq_data
-rawread_dir=${topdir}/raw_reads
-iterator=${rawread_dir}/isoseq_accessions.txt
+ccsread_dir=${topdir}/ccs
+iterator=${ccsread_dir}/iterator.txt
 primers=${home}/transcriptome/00_process_sequencingdata/isoseq_primers.fasta
 
 module load isoseq3/3.1.2
@@ -37,13 +36,6 @@ echo "[M]: Host Name: `hostname`"
 echo "[M]: Welcome to Slurm task $SLURM_ARRAY_TASK_ID."
 echo "[M]: We are processing the IsoSeq accession ${acc}."
 echo ""
-echo "[M]: Calling consensus sequence from subreads..."
-
-ccs ${rawread_dir}/${acc}.bam ${acc}.ccs.bam --noPolish --minPasses 1
-
-echo ""
-date
-echo "[M]: CCS complete."
 echo "[M]: Beginning adapter removal..."
 
 lima ${acc}.ccs.bam ${primers} ${acc}.fl.bam --isoseq --no-pbi --dump-clips
