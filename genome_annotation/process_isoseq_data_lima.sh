@@ -38,7 +38,7 @@ echo "[M]: We are processing the IsoSeq accession ${acc}."
 echo ""
 echo "[M]: Beginning adapter removal..."
 
-lima ${acc}.ccs.bam ${primers} ${acc}.fl.bam --isoseq --no-pbi --dump-clips
+lima ${ccsread_dir}/${acc}.ccs.bam ${primers} ${acc}.fl.bam --isoseq --no-pbi --dump-clips
 
 echo ""
 date
