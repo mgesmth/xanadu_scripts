@@ -14,9 +14,9 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 genome=${core}/manual_curation_files/interior_primary_mancur_masked_500kb.fa
-transcript_file=${home}/transcriptome/03_eviann_annotation/evidence.txt
+transcript_file=${home}/transcriptome/03_eviann_annotation/evidence_allintsamp.txt
 protein_db=${home}/transcriptome/02_braker_annotation/conifer_geneSet_protein_v2_150.faa
-workdir=${core}/eviann
+workdir=${core}/eviann_allintsamp
 if [[ ! -d ${workdir} ]] ; then
   mkdir ${workdir}
 fi
