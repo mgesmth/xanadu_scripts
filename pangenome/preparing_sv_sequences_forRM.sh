@@ -26,21 +26,12 @@ cd repeat_masker_dir
 mkdir byscaffold_svs
 for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
   grep -w "$scaffold" ${bed_filt} | \
-  awk -v OFS="\t" '{print NR,$1,$2,$3}' > byscaffold_svs/${scaffold}_svs.tmp
+  awk '{if ($6 == 0) {
+    print ">sv"NR ORS $14
+    } else {
+    next
+    }}' > ${scaffold}_svs.fasta
 done
-
-
-
-
-#extract the segments involved in each SV
-cut -f1,12 ${bed_filt} > segments_scaffolds.tmp
-#break into one file per scaffold for repeat masker parallelization
-mkdir segment_scaffolds
-for scaffold in $(cut -f1 segments_scaffolds.tmp | uniq) ; do
-  #grab only the lines corresponding to that scaffold (whole word, -w) and add an index, i.e., number the SVs
-  grep -w "$scaffold" segments_scaffolds.tmp | \
-  awk -v OFS="\t" '{ print NR,$0 }' > segment_scaffolds/segments_${scaffold}.tmp
-done && rm segments_scaffolds.tmp
 
 cd segment_scaffolds
 for file in $(ls -1 *.tmp) ; do
