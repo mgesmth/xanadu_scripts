@@ -24,6 +24,7 @@ mkdir repeat_masker_dir
 cd repeat_masker_dir
 
 mkdir byscaffold_svs
+cd byscaffold_svs
 for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
   grep -w "$scaffold" ${bed_filt} | \
   awk '{if ($6 == 0) {
@@ -32,11 +33,3 @@ for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
     next
     }}' > ${scaffold}_svs.fasta
 done
-
-cd segment_scaffolds
-for file in $(ls -1 *.tmp) ; do
-  sv_num=$(cut -f1 ${file})
-  scaffold=$(cut -f2 ${file})
-  seq_name=">${scaffold}_sv${sv_num}"
-  segments=$(cut -f3 ${file})
-  gfatools view -l ${segments}
