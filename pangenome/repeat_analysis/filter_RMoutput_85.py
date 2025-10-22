@@ -9,6 +9,10 @@ if __name__ == "__main__":
     output_outfile=sys.argv[3]
     error_file=sys.argv[4]
 
+#we only want to consider transposable elements, as they would be what would be inserted
+#allowing unknowns - may examine those later
+global avoid_features=['Low_complexity','rRNA','Satellite','Simple_repeat']
+
 with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_file, "a") as ef:
     for line in f:
         fields=line.strip().split()
@@ -16,6 +20,8 @@ with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_
         if len(fields) == 16:
             continue
         elif fields[0] = "SW" || fields[0] = "score":
+            continue
+        elif fields[10] in avoid_features:
             continue
         else:
             fields.append(sv_name)
