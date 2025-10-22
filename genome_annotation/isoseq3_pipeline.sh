@@ -4,7 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 10
 #SBATCH --mem=56G
-#SBATCH --array=[0-1]
+#SBATCH --array=[0-2]
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
@@ -15,8 +15,8 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 topdir=${core}/genome_annotation_isoseq_data
-ccsread_dir=${topdir}/ccs
-iterator=${ccsread_dir}/iterator.txt
+rawread_dir=${topdir}/raw_reads
+iterator=${rawread_dir}/iterator.txt
 primers=${home}/transcriptome/00_process_sequencingdata/isoseq_primers.fasta
 
 module load isoseq3/3.1.2
@@ -25,14 +25,33 @@ accs=($(cat ${iterator}))
 acc=${accs[$SLURM_ARRAY_TASK_ID]}
 
 workdir=${topdir}/${acc}
+if [[ ! -d ${workdir} ]] ; then
+  mkdir ${workdir}
+fi
 cd ${workdir}
 
 date
 echo "[M]: Host Name: `hostname`"
 echo "[M]: Welcome to Slurm task $SLURM_ARRAY_TASK_ID."
 echo "[M]: We are processing the IsoSeq accession ${acc}."
+echo "[M]: Calling consensus sequences..."
 echo ""
+
+ccs ${rawread_dir}/${acc}.subreads.bam ${acc}.ccs.bam --noPolish --minPasses 1
+
+echo ""
+date
+echo "[M]: Consensus sequences called."
+echo "[M]: Beginning adapter removal..."
+echo ""
+
+lima ${acc}.ccs.bam ${primers} ${acc}.fl.bam --isoseq --no-pbi --dump-clips
+
+echo ""
+date
+echo "[M]: Adapters successfully trimmed."
 echo "[M]: Trimming poly-a tails and removing concatmers..."
+echo ""
 
 isoseq3 refine ${acc}.fl.primer_5p--primer_3p.bam ${primers} ${acc}.flnc.bam --require-polya
 
@@ -40,6 +59,7 @@ echo ""
 date
 echo "[M]: Second trim step complete."
 echo "[M]: Beginning clustering..."
+echo ""
 
 isoseq3 cluster ${acc}.flnc.bam ${acc}.unpolished.bam --verbose
 
@@ -47,8 +67,9 @@ echo ""
 date
 echo "[M]: Clustering complete."
 echo "[M]: Beginning polishing..."
+echo""
 
-isoseq3 polish ${acc}.unpolished.bam ${rawread_dir}/${acc}.bam ${acc}.polished.bam --verbose
+isoseq3 polish ${acc}.unpolished.bam ${rawread_dir}/${acc}.subreads.bam ${acc}.polished.bam --verbose
 
 echo ""
 date
