@@ -5,9 +5,8 @@ import sys
 if __name__ == "__main__":
     #unformatted fa.out from RM, with annoying whitespace
     input_outfile=sys.argv[1]
-    sv_name=sys.argv[2]
-    output_outfile=sys.argv[3]
-    error_file=sys.argv[4]
+    output_outfile=sys.argv[2]
+    error_file=sys.argv[3]
 
 #we only want to consider transposable elements, as they would be what would be inserted
 #allowing unknowns - may examine those later
@@ -24,7 +23,6 @@ with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_
         elif fields[10] in avoid_features:
             continue
         else:
-            fields.append(sv_name)
             #check to see how much coverage there is of the repeat for each record
             repeat_start=int(fields[11])
             repeat_end=int(fields[12])

@@ -33,3 +33,6 @@ for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
     next
     }}' > ${scaffold}_svs.fasta
 done && ls -1 *_svs.fasta > fasta_files.iterator
+
+#create an error directory for extra stuff
+mkdir /core/projects/EBP/smith/manual_curation_files/minigraph/repeat_masker_dir/extra_and_error
