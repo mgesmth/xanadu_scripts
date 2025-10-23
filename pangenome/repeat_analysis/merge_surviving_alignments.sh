@@ -23,4 +23,6 @@ touch ../$outfile
 for file in $(cat fasta_files.iterator) ; do
   scaffold=${file/_svs.fasta/}
   cat byscaffold_svs_${threshold}/${scaffold}_filtered${threshold}_svs.fasta >> ../$outfile
-done 
+done
+
+rm fasta_files.iterator

@@ -36,7 +36,7 @@ for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
     }}' > ${scaffold}_svs.fasta
 done
 
-ls -1 *_svs.fasta > ${mg_dir}/repeat_masker_dir/byscaffold_svs_${threshold}/fasta_files.iterator
+ls -1 *_svs.fasta > fasta_files.iterator
 
 #create an error directory for extra stuff
 mkdir extra_and_error
