@@ -24,7 +24,7 @@ threshold=$1
 
 cd ${workdir}/byscaffold_svs_${threshold}
 
-fastas=($(cat byscaffold_svs/fasta_files.iterator))
+fastas=($(cat byscaffold_svs${threshold}/fasta_files.iterator))
 fasta=${fastas[$SLURM_ARRAY_TASK_ID]}
 scaffold=${fasta/_svs.fasta/}
 
