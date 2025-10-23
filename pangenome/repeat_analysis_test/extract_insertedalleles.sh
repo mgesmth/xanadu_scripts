@@ -34,7 +34,9 @@ for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
     } else {
     next
     }}' > ${scaffold}_svs.fasta
-done && ls -1 *_svs.fasta > fasta_files.iterator
+done
+
+ls -1 *_svs.fasta > fasta_files.iterator
 
 #create an error directory for extra stuff
 mkdir extra_and_error
