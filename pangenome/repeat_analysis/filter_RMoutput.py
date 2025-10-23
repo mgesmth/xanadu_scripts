@@ -6,7 +6,8 @@ if __name__ == "__main__":
     #unformatted fa.out from RM, with annoying whitespace
     input_outfile=sys.argv[1]
     output_outfile=sys.argv[2]
-    error_file=sys.argv[3]
+    threshold=sys.argv[3]
+    error_file=sys.argv[4]
 
 #we only want to consider transposable elements, as they would be what would be inserted
 #allowing unknowns - may examine those later
@@ -40,7 +41,7 @@ with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_
             prop_covered=bases_covered/bases_total
 
             #if the coverage of the element is more than 85%, keep the record; else, write it to the error file
-            if prop_covered >= 0.85:
+            if prop_covered >= threshold:
                 of.write('\t'.join(map(str,fields)) + '\n')
             else:
                 ef.write('\t'.join(map(str,fields)) + '\n')
