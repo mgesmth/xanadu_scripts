@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
