@@ -27,7 +27,6 @@ fi
 cd ${mg_dir}/repeat_masker_dir
 
 #Create SV sequence files by scaffold
-chmod +x ${pgscripts}/extract_insertedalleles.sh
 ${pgscripts}/extract_insertedalleles.sh ${threshold}
 array_num=$(echo $(($(cat byscaffold_svs_${threshold}/fasta_files.iterator | wc -l)-1)))
 

@@ -16,7 +16,7 @@ module load bedtools/2.29.0
 
 cd ${mg_dir}
 
-cut -f1-3 svs_categorized.tsv > filtered2_coordinates.bed
+cut -f1-3 ${svs_cat} > filtered2_coordinates.bed
 #apply the second filter to the bed file
 bedtools intersect -F 1 -wa -a ${bed_filt} -b filtered2_coordinates.bed > finalpangenome_filtered2.bed
 #reset bedfile
