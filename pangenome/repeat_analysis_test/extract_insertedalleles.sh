@@ -9,7 +9,7 @@ mg_dir=${home}/svs/minigraph_out/finalpangenome
 pangenome=${mg_dir}/finalpangenome.gfa
 bed_filt=${mg_dir}/finalpangenome_filt_RMtest.bed
 #there's one more filtering step in cat_svs, so this file has the full correct coordinates
-svs_cat=${mg_dir}/svs_categorized.tsv
+svs_cat=${mg_dir}/sv_categorized.tsv
 threshold=$1
 
 module load bedtools/2.29.0
