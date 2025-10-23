@@ -37,4 +37,4 @@ rmjid=$(tr -d '\n' < rmjid.tmp)
 #Merge surviving matches
 sbatch -d afterok:${rmjid} ${pgscripts}/merge_surviving_alignments.sh ${threshold}
 
-rm rmjid.tmp byscaffold_svs/fasta_files.iterator
+rm rmjid.tmp byscaffold_svs_${threshold}/fasta_files.iterator
