@@ -2,8 +2,8 @@
 #SBATCH -J repeat_analysis_launch
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 10
-#SBATCH --mem=24G
+#SBATCH -c 4
+#SBATCH --mem=10G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -11,8 +11,8 @@ set -e
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-mg_dir=${core}/manual_curation_files/minigraph
-pgscripts=${home}/scripts/pangenome/repeat_analysis
+mg_dir=${home}/svs/minigraph_out/finalpangenome
+pgscripts=${home}/scripts/pangenome/repeat_analysis_test
 #if you want to change the stringency threshold, change it here:
 threshold=0.85
 

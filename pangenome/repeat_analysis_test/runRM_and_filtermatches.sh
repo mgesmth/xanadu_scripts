@@ -14,12 +14,12 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/manual_curation_files/minigraph
-bed_filt=${mg_dir}/final_finalpangenome_filtered2.bed
+mg_dir=${home}/svs/minigraph_out/finalpangenome
+bed_filt=${mg_dir}/finalpangenome_filtered2.bed
 workdir=${mg_dir}/repeat_masker_dir
 db=${home}/repeats/primary_db
 tetools=${core}/bin/dfam-tetools-latest.sif
-pgscripts=${home}/scripts/pangenome/repeat_analysis
+pgscripts=${home}/scripts/pangenome/repeat_analysis_test
 threshold=$1
 
 cd ${workdir}/byscaffold_svs_${threshold}
