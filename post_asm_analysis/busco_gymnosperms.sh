@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J busco
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 12
 #SBATCH --mem=200G
 #SBATCH -o /core/projects/EBP/smith/manual_curation_files/log/%x.%j.out
@@ -22,7 +22,7 @@ baseasm=$(basename ${asm})
 export PATH="${home}/scripts/post_asm_analysis:$PATH"
 log=${core}/manual_curation_files/log
 
-database=${home}/busco/busco_downloads/gymnosperm_odb10
+database=${home}/busco/busco_downloads/lineages/gymnosperm_odb10
 date
 echo "[M]: Beginning BUSCO analysis of ${baseasm} against database ${database}"
 #Module files
