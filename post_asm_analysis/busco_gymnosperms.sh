@@ -34,7 +34,8 @@ export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
 export PATH="/core/projects/EBP/smith/bin/miniprot:$PATH"
 outbusco=${outdir}/busco
 
-busco -c ${threads} -i ${asm} -m "genome" -f -l ${database} -o "asm_${database}" --out_path ${outbusco}
+busco -c ${threads} -i ${asm} -m "genome" -f -l ${database} -o "${baseasm}_gymnosperm_odb10" --out_path ${outbusco}
+
 if [[ $? -eq 0 ]] ; then
 echo "[M]: Done."
 exit 0
