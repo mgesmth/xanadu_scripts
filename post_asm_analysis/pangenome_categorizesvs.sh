@@ -28,10 +28,10 @@ cd ${core}/manual_curation_files/minigraph
 cat_svs=${home}/scripts/pangenome/categorize_svs.py
 
 python ${cat_svs} "${prx}_filtered1.sv.vcf" \
-"${prx}_primcall_verified.bed" \
-"${prx}_altcall_verified.bed" \
-"${prx}_coastcall_verified.bed" \
-"${prx}_verified.bed" \
+"${prx}_primcall_filtered.bed" \
+"${prx}_altcall_filtered.bed" \
+"${prx}_coastcall_filtered.bed" \
+"${prx}_filtered.bed" \
 "svs_categorized.tsv"
 
 if [[ $? -eq 0 ]] ; then
