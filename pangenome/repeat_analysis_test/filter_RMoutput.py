@@ -19,7 +19,9 @@ with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_
         #skip alignments when theres a better scoring match overlapping it
         if len(fields) == 16:
             continue
-        elif fields[0] == "SW" or fields[0] == "score":
+        elif fields[0] == "SW":
+            continue
+        elif fields[0] == "score":
             continue
         elif fields[10] in avoid_features:
             continue
