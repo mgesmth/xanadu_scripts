@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
 #we only want to consider transposable elements, as they would be what would be inserted
 #allowing unknowns - may examine those later
-global avoid_features=['Low_complexity','rRNA','Satellite','Simple_repeat']
+avoid_features=['Low_complexity','rRNA','Satellite','Simple_repeat']
 
 with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_file, "a") as ef:
     for line in f:
