@@ -25,7 +25,7 @@ def paste_files(file1, file2, file3, output_file, delimiter='\t'):
 			out.writelines(combined)
 
 #this function handles the rare case where all alleles are the same length but aren't inversions (i.e., not insertion, deletion, or inversion)
-def handle_twollele_indel(ref_allele_length, query_allele_length, line, ef):
+def handle_twoallele_indel(ref_allele_length, query_allele_length, line, ef):
 	global first_category, second_category
 	if ref_allele_length > query_allele_length:
 		first_category="DEL"
@@ -49,7 +49,7 @@ def handle_twoallele_inversion(ref_allele_length, query_allele_length):
 	else:
 		second_category="SIMPLE"
 
-#parse the vcf
+#parse the vcf, extract relevant info from info fields
 with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 	header=["scaffold","start","end","alt_allele","coast_allele"]
 	of.write('\t'.join(header) + '\n')
@@ -66,7 +66,7 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 		newline=[scaffold,start,end,alt_allele,coast_allele]
 		of.write('\t'.join(map(str, newline)) + '\n')
 
-#parse the bed files
+#parse the bed files to get allele specific info for each assembly
 paste_files(primbedfile, altbedfile, coastbedfile, output_file="bed_paste.tmp")
 with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
 	header=["prim_length","alt_length","coast_length"]
@@ -90,7 +90,7 @@ with open(bubblebedfile) as f, open("prt3.tmp", "w") as of:
 		inversion=str(fields[5])
 		of.write(inversion + '\n')
 
-#Combine
+#Combine to create allele summary information, doesn't categorize the SVs
 paste_files("prt1.tmp","prt2.tmp", "prt3.tmp", output_file="sv_allele_summary.tsv")
 os.remove("prt1.tmp")
 os.remove("prt2.tmp")
@@ -120,7 +120,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 				genotype="0:1:1"
 			else:
 				genotype="0:1:2"
-				
+
 			#Categorize variants based on variant genotype
 			if genotype == "0:0:1":
 				if inversion is False:
@@ -170,6 +170,6 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 						second_category="INDEL"
 				else:
 					raise Exception("[E]: Genotype not recognized.")
-			
+
 			newline=(columns[0],columns[1],columns[2],first_category,second_category,genotype,len_string)
 			fw.write('\t'.join(map(str, newline)) + '\n')
