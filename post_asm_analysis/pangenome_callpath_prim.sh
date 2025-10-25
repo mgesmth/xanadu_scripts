@@ -2,8 +2,8 @@
 #SBATCH -J minigraph_callpath
 #SBATCH -p himem2
 #SBATCH -q himem
-#SBATCH -c 24
-#SBATCH --mem=1200G
+#SBATCH -c 36
+#SBATCH --mem=1400G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out

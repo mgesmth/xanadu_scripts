@@ -4,11 +4,10 @@
 #SBATCH -q general
 #SBATCH -c 8
 #SBATCH --mem=40G
-#SBATCH -d afterok:9369142:9369143:9369145
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
-#SBATCH -o ${log}/%x.%j.out
-#SBATCH -e ${log}/%x.%j.err
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
 
 set -e
 date
@@ -67,7 +66,6 @@ if [[ -f "${prx}_primcall.bed" && -f "${prx}_altcall.bed" && -f "${prx}_coastcal
       rm -r minigraph_tmp
 
       echo "[M]: Done cleanup. Beginning to filter bed files according to filtered vcf..."
-      cd ${outdir}
 
       #get a bedfile with the coordinates of processed SVs (VCF file doesnt have end coordinate accessible for bedtools intersect)
       awk 'BEGIN { OFS="\t" } /^#/ {next} !/^#/ {
