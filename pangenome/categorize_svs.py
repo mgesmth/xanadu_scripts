@@ -124,7 +124,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 			#Categorize variants based on variant genotype
 			if genotype == "0:0:1":
 				if inversion is False:
-					if not handle_twollele_indel(prim_len, coast_len, line, ef):
+					if not handle_twoallele_indel(prim_len, coast_len, line, ef):
 						continue
 				elif inversion is True:
 					handle_twoallele_inversion(prim_len, coast_len)
@@ -132,7 +132,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 					raise Exception("[E]: Inversion Boolean not recognized.")
 			elif genotype == "0:1:0":
 				if inversion is False:
-					if not handle_twollele_indel(prim_len, alt_len, line, ef):
+					if not handle_twoallele_indel(prim_len, alt_len, line, ef):
 						continue
 				elif inversion is True:
 					handle_twoallele_inversion(prim_len, alt_len)
@@ -140,7 +140,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 					raise Exception("[E]: Inversion Boolean not recognized.")
 			elif genotype == "0:1:1":
 				if inversion is False:
-					if not handle_twollele_indel(prim_len, alt_len, line, ef):
+					if not handle_twoallele_indel(prim_len, alt_len, line, ef):
 						continue
 				elif inversion is True:
 					handle_twoallele_inversion(prim_len, alt_len)
