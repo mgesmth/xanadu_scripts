@@ -56,15 +56,16 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 	for line in f:
 		if "#" in line:
 			continue
-		fields=line.strip().split('\t')
-		scaffold=fields[0]
-		start=fields[1]
-		info_fields=fields[7].split(';')
-		end=info_fields[0].split('=')[1]
-		alt_allele=fields[10].split(':')[0]
-		coast_allele=fields[11].split(':')[0]
-		newline=[scaffold,start,end,alt_allele,coast_allele]
-		of.write('\t'.join(map(str, newline)) + '\n')
+		else:
+			fields=line.strip().split()
+			scaffold=fields[0]
+			start=fields[1]
+			info_fields=fields[7].split(';')
+			end=info_fields[0].split('=')[1]
+			alt_allele=fields[10].split(':')[0]
+			coast_allele=fields[11].split(':')[0]
+			newline=[scaffold,start,end,alt_allele,coast_allele]
+			of.write('\t'.join(map(str, newline)) + '\n')
 
 #parse the bed files to get allele specific info for each assembly
 paste_files(primbedfile, altbedfile, coastbedfile, output_file="bed_paste.tmp")
@@ -72,7 +73,7 @@ with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
 	header=["prim_length","alt_length","coast_length"]
 	of.write('\t'.join(header) + '\n')
 	for line in f:
-		fields=line.strip().split('\t')
+		fields=line.strip().split()
 		prim_len=fields[5].split(':')[1]
 		alt_len=fields[11].split(':')[1]
 		coast_len=fields[17].split(':')[1]
@@ -102,7 +103,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 		f.readline()
 		for line in f:
 			#define variables
-			columns=line.strip().split('\t')
+			columns=line.strip().split()
 			prim_allele=int(0)
 			prim_len=int(columns[5])
 			alt_allele=int(columns[3])
