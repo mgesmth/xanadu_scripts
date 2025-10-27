@@ -62,12 +62,12 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 			start=fields[1]
 			info_fields=fields[7].split(';')
 			end=info_fields[0].split('=')[1]
-			alt_allele=fields[10].split(':')[0]
-			coast_allele=fields[11].split(':')[0]
+			alt_allele=fields[9].split(':')[0]
+			coast_allele=fields[10].split(':')[0]
 			newline=[scaffold,start,end,alt_allele,coast_allele]
 			of.write('\t'.join(map(str, newline)) + '\n')
 
-#parse the bed files to get allele specific info for each assembly
+#parse the bed files to get allele specific info for each assembly (i.e., lengths)
 paste_files(primbedfile, altbedfile, coastbedfile, output_file="bed_paste.tmp")
 with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
 	header=["prim_length","alt_length","coast_length"]
