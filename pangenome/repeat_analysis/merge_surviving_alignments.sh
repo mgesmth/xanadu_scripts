@@ -12,7 +12,7 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/manual_curation_files/minigraph
+mg_dir=${core}/minigraph
 workdir=${mg_dir}/repeat_masker_dir
 threshold=$1
 outfile=final_finalpangenome_TEs_${threshold}.out

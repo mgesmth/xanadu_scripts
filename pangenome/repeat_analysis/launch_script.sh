@@ -11,7 +11,7 @@ set -e
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-mg_dir=${core}/manual_curation_files/minigraph
+mg_dir=${core}/minigraph
 pgscripts=${home}/scripts/pangenome/repeat_analysis
 #if you want to change the stringency threshold, change it here:
 threshold=0.85
@@ -27,7 +27,6 @@ fi
 cd ${mg_dir}/repeat_masker_dir
 
 #Create SV sequence files by scaffold
-chmod +x ${pgscripts}/extract_insertedalleles.sh
 ${pgscripts}/extract_insertedalleles.sh ${threshold}
 array_num=$(echo $(($(cat byscaffold_svs_${threshold}/fasta_files.iterator | wc -l)-1)))
 

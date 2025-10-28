@@ -14,7 +14,7 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/manual_curation_files/minigraph
+mg_dir=${core}/minigraph
 bed_filt=${mg_dir}/final_finalpangenome_filtered2.bed
 workdir=${mg_dir}/repeat_masker_dir
 db=${home}/repeats/primary_db

@@ -5,7 +5,7 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/manual_curation_files/minigraph
+mg_dir=${core}/minigraph
 bed_filt=${mg_dir}/final_finalpangenome_filtered.bed
 #there's one more filtering step in cat_svs, so this file has the full correct coordinates
 svs_cat=${mg_dir}/svs_categorized.tsv
