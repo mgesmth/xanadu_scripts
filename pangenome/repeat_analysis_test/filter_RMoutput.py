@@ -40,9 +40,9 @@ with open(input_outfile, "r") as f, open(output_outfile, "w") as of, open(error_
                 #coordinate is 1-based, so the overhang on the front is the coordinate start minus 1 (because 1 is 0 front overhang)
                 frontend_left=repeat_start-1
 
-            bases_left=backend_left+frontend_left
-            bases_total=bases_left+bases_covered
-            prop_covered=bases_covered/bases_total
+            bases_left=float(backend_left+frontend_left)
+            bases_total=float(bases_left+bases_covered)
+            prop_covered=float(bases_covered/bases_total)
 
             #if the coverage of the element is more than 85%, keep the record; else, write it to the error file
             if prop_covered >= threshold:
