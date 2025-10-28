@@ -49,7 +49,8 @@ cp "${outdir}/${prx}_coastcall.bed" .
 #this code is from the minigraph github
 if [[ -f "${prx}_primcall.bed" && -f "${prx}_altcall.bed" && -f "${prx}_coastcall.bed" ]] ; then
   echo -e "${prim_prefix}.bed\n${alt_prefix}.bed\n${coast_prefix}.bed" > samples.txt
-  paste *.bed | ${k8_dir}/k8 ${misc_dir}/mgutils.js merge -s samples.txt - | gzip -c > "${prx}.sv.bed.gz"
+  bed_rightorder=$(echo ${prx}_primcall.bed ${prx}_altcall.bed ${prx}_coastcall.bed)
+  paste ${bed_rightorder} | ${k8_dir}/k8 ${misc_dir}/mgutils.js merge -s samples.txt - | gzip -c > "${prx}.sv.bed.gz"
   if [[ $? -eq 0 ]] ; then
     ${k8_dir}/k8 ${misc_dir}/mgutils-es6.js merge2vcf -a2 -r0 "${prx}.sv.bed.gz" > "${outdir}/${prx}_unfiltered.sv.vcf"
     if [[ $? -eq 0 ]] ; then
