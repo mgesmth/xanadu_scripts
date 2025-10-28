@@ -79,7 +79,7 @@ with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
 		newline=[prim_len,alt_len,coast_len]
 		of.write('\t'.join(map(str, newline)) + '\n')
 
-os.remove("bed_paste.tmp")
+# os.remove("bed_paste.tmp")
 
 #Parse bubble bed file to get inversion info
 with open(bubblebedfile) as f, open("prt3.tmp", "w") as of:
@@ -92,9 +92,9 @@ with open(bubblebedfile) as f, open("prt3.tmp", "w") as of:
 
 #Combine to create allele summary information, doesn't categorize the SVs
 paste_files("prt1.tmp","prt2.tmp", "prt3.tmp", output_file="sv_allele_summary.tsv")
-os.remove("prt1.tmp")
-os.remove("prt2.tmp")
-os.remove("prt3.tmp")
+# os.remove("prt1.tmp")
+# os.remove("prt2.tmp")
+# os.remove("prt3.tmp")
 
 with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
 	with open("svs_categorized", "w") as fw:
