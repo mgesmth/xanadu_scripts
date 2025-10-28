@@ -29,7 +29,7 @@ with open(input_outfile, "r") as f, open(output_outfile, "w") as of, open(error_
             continue
         else:
             #check to see how much coverage there is of the repeat for each record
-            repeat_start=int(fields[11])
+            repeat_start=int(fields[11].strip("()"))
             repeat_end=int(fields[12])
             bases_covered=repeat_end-repeat_start
 
