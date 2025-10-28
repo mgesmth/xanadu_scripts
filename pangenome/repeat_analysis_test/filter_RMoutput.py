@@ -13,11 +13,13 @@ if __name__ == "__main__":
 #allowing unknowns - may examine those later
 avoid_features=['Low_complexity','rRNA','Satellite','Simple_repeat']
 
-with open(input_outfile, "r") as f, open(output_outfile, "a") as of, open(error_file, "a") as ef:
+with open(input_outfile, "r") as f, open(output_outfile, "w") as of, open(error_file, "w") as ef:
     for line in f:
         fields=line.strip().split()
         #skip alignments when theres a better scoring match overlapping it
-        if len(fields) == 16:
+        if not fields:
+            continue
+        elif len(fields) == 16:
             continue
         elif fields[0] == "SW":
             continue

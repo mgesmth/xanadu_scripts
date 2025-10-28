@@ -38,7 +38,7 @@ echo ""
 singularity exec $tetools \
 RepeatMasker -frag 60000000 -pa 6 -q -dir ${workdir}/byscaffold_svs_${threshold} -lib "${db}/primary-families.fa" "${fasta}"
 #remove masked sequence - don't need it, just the reports
-rm ${fasta}.cat.gz ${fasta}.masked.gz
+rm ${fasta}.cat* ${fasta}.masked*
 #move tbl to extra_and_error - leave just the out file
 mv ${fasta}.tbl extra_and_error
 
@@ -46,7 +46,7 @@ echo ""
 echo "[M]: Done RepeatMasker. Beginning filtering of matches against a threshold of ${threshold}..."
 
 python ${pgscripts}/filter_RMoutput.py \
-  ${fasta}.out ${scaffold}_filtered${threshold}_svs.fasta \
+  ${fasta}.out ${scaffold}_filtered${threshold}_svs.fasta.out \
   "$threshold" \
   extra_and_error/${scaffold}_below${threshold}.out
 
