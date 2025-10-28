@@ -6,7 +6,7 @@ if __name__ == "__main__":
     #unformatted fa.out from RM, with annoying whitespace
     input_outfile=sys.argv[1]
     output_outfile=sys.argv[2]
-    threshold=sys.argv[3]
+    threshold=float(sys.argv[3])
     error_file=sys.argv[4]
 
 #we only want to consider transposable elements, as they would be what would be inserted
