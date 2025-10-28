@@ -31,13 +31,4 @@ python ${cat_svs} "${prx}_filtered1.sv.vcf" \
 "${prx}_primcall_filtered.bed" \
 "${prx}_altcall_filtered.bed" \
 "${prx}_coastcall_filtered.bed" \
-"${prx}_filtered.bed" \
-"svs_categorized.tsv"
-
-if [[ $? -eq 0 ]] ; then
-  echo "[M]: Done."
-  exit 0
-else
-  echo "[E]: SV Categorization failed. Exit code $?"
-  exit 1
-fi
+"${prx}_filtered.bed"

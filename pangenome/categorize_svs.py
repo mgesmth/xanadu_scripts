@@ -9,7 +9,6 @@ if __name__ == "__main__":
 	altbedfile=sys.argv[3]
 	coastbedfile=sys.argv[4]
 	bubblebedfile=sys.argv[5]
-	outfile=sys.argv[6]
 
 #functions
 def paste_files(file1, file2, file3, output_file, delimiter='\t'):
@@ -97,7 +96,7 @@ os.remove("prt1.tmp")
 os.remove("prt2.tmp")
 os.remove("prt3.tmp")
 
-with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
+with open("svs_categorized.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
 	with open(outfile, "w") as fw:
 		#skip header
 		f.readline()
