@@ -96,8 +96,8 @@ os.remove("prt1.tmp")
 os.remove("prt2.tmp")
 os.remove("prt3.tmp")
 
-with open("svs_categorized.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
-	with open(outfile, "w") as fw:
+with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
+	with open("svs_categorized", "w") as fw:
 		#skip header
 		f.readline()
 		for line in f:
