@@ -23,6 +23,9 @@ echo "[M]: Host Name: `hostname`"
 #create a working directory
 if [[ ! -d ${mg_dir}/repeat_masker_dir ]] ; then
   mkdir ${mg_dir}/repeat_masker_dir
+  if [[ ! -d ${log} ]] ; then
+    mkdir ${log}
+  fi
 fi
 
 cd ${mg_dir}/repeat_masker_dir
