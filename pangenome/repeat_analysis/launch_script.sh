@@ -15,6 +15,7 @@ mg_dir=${core}/minigraph
 pgscripts=${home}/scripts/pangenome/repeat_analysis
 #if you want to change the stringency threshold, change it here:
 threshold=0.85
+log=${mg_dir}/repeat_masker_dir/log
 
 date
 echo "[M]: Host Name: `hostname`"
@@ -28,9 +29,10 @@ cd ${mg_dir}/repeat_masker_dir
 
 #Create SV sequence files by scaffold
 ${pgscripts}/extract_insertedalleles.sh ${threshold}
-array_num=$(echo $(($(cat byscaffold_svs_${threshold}/fasta_files.iterator | wc -l)-1)))
+array_num=$(echo $(($(cat ${mg_dir}/repeat_masker_dir/byscaffold_svs_${threshold}/fasta_files.iterator | wc -l)-1)))
 
 #Run analysis pipeline as an array per scaffold (at an 0.85 threshold)
+cd ${log}
 sbatch --array=[0-${array_num}] ${pgscripts}/runRM_and_filtermatches.sh ${threshold} | cut -d ' ' -f4 > rmjid.tmp
 rmjid=$(tr -d '\n' < rmjid.tmp)
 

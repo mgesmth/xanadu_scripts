@@ -10,6 +10,7 @@
 set -e
 date
 echo "[M]: Host Name: `hostname`"
+module load singularity/3.10.3 
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
