@@ -10,6 +10,7 @@
 set -e
 date
 echo "[M]: Host Name: `hostname`"
+module load python/3.8.1
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
