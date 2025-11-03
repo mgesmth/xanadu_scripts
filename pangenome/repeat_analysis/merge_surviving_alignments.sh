@@ -18,12 +18,11 @@ threshold=$1
 outfile=${workdir}/final_finalpangenome_TEs_${threshold}.out
 
 cd ${workdir}/byscaffold_svs_${threshold}
-ls -1 *filtered*.out > fasta_files_filt.iterator
+ls -1 *filtered*.out | sort -t "_" -g -k 3 > fasta_files_filt.iterator
 touch $outfile
 
 for file in $(cat fasta_files_filt.iterator) ; do
-  scaffold=${file/_svs.fasta/}
-  cat ${scaffold}_filtered.${threshold}_svs.fasta.out >> $outfile
+  cat ${file} >> $outfile
 done
 
 rm *.iterator
