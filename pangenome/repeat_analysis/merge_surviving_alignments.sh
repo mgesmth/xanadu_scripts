@@ -15,14 +15,15 @@ scratch=/scratch/msmith
 mg_dir=${core}/minigraph
 workdir=${mg_dir}/repeat_masker_dir
 threshold=$1
-outfile=final_finalpangenome_TEs_${threshold}.out
+outfile=${workdir}/final_finalpangenome_TEs_${threshold}.out
 
 cd ${workdir}/byscaffold_svs_${threshold}
+ls -1 *filtered*.out > fasta_files_filt.iterator
 touch ../$outfile
 
-for file in $(cat fasta_files.iterator) ; do
+for file in $(cat fasta_files_filt.iterator) ; do
   scaffold=${file/_svs.fasta/}
-  cat ${scaffold}_filtered.${threshold}_svs.fasta.out >> ../$outfile
+  cat ${scaffold}_filtered.${threshold}_svs.fasta.out >> $outfile
 done
 
-rm fasta_files.iterator
+rm *.iterator
