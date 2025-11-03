@@ -19,10 +19,15 @@ outfile=${workdir}/final_finalpangenome_TEs_${threshold}_bysv.out
 
 cd ${workdir}/byscaffold_svs_${threshold}
 ls -1 *filtered*.out | grep "bysv" | sort -t "_" -g -k 3 > fasta_files_filt_bysv.iterator
-touch $outfile
+touch tmp
 
 for file in $(cat fasta_files_filt_bysv.iterator) ; do
-  cat ${file} >> $outfile
+  cat ${file} >> tmp
 done
 
-rm *.iterator
+#split scaffold and sv name in outfile
+awk -v OFS="\t" '{
+  split($5,m,"sv")
+  print $1,$2,$3,$4,substr(m[1],1,length(m[1])-1),m[2],$6,$7,$8,$9,$10,$11,$12,$13,$14}' tmp > ${outfile}
+
+rm tmp *.iterator
