@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J isoseq3_2
+#SBATCH -J isoseq3_coastal
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 18
