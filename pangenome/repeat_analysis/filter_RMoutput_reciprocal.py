@@ -57,7 +57,7 @@ with open(input_outfile, "r") as f, open(output_outfile, "w") as of, open(error_
                 repeat_frontend_left=repeat_start-1
 
             repeat_bases_left=float(repeat_backend_left+repeat_frontend_left)
-            repeat_bases_total=float(bases_left+bases_covered)
+            repeat_bases_total=float(repeat_bases_left+repeat_bases_covered)
             repeat_prop_covered=float(repeat_bases_covered/repeat_bases_total)
 
             #if the coverage of the insertion is more than 85%, keep the record; else, write it to the error file
