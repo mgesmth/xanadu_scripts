@@ -19,7 +19,7 @@ outfile=${workdir}/final_finalpangenome_TEs_${threshold}.out
 
 cd ${workdir}/byscaffold_svs_${threshold}
 ls -1 *filtered*.out > fasta_files_filt.iterator
-touch ../$outfile
+touch $outfile
 
 for file in $(cat fasta_files_filt.iterator) ; do
   scaffold=${file/_svs.fasta/}
