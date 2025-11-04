@@ -15,30 +15,30 @@ with open(can_file) as f, open(out_file, "w") as of:
         sv_num=sv_fields[1]
 
         #length info
-        sv_alnstart=float(sv_fields[2].strip("()"))
+        sv_alnstart=int(sv_fields[2].strip("()"))
         if sv_alnstart > 1:
             sv_frontend_left=sv_alnstart-1
         else:
             sv_frontend_left=0
-        sv_alnend=float(sv_fields[3].strip("()"))
+        sv_alnend=int(sv_fields[3].strip("()"))
         sv_alnlen=sv_alnend-sv_alnstart
-        sv_backend_left=float(sv_fields[4].strip("()"))
+        sv_backend_left=int(sv_fields[4].strip("()"))
         sv_left=sv_frontend_left+sv_backend_left
         sv_totallen=str(sv_alnlen+sv_left) #what we actually want
 
         #Parse repeat portion
         rep_fields=fields[11:15]
-        rep_class=rep_fields[1]
+        rep_class=rep_fields[0]
 
         #length info
-        rep_alnstart=float(rep_fields[2].strip("()"))
+        rep_alnstart=int(rep_fields[1].strip("()"))
         if rep_alnstart > 1:
             rep_frontend_left=rep_alnstart-1
         else:
             rep_frontend_left=0
-        rep_alnend=float(rep_fields[3].strip("()"))
+        rep_alnend=int(rep_fields[2].strip("()"))
         rep_alnlen=rep_alnend-rep_alnstart
-        rep_backend_left=float(rep_fields[4].strip("()"))
+        rep_backend_left=int(rep_fields[3].strip("()"))
         rep_left=rep_frontend_left+rep_backend_left
         rep_totallen=str(rep_alnlen+rep_left) #what we actually want
 
