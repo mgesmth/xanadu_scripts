@@ -28,3 +28,7 @@ for locus in $(cat locus_names.tmp) ; do
     }
   }' search_lines.tmp >> biotypes.tmp
 done && rm search_lines.tmp
+
+awk 'FNR==NR { array[NR]=$0 } FNR!=NR {
+  
+}'
