@@ -15,7 +15,7 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 coastal=${core}/coastal/coastalDF_scaffrenamed_sorted_500kb.fa
 splitdir=${home}/repeats_coastal
-module load samtools/1.20
+module load samtools/1.19
 module load seqkit/2.10.0
 
 #find where the first 42 scaffolds end in fasta file and send to tmp 20 scaffold file, and all else to another file
