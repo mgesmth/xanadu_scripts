@@ -19,7 +19,7 @@ module load samtools/1.19
 module load seqkit/2.10.0
 
 #find where the first 42 scaffolds end in fasta file and send to tmp 20 scaffold file, and all else to another file
-awk '{if ($1 ~ "scaffold_42_coastal") { ; print NR-1 ; exit }}' ${coastal} > linenum.tmp
+awk '{if ($1 ~ "scaffold_43_coastal") { ; print NR-1 ; exit }}' ${coastal} > linenum.tmp
 linenum=$(tr -d '\n' < linenum.tmp)
 head -n ${linenum} ${coastal} > ${scratch}/42_tmp.fa
 totallen=$(wc -l ${coastal} | cut -d ' ' -f1)
@@ -45,7 +45,7 @@ scaffnum=$(tr -d '\n' < first_small_scaffold.tmp)
 awk -v scaffnum="$scaffnum" '{if ($1 ~ scaffnum) { ; print NR-1 ; exit }}' ${scratch}/allelse_tmp.fa > linenum1.tmp
 linenum1=$(tr -d '\n' < linenum1.tmp)
 head -n ${linenum1} ${scratch}/allelse_tmp.fa > ${scratch}/above1Mb_tmp.fa
-totallen1=$(wc -l ${home}/allelse_tmp.fa | cut -d ' ' -f1)
+totallen1=$(wc -l ${scratch}/allelse_tmp.fa | cut -d ' ' -f1)
 #get the number of the remaining lines ; these are the
 tailnum1=$(echo $((${totallen1}-${linenum1})))
 tail -n ${tailnum1} ${scratch}/allelse_tmp.fa > ${scratch}/below1Mb_tmp.fa
@@ -62,8 +62,8 @@ ls -1 * > above.txt
 mkdir tmp
 cat above.txt | while read -r file ; do
   no_suf=${file/.fa/}
-  #scaffold number will be the original number plus 20 (since the first 20 are already split)
-  new_name=$(echo "$no_suf" | awk '{split($0,m,"scaffold") ; print "coastal_scaffold"m[2]+20".fa"}')
+  #scaffold number will be the original number plus 42 (since the first 42 are already split)
+  new_name=$(echo "$no_suf" | awk '{split($0,m,"scaffold") ; print "coastal_scaffold"m[2]+42".fa"}')
   mv ${file} tmp/${new_name}
 done
 mv tmp/*.fa .
@@ -71,8 +71,8 @@ rm -r tmp/
 
 samtools faidx ${scratch}/above1Mb_tmp.fa
 #Get the number of the last above 1Mb scaffold - this will be added to the split scaffold names
-last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") ; print m[2]+20}')
-seqkit split -s 1 ${scratch}/below1Mb_tmp.fa --by-size-prefix "coastal" -O ${splitdir}/below_1Mb
+last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") ; print m[2]+42}')
+seqkit split -s 1 ${scratch}/below1Mb_tmp.fa --by-size-prefix "coastal_scaffold" -O ${splitdir}/below_1Mb
 cd ${splitdir}/below_1Mb
 ls -1 * > below.txt
 mkdir tmp
