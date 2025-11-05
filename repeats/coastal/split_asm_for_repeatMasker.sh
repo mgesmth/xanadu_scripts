@@ -18,10 +18,10 @@ splitdir=${home}/repeats_coastal
 module load samtools/1.20
 module load seqkit/2.10.0
 
-#find where the first 20 scaffolds end in fasta file and send to tmp 20 scaffold file, and all else to another file
-awk '{if ($1 ~ "HiC_scaffold_21") { ; print NR-1 ; exit }}' ${coastal} > linenum.tmp
+#find where the first 42 scaffolds end in fasta file and send to tmp 20 scaffold file, and all else to another file
+awk '{if ($1 ~ "scaffold_42_coastal") { ; print NR-1 ; exit }}' ${coastal} > linenum.tmp
 linenum=$(tr -d '\n' < linenum.tmp)
-head -n ${linenum} ${coastal} > ${scratch}/20_tmp.fa
+head -n ${linenum} ${coastal} > ${scratch}/42_tmp.fa
 totallen=$(wc -l ${coastal} | cut -d ' ' -f1)
 tailnum=$(echo $((${totallen}-${linenum})))
 tail -n ${tailnum} ${coastal} > ${scratch}/allelse_tmp.fa
@@ -52,8 +52,8 @@ tail -n ${tailnum1} ${scratch}/allelse_tmp.fa > ${scratch}/below1Mb_tmp.fa
 rm ${scratch}/allelse_tmp.fa* linenum1.tmp first_small_scaffold.tmp
 
 #split the tmp fasta files into 20 parts for each scaffold
-seqkit split -s 1 ${scratch}/20_tmp.fa --by-size-prefix "coastal_scaffold" -O ${splitdir}/first_20
-rm ${scratch}/20_tmp.fa
+seqkit split -s 1 ${scratch}/42_tmp.fa --by-size-prefix "coastal_scaffold" -O ${splitdir}/first_42
+rm ${scratch}/42_tmp.fa
 
 #for the rest - will have to rename scaffolds
 seqkit split -s 1 ${scratch}/above1Mb_tmp.fa --by-size-prefix "coastal_scaffold" -O ${splitdir}/above_1Mb
@@ -84,3 +84,7 @@ done
 mv tmp/*.fa .
 rm -r tmp/
 rm ${scratch}/above1Mb_tmp.fa* ${scratch}/below1Mb_tmp.fa
+
+cd ${splitdir}/first_42 ; ls coastal*.fa > 42files.txt
+cd ${splitdir}/above_1Mb ; ls coastal*.fa > above.txt
+cd ${splitdir}/below_1Mb ; ls coastal*.fa > below.txt
