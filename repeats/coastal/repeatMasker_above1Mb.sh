@@ -14,7 +14,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 repdir=${home}/repeats_coastal/above_1Mb
-db=${home}/repeats/primary_db
+db=${home}/repeats_coastal/primary_db
 tetools=${core}/bin/dfam-tetools-latest.sif
 
 cd ${repdir}
