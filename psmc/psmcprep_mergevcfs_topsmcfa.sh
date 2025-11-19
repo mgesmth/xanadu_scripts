@@ -4,7 +4,6 @@
 #SBATCH -q himem
 #SBATCH -c 36
 #SBATCH --mem=1200G
-#SBATCH -d afterok:<BAM2VCF>
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
