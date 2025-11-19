@@ -41,7 +41,6 @@ fi
 
 #sort concatenated vcf file
 cd ..
-rm -r vcfs
 bcftools sort -m 1200G -T ${scratch} -O "z" -o "$out_vcf_s" "$out_vcf"
 if [[ $? -eq 0 ]] ; then
   rm "$out_vcf"
