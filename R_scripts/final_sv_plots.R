@@ -29,7 +29,7 @@ SV_kary$chr <- gsub("scaffold_","chr",SV_kary$chr)
 SV_kary <- toGRanges(SV_kary)
 
 #genes
-gene_kary <- data.frame(chr=gene_coord$scaffold, start=gene_coord$start, 
+gene_kary <- data.frame(chr=gene_coord$scaffold, start=gene_coord$start,
                         end=gene_coord$end)
 gene_kary$chr <- gsub("scaffold_","chr",gene_kary$chr)
 gene_kary <- toGRanges(gene_kary)
@@ -93,7 +93,7 @@ gene_on_sv_plot_5mb <- ggplot(data=gene_on_sv_5mb, aes(x=sv, y=gene))+
   geom_point(colour="grey", fill="white")+
   xlab("SV Density")+ylab("Gene Density")+
   geom_smooth(method="lm", level=0.9)+
-  annotate(geom = "text", x=750, y=25, 
+  annotate(geom = "text", x=750, y=25,
            label = paste("R2=", format(summary(reg_5mb)$adj.r.squared, digits=4))) +
   theme_classic(base_size = 18)
 gene_on_sv_plot_5mb
@@ -105,7 +105,7 @@ gene_on_sv_plot_10mb <- ggplot(data=gene_on_sv_10mb, aes(x=sv, y=gene))+
   geom_point(colour="grey", fill="white")+
   xlab("SV Density")+ylab("Gene Density")+
   geom_smooth(method="lm", level=0.9)+
-  annotate(geom = "text", x=1250, y=50, 
+  annotate(geom = "text", x=1250, y=50,
            label = paste("R2=", format(summary(reg_10mb)$adj.r.squared, digits=4))) +
   theme_classic(base_size = 18)
 gene_on_sv_plot_10mb
@@ -117,7 +117,7 @@ gene_on_sv_plot_25mb <- ggplot(data=gene_on_sv_25mb, aes(x=sv, y=gene))+
   geom_point(colour="grey", fill="white")+
   xlab("SV Density")+ylab("Gene Density")+
   geom_smooth(method="lm", level=0.9)+
-  annotate(geom = "text", x=2800, y=110, 
+  annotate(geom = "text", x=2800, y=110,
            label = paste("R2=", format(summary(reg_25mb)$adj.r.squared, digits=4))) +
   theme_classic(base_size = 18)
 gene_on_sv_plot_25mb
@@ -129,7 +129,7 @@ gene_on_sv_plot_50mb <- ggplot(data=gene_on_sv_50mb, aes(x=sv, y=gene))+
   geom_point(colour="grey", fill="white")+
   xlab("SV Density")+ylab("Gene Density")+
   geom_smooth(method="lm", level=0.9)+
-  annotate(geom = "text", x=4700, y=220, 
+  annotate(geom = "text", x=4700, y=220,
            label = paste("R2=", format(summary(reg_50mb)$adj.r.squared, digits=4))) +
   theme_classic(base_size = 18)
 gene_on_sv_plot_50mb
@@ -161,19 +161,19 @@ for (i in 1:13){
 }
 
 labelled_gene_on_sv_density <- data.frame(chr=chr_vec,window=window_vec,
-                                          sv_density=sv_density, 
+                                          sv_density=sv_density,
                                           gene_density=gene_density)
 
 reg_labelled <- lm(gene_density~sv_density, data=labelled_gene_on_sv_density)
 
 
-gene_on_sv_plot_labelled <- ggplot(data=labelled_gene_on_sv_density, 
+gene_on_sv_plot_labelled <- ggplot(data=labelled_gene_on_sv_density,
                                    aes(x=sv_density, y=gene_density,color=chr))+
   geom_point()+
   xlab("SV Density")+ylab("Gene Density")+
   #geom_smooth(method="lm", level=0.9, mapping = aes(x=sv_density, y=gene_density))+
-  annotate(geom = "text", x=4700, y=220, 
-           label = paste("R2=", 
+  annotate(geom = "text", x=4700, y=220,
+           label = paste("R2=",
                          format(summary(reg_50mb)$adj.r.squared, digits=4))) +
   theme_classic(base_size = 18)
 gene_on_sv_plot_labelled

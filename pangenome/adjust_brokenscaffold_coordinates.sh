@@ -9,25 +9,26 @@ for i in $(seq 1 6) ; do
   add=${idx[$i]}
   awk -v i=$i -v add=$add -v OFS="\t" '{
     scaffold=$1
-    if (scaffold ~ "scaffold_"i"_1") {
-      gsub(scaffold, "scaffold_"i)
-      print scaffold,$2,$3,$4,$5,$6,$7,$8,$9
-    } else if ($1 ~ "scaffold_"i"_2") {
-      gsub($1, "scaffold_"i)
+    if (scaffold ~ "HiC_scaffold_"i"_1") {
+      gsub(scaffold, "scaffold_"i, $1)
+      print
+    } else if (scaffold ~ "HiC_scaffold_"i"_2") {
+      gsub(scaffold, "scaffold_"i, $1)
       new_start=$2+add
       new_end=$3+add
-      print scaffold,new_start,new_end,$4,$5,$6,$7,$8,$9
+      print $1,new_start,new_end,$4,$5,$6,$7
     } else {
       next
     }
   }' sv_allele_summary_filt2.tsv >> sv_allele_summary_filt2_unbroken.tsv
 done && rm index.tmp
 
-awk '{
- scaffold=$1
- if (scaffold ~ /scaffold_[0-9]+_/) {
-   next
- } else {
-   print
- }
+awk -v OFS="\t" '{
+  scaffold=$1
+  if (scaffold ~ /HiC_scaffold_[0-9]+_/){
+    next
+  } else {
+    gsub(/HiC_/,"",$1)
+    print
+  }
 }' sv_allele_summary_filt2.tsv >> sv_allele_summary_filt2_unbroken.tsv
