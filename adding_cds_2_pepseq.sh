@@ -49,7 +49,7 @@ awk '{
     #split at hyphen; this is what separate mrna and mrna number
     split(mrna_name,m,"-")
     gene_name=m[1]
-    print ">[ID="mrna_name"]","["$2"]","[geneID="m[1]"]"
+    print ">ID="mrna_name,$2,"geneID="m[1]
   } else {
     print
   }
