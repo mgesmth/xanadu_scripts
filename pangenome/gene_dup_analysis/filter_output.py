@@ -30,7 +30,7 @@ with open(input_outfile, "r") as f, open(output_outfile, "w") as of, open(error_
         elif fields[6] == "minus":
             gene_bases_covered=gene_start-gene_end
 
-        gene_prop_covered=float(gene_bases_covered/gene_bases_total)
+        gene_prop_covered=float(gene_bases_covered/gene_len)
 
         #if the coverage of the insertion is more than 85%, keep the record; else, write it to the error file
         newline=[fields[0],fields[1],fields[2],fields[3],fields[4],fields[5],sv_prop_covered,fields[7],fields[8],fields[9],fields[10],gene_prop_covered]
