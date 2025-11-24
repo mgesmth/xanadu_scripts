@@ -7,25 +7,25 @@ with open("svs_categorized_justindels.tsv") as f, open("svs_categorized_coastins
 
         #process coastal diff lines
         if fields[5] == "0:0:1":
-            if allele_lens[2] > allele_lens[0]:
+            if float(allele_lens[2]) > float(allele_lens[0]):
                 coa_of.write('\t'.join(map(str,fields)) + '\n')
-            elif allele_lens[2] < allele_lens[0]:
+            elif float(allele_lens[2]) < float(allele_lens[0]):
                 int_of.write('\t'.join(map(str,fields)) + '\n')
             else:
                 raise Exception("[E]: comparing allele lengths for 0:0:1 record failed. check for bug!")
         elif fields[5] == "0:1:1":
-            if allele_lens[1] > allele_lens[0]:
+            if float(allele_lens[1]) > float(allele_lens[0]):
                 both_of.write('\t'.join(map(str,fields)) + '\n')
-            elif allele_lens[1] < allele_lens[0]:
+            elif float(allele_lens[1]) < float(allele_lens[0]):
                 #in this case, the primary has the insertion, so int record
                 int_of.write('\t'.join(map(str,fields)) + '\n')
             else:
                 raise Exception("[E]: comparing allele lengths for 0:1:1 record failed. check for bug!")
         elif fields[5] == "0:1:0":
-            if allele_lens[1] > allele_lens[0]:
+            if float(allele_lens[1] > allele_lens[0]):
                 #in this case, alt haplotype has insertion, int insertion
                 int_of.write('\t'.join(map(str,fields)) + '\n')
-            elif allele_lens[1] < allele_lens[0]:
+            elif float(allele_lens[1] < allele_lens[0]):
                 #in this case, primary and coa share ins, both
                 both_of.write('\t'.join(map(str,fields)) + '\n')
             else:
