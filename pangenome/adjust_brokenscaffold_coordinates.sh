@@ -6,7 +6,8 @@ idx=($(cat index.tmp))
 touch sv_allele_summary_filt2_unbroken.tsv
 
 for i in $(seq 1 6) ; do
-  add=${idx[$i]}
+  length=${idx[$i]}
+  add=$(echo $((${length}+200)))
   awk -v i=$i -v add=$add -v OFS="\t" '{
     scaffold=$1
     if (scaffold ~ "HiC_scaffold_"i"_1") {
