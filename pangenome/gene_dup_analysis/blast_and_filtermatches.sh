@@ -25,10 +25,6 @@ threshold=$1
 
 cd ${workdir}/byscaffold_svs_${threshold}
 
-if [[ ! -d extra_and_error/ ]] ; then
-  mkdir extra_and_error
-fi 
-
 fastas=($(cat fasta_files.iterator))
 fasta=${fastas[$SLURM_ARRAY_TASK_ID]}
 scaffold=${fasta/_svs.fasta/}
