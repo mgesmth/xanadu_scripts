@@ -92,3 +92,22 @@ for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
     next
     }}' > ${scaffold}_svs.fasta
 done
+
+
+###Build blast db
+module load blast/2.15.0
+#found an issue where some of the gene records are duplicated for some reason, where one is a regular locus and another is lncRNA - gonna change the headers to hopefully allow both records to stay
+
+awk '{
+  if ($0 ~ /^>/) {
+    split($1,m,"_")
+    print ">scaffold_"m[2]":"$2
+  } else {
+    print
+  }
+}' interior_geneseqs_justint.fa > interior_geneseqs_headerfixed.fa
+
+mkdir geneseqdb && cd geneseqdb
+makeblastdb -in ../interior_geneseqs_headerfixed.fa -parse_seqids -dbtype nucl -out interior_geneseqs_justint
+
+blastn -db ../geneseqdb/interior_geneseqs_justint -query scaffold_72_svs.fasta -out scaffold_72_svs.fasta.out -outfmt='6 score evalue qseqid qstart qend qlen sstrand sseqid sstart send slen'
