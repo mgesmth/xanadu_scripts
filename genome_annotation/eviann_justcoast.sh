@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J eviann
+#SBATCH -J eviann_coastal
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 36
@@ -21,6 +21,10 @@ workdir=${core}/eviann/eviann_justcoa
 export PATH="${core}/bin/EviAnn-2.0.4/bin:$PATH"
 module load minimap2/2.28 hisat2/2.2.1 samtools/1.19
 #all other dependencies are within the Eviann package itself
+
+if [[ ! -d ${workdir} ]] ; then
+  mkdir ${workdir}
+fi
 
 cd ${workdir}
 
