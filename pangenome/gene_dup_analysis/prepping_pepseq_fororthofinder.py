@@ -1,5 +1,7 @@
 #!/bin/env python
 
+#this is necessary because the primary_transcripts.py script, which seeks to find the longest transcript for genes with multiple splice variants, needs a "gene=" with the parent gene to work
+
 int_gff="interior_primary_mancur_masked_500kb.justint.pseudo_label.s.gff"
 int_fa="interior_primary_mancur_masked_500kb.justint.proteins.fa"
 out_fa="interior_primary_mancur_masked_500kb.justint.proteins_withgenes.fa"
