@@ -18,6 +18,6 @@ prot_dir=${ortho_dir}/proteomes/primary_transcripts
 int_pep=${core}/eviann_justint/interior_primary_mancur_masked_500kb.justint.proteins.fa
 coa_pep=${core}/eviann_justcoa/coastal_masked_500kb.justcoa.proteins.fa
 
-. ${core}/bin/OrthoFinder/orthofinder3_venv/bin/activate
+. ${core}/bin/OrthoFinder/orthofinder3_env/bin/activate
 
 orthofinder -t 6 -a 6 -n "ortho_run1out" -f ${prot_dir}
