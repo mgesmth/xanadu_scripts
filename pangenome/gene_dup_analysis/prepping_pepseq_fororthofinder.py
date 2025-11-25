@@ -19,6 +19,7 @@ with open(int_gff) as f:
             else:
                 continue
 
+rna_dict={}
 for rna, parent in zip(rna_list,parent_list):
     rna_dict[key] = parent
 
