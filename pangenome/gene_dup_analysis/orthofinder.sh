@@ -2,8 +2,8 @@
 #SBATCH -J orthofinder
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 12
-#SBATCH --mem=36G
+#SBATCH -c 20
+#SBATCH --mem=80G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -20,4 +20,4 @@ coa_pep=${core}/eviann_justcoa/coastal_masked_500kb.justcoa.proteins.fa
 
 . ${core}/bin/OrthoFinder/orthofinder3_env/bin/activate
 
-orthofinder -t 6 -a 6 -n "ortho_run1out" -f ${prot_dir}
+orthofinder -t 10 -a 10 -n "ortho_run1out" -f ${prot_dir}
