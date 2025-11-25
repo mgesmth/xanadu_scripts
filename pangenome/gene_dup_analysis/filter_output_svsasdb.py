@@ -33,7 +33,7 @@ with open(input_outfile, "r") as f, open(output_outfile, "w") as of, open(error_
         sv_prop_covered=float(sv_bases_covered/sv_len)
 
         #if the coverage of the insertion is more than 85%, keep the record; else, write it to the error file
-        newline=[fields[0],fields[1],fields[2],fields[3],fields[4],fields[5],sv_prop_covered,fields[7],fields[8],fields[9],fields[10],gene_prop_covered]
+        newline=[fields[0],fields[1],fields[2],fields[3],fields[4],fields[5],gene_prop_covered,fields[7],fields[8],fields[9],fields[10],sv_prop_covered]
         if gene_prop_covered >= threshold:
             of.write('\t'.join(map(str,newline)) + '\n')
         else:
