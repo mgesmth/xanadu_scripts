@@ -28,7 +28,7 @@ with open(int_fa) as f, open(out_fa, "w") as of:
         x=line.strip()
         if x.startswith(">"):
             mrna=x[1:]
-            gene=rna_dict[mrna]
+            gene="gene=" + rna_dict[mrna]
             newline=[x,gene]
             of.write(' '.join(map(str,newline)) + '\n')
         else:
