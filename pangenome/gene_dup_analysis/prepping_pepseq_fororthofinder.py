@@ -21,7 +21,7 @@ with open(int_gff) as f:
 
 rna_dict={}
 for rna, parent in zip(rna_list,parent_list):
-    rna_dict[key] = parent
+    rna_dict[rna] = parent
 
 with open(int_fa) as f, open(out_fa, "w") as of:
     for line in f:
