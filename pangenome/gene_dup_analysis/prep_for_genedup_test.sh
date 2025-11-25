@@ -83,6 +83,8 @@ awk -v OFS="\t" '{
   }
 }' final_finalpangenome_justint.bed >> final_finalpangenome_justint_unbroken.bed
 
+bed_filt=final_finalpangenome_justint_unbroken.bed
+
 #send inserted alleles to separate files for parallel processing
 for scaffold in $(cut -f1 ${bed_filt} | uniq) ; do
   grep -w "$scaffold" ${bed_filt} | \
