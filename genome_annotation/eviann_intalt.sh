@@ -3,7 +3,7 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 36
-#SBATCH --mem=500G
+#SBATCH --mem=200G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -13,10 +13,10 @@ echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-genome=${core}/manual_curation_files/interior_primary_mancur_masked_500kb.fa
+genome=${home}/repeats_alternate/interior_alternate_masked.fa
 transcript_file=${home}/transcriptome/03_eviann_annotation/evidence_allintsamp.txt
 protein_db=${home}/transcriptome/02_braker_annotation/conifer_geneSet_protein_v2_150.faa
-workdir=${core}/eviann_allintsamp_new
+workdir=${core}/eviann/eviann_alt_justint
 if [[ ! -d ${workdir} ]] ; then
   mkdir ${workdir}
 fi
