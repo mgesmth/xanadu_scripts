@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J eviann
+#SBATCH -J eviann_alt
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 36
