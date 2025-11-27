@@ -15,7 +15,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 prim=${core}/manual_curation_files/interior_primary_final_mancur_1Mb.fa
 alt=${core}/CBP_assemblyfiles/interior_alternate_1Mb.fa
-outdir=${home}/minigraph_justint/interior_pangenome
+outdir=${home}/minigraph_justint
 outfix="interior_pangenome"
 out=${home}/minigraph_justint/${outfix}
 
