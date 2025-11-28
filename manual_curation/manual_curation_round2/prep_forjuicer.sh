@@ -27,15 +27,21 @@ enzyme="Arima"
 
 R1=${home}/hiC_data/allhiC_R1.fastq.gz
 R2=${home}/hiC_data/allhiC_R2.fastq.gz
-outdir=${scratch}/hic_split
-if [[ ! -d "$outdir" ]] ; then
-  mkdir ${outdir}
-fi
+hic_split=${scratch}/hic_split
+hic_bams=${scratch}/hic_bams
 splitN=300
+
+if [[ ! -d "$hic_split" ]] ; then
+  mkdir ${hic_split}
+fi
+
+if [[ ! -d "$hic_bams" ]] ; then
+  mkdir ${hic_bams}
+fi
 
 echo -e "\n[M]: Splitting Hi-C data\n"
 
-seqkit split2 -1 "$R1" -2 "$R2" -p "$splitN" -O "$outdir" -f
+seqkit split2 -1 "$R1" -2 "$R2" -p "$splitN" -O "$hic_split" -f
 
 #Don't need to re-create site positions file, I already have it from the first run. Keeping this code here for the record.
 #date=$(date)
