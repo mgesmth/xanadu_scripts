@@ -11,7 +11,7 @@
 
 set -e
 
-echo "[M]: Host Name: `hostname`"
+echo "`date`:[M]: Host Name: `hostname`"
 
 module load samtools/1.19
 module load bwa/0.7.17
@@ -23,11 +23,11 @@ scratch=/scratch/msmith
 gid="intdf137"
 site="Arima"
 threads=6
-jd=${scratch}/juicer_formanualcur
+jd=${core}/juicer_formanualcur
 
 export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
 
-echo "[M]: Beginning juicer run."
+echo "`date:`[M]: Beginning juicer run."
 cd ${jd}
 #Okay - now run juicer (CPU version, modified for better handling of large files)
 ${jd}/scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
