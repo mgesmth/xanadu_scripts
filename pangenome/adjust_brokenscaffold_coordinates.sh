@@ -5,10 +5,11 @@ head -n11 interior_primary_final_mancur_1Mb.fa.fai | awk '$1 ~ /HiC_scaffold_[0-
 idx=($(cat index.tmp))
 touch sv_allele_summary_filt2_unbroken.tsv
 
-for i in $(seq 1 6) ; do
+for i in $(seq 0 5) ; do
   length=${idx[$i]}
+  scaff_num=$(echo $((${i}+1)))
   add=$(echo $((${length}+200)))
-  awk -v i=$i -v add=$add -v OFS="\t" '{
+  awk -v i=${scaff_num} -v add=$add -v OFS="\t" '{
     scaffold=$1
     if (scaffold ~ "HiC_scaffold_"i"_1") {
       gsub(scaffold, "scaffold_"i, $1)

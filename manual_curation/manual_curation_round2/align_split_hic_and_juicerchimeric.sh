@@ -18,29 +18,45 @@ module load samtools/1.19
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
 core=/core/projects/EBP/smith
+sandbox=/sandbox/msmith
 fq_dir=${scratch}/hic_split
-bam_dir=${scratch}/hic_bams
+bam_dir=${sandbox}/hic_bams
 ref=${core}/CBP_assemblyfiles/interior_primary_final.fa
 ref_name=$(basename ${ref})
-
-cd ${fq_dir}
+export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
 fqs=($(cat fastqs.txt))
 r1=${fqs[$SLURM_ARRAY_TASK_ID]}
 r1_string="_R1"
 name=${r1//$r1_string/}
 r2=$(echo "$r1" | sed 's/R1/R2/')
-out=$(echo "$name" | sed 's/fastq.gz/bam/')
+out="${name//.gz/}.bam"
 sampleName="HiC_sample"
 libraryName="HiC_library"
-
+gid="intdf137"
+site="Arima"
+threads=6
+jd=${sandbox}/juicer_formanualcur
 rg="@RG\\tID:${name}\\tSM:${sampleName}\\tPL:LS454\\tLB:${libraryName}"
 
 echo -e "`date`[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo -e "`date`[M]: We are aligning ${r1} and ${r2} to ${ref_name}.\n"
 
+cd ${fq_dir}
+
 bwa mem -SP5M -t 4 -R "$rg" "$ref" "$r1" "$r2" | \
 samtools sort -n -@ 4 -m 2500M -O "bam" -o "${bam_dir}/${out}"
 
-echo -e "\n`date`:[M]: Alignment complete. Removing fastqs for disk..."
+echo -e "\n`date`:[M]: Alignment complete. Removing fastqs for disk and moving alignment file..."
 rm "$r1" "$r2"
-echo -e "\n`date`:[M]: Done."
+touch ${jd}/work/intdf137/splits${r1//.gz/}
+touch ${jd}/work/intdf137/splits${r2//.gz/}
+mv "${bam_dir}/${out}" ${jd}/work/intdf137/splits/
+
+echo "`date`:[M]: Beginning juicer chimeric task $SLURM_ARRAY_TASK_ID."
+cd ${jd}
+
+${jd}/scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
+-p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
+-z references/interior_primary_final.fa -D "$jd" -t "$threads"
+
+echo -e "`date`:[M]: Juicer chimeric processing task $SLURM_ARRAY_TASK_ID complete."
