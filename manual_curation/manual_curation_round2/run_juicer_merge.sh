@@ -23,7 +23,7 @@ scratch=/scratch/msmith
 gid="intdf137"
 site="Arima"
 threads=36
-jd=${scratch}/juicer_formanualcur
+jd=${core}/juicer_formanualcur
 
 echo "`date`:[M]: Beginning juicer run."
 
