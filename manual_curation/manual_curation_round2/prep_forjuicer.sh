@@ -42,6 +42,8 @@ fi
 echo -e "\n[M]: Splitting Hi-C data\n"
 
 seqkit split2 -1 "$R1" -2 "$R2" -p "$splitN" -O "$hic_split" -f
+cd $hic_split
+ls *.fastq* > fastqs.txt
 
 #Don't need to re-create site positions file, I already have it from the first run. Keeping this code here for the record.
 #date=$(date)
