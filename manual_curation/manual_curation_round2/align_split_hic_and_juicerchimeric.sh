@@ -6,14 +6,14 @@
 #SBATCH -c 8
 #SBATCH --mem=20G
 #SBATCH --array=[0-299]%50
-#SBATCH -o %x.%j.%a.out
+#SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
 set -e
 
 echo "`date`[M]: Host Name: `hostname`"
 module load bwa/0.7.17
-module load samtools/1.19
+module load samtools/1.20
 
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
@@ -24,6 +24,7 @@ bam_dir=${sandbox}/hic_bams
 ref=${core}/CBP_assemblyfiles/interior_primary_final.fa
 ref_name=$(basename ${ref})
 export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
+cd ${fq_dir}
 fqs=($(cat fastqs.txt))
 r1=${fqs[$SLURM_ARRAY_TASK_ID]}
 r1_string="_R1"
@@ -40,8 +41,6 @@ rg="@RG\\tID:${name}\\tSM:${sampleName}\\tPL:LS454\\tLB:${libraryName}"
 
 echo -e "`date`[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo -e "`date`[M]: We are aligning ${r1} and ${r2} to ${ref_name}.\n"
-
-cd ${fq_dir}
 
 bwa mem -SP5M -t 4 -R "$rg" "$ref" "$r1" "$r2" | \
 samtools sort -n -@ 4 -m 2500M -O "bam" -o "${bam_dir}/${out}"
