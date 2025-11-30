@@ -42,8 +42,8 @@ rg="@RG\\tID:${name}\\tSM:${sampleName}\\tPL:LS454\\tLB:${libraryName}"
 echo -e "`date`[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
 echo -e "`date`[M]: We are aligning ${r1} and ${r2} to ${ref_name}.\n"
 
-bwa mem -SP5M -t 4 -R "$rg" "$ref" "$r1" "$r2" | \
-samtools sort -n -@ 4 -m 2500M -O "bam" -o "${bam_dir}/${out}"
+bwa mem -SP5M -t 8 -R "$rg" "$ref" "$r1" "$r2" | samtools view -b > "${bam_dir}/${name//.gz/}.unsorted.bam"
+samtools sort -n -@ 8 -m 2500M -O "bam" -o "${bam_dir}/${out}" "${bam_dir}/${name//.gz/}.unsorted.bam" && rm "${bam_dir}/${name//.gz/}.unsorted.bam"
 
 echo -e "\n`date`:[M]: Alignment complete. Removing fastqs for disk and moving alignment file..."
 rm "$r1" "$r2"
