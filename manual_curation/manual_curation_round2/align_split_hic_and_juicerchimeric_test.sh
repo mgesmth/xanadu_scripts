@@ -50,11 +50,11 @@ touch ${jd}/work/intdf137/splits${r1//.gz/}
 touch ${jd}/work/intdf137/splits${r2//.gz/}
 mv "${bam_dir}/${out}" ${jd}/work/intdf137/splits/
 
-#echo "`date`:[M]: Beginning juicer chimeric task $SLURM_ARRAY_TASK_ID."
-#cd ${jd}
+echo "`date`:[M]: Beginning juicer chimeric task <test>."
+cd ${jd}
 
-#${jd}/scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
-#-p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
-#-z references/interior_primary_final.fa -D "$jd" -t "$threads"
+${jd}/scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
+-p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
+-z references/interior_primary_final.fa -D "$jd" -t "$threads"
 
-#echo -e "`date`:[M]: Juicer chimeric processing task $SLURM_ARRAY_TASK_ID complete."
+echo -e "`date`:[M]: Juicer chimeric processing task $SLURM_ARRAY_TASK_ID complete."

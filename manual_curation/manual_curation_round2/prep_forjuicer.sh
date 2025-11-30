@@ -13,11 +13,12 @@ date
 echo "[M]: Host Name: `host name`"
 
 module load bwa/0.7.17
-module load samtools/1.19
+module load samtools/1.20
 module load python/3.8.1
 module load seqkit/2.10.0
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
+scratch=/scratch/msmith
 juicedir=${core}/juicer_formanualcur
 export PATH="${juicedir}/scripts:$PATH"
 prim=${juicedir}/references/interior_primary_final.fa
