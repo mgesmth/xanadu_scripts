@@ -47,8 +47,8 @@ samtools sort -n -@ 8 -m 2000M -O "bam" -o "${bam_dir}/${out}" "${bam_dir}/${nam
 
 echo -e "\n`date`:[M]: Alignment complete. Removing fastqs for disk and moving alignment file..."
 rm "$r1" "$r2"
-touch ${jd}/work/intdf137/splits${r1//.gz/}
-touch ${jd}/work/intdf137/splits${r2//.gz/}
+touch ${jd}/work/intdf137/splits/${r1//.gz/}
+touch ${jd}/work/intdf137/splits/${r2//.gz/}
 mv "${bam_dir}/${out}" ${jd}/work/intdf137/splits/
 
 echo "`date`:[M]: Beginning juicer chimeric task $SLURM_ARRAY_TASK_ID."
