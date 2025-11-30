@@ -3,8 +3,8 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -n 1
-#SBATCH -c 8
-#SBATCH --mem=25G
+#SBATCH -c 10
+#SBATCH --mem=40G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -22,7 +22,7 @@ fq_dir=${scratch}/hic_split
 bam_dir=${sandbox}/hic_bams
 ref=${core}/CBP_assemblyfiles/interior_primary_final.fa
 ref_name=$(basename ${ref})
-export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
+#export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
 cd ${fq_dir}
 #fqs=($(cat fastqs.txt))
 r1=$(head -n1 fastqs_r1.txt)

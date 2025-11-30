@@ -3,9 +3,9 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -n 1
-#SBATCH -c 8
-#SBATCH --mem=25G
-#SBATCH --array=[0-298]%50
+#SBATCH -c 10
+#SBATCH --mem=40G
+#SBATCH --array=[0-298]%20
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
