@@ -5,7 +5,7 @@
 #SBATCH -n 1
 #SBATCH -c 10
 #SBATCH --mem=40G
-#SBATCH --array=[0-298]
+#SBATCH --array=[0-299]
 #SBATCH -o %x.%A.%a.out
 #SBATCH -e %x.%A.%a.err
 
@@ -25,7 +25,7 @@ ref=${core}/CBP_assemblyfiles/interior_primary_final.fa
 ref_name=$(basename ${ref})
 export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
 cd ${fq_dir}
-fqs=($(cat fastqs_r1_299.txt))
+fqs=($(cat fastqs.txt))
 r1=${fqs[$SLURM_ARRAY_TASK_ID]}
 r1_string="_R1"
 name=${r1//$r1_string/}
