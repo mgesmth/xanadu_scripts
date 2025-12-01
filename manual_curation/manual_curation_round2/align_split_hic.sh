@@ -47,15 +47,17 @@ samtools sort -n -@ 8 -m 2000M -O "bam" -o "${bam_dir}/${out}" "${bam_dir}/${nam
 
 echo -e "\n`date`:[M]: Alignment complete. Removing fastqs for disk and moving alignment file..."
 rm "$r1" "$r2"
-touch ${jd}/work/intdf137/splits/${name//.fastq.gz/}._R1.fastq
-touch ${jd}/work/intdf137/splits/${name//.fastq.gz/}._R2.fastq
+touch ${jd}/work/intdf137/fastq/${name//.fastq.gz/}._R1.fastq
+touch ${jd}/work/intdf137/fastq/${name//.fastq.gz/}._R2.fastq
+cd ${jd}/work/intdf137/splits
+ln -s ../fastq/* .
 mv "${bam_dir}/${out}" ${jd}/work/intdf137/splits/
 
-echo "`date`:[M]: Beginning juicer chimeric task $SLURM_ARRAY_TASK_ID."
-cd ${jd}
+#echo "`date`:[M]: Beginning juicer chimeric task $SLURM_ARRAY_TASK_ID."
+#cd ${jd}
 
-${jd}/scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
--p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
--z references/interior_primary_final.fa -D "$jd" -t "$threads"
+#${jd}/scripts/juicer_justchimeric.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S chimeric \
+#-p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
+#-z references/interior_primary_final.fa -D "$jd" -t "$threads"
 
-echo -e "`date`:[M]: Juicer chimeric processing task $SLURM_ARRAY_TASK_ID complete."
+#echo -e "`date`:[M]: Juicer chimeric processing task $SLURM_ARRAY_TASK_ID complete."
