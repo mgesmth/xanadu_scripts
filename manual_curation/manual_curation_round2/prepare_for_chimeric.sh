@@ -7,7 +7,7 @@
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
-set -e 
+set -e
 
 core=/core/projects/EBP/smith
 sandbox=/sandbox/msmith
@@ -15,24 +15,16 @@ jd=${sandbox}/juicer_formanualcur
 splits=${jd}/work/intdf137/splits
 fastq=${jd}/work/intdf137/fastq
 
-cd ${jd}
-rm _in.bam
-rm _norm.txt.res.txt
-
-cd work/intdf137
-
-rm splitsallhiC*.fastq
-cd ${splits}
-
-ls -1 *.bam | sed 's/.bam//g'> bams.txt
-mv bams.txt ${fastq}
 cd ${fastq}
-for bam in $(cat bams.txt) ; do
-  r1="${bam//.fastq}_R1.fastq"
-  r2="${bam//.fastq}_R2.fastq"
+rm *.fastq
+for r1 in $(cat /scratch/msmith/hic_split/fastqs.txt) ; do
+  r2=$(echo "$r1" | sed 's/R1/R2/')
   touch ${r1}
   touch ${r2}
-done && rm bams.txt
+done
 
 cd ${splits}
+for link in $(ls *.fastq) ; do
+  unlink ${link}
+done
 ln -s ../fastq/* .
