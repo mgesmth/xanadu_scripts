@@ -13,7 +13,7 @@ set -e
 
 echo "`date`:[M]: Host Name: `hostname`"
 
-module load samtools/1.19
+module load samtools/1.20
 module load bwa/0.7.17
 module load java-sdk/1.8.0_92
 

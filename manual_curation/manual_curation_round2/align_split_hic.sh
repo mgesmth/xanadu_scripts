@@ -50,7 +50,7 @@ rm "$r1" "$r2"
 touch ${jd}/work/intdf137/fastq/${name//.fastq.gz/}._R1.fastq
 touch ${jd}/work/intdf137/fastq/${name//.fastq.gz/}._R2.fastq
 cd ${jd}/work/intdf137/splits
-ln -s ../fastq/* .
+#ln -s ../fastq/* .
 mv "${bam_dir}/${out}" ${jd}/work/intdf137/splits/
 
 #echo "`date`:[M]: Beginning juicer chimeric task $SLURM_ARRAY_TASK_ID."
