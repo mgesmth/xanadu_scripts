@@ -15,7 +15,7 @@ echo -e "`date`:[M]: Host Name: `hostname`"
 
 module load samtools/1.20 bwa/0.7.17 java-sdk/1.8.0_92
 export PATH="${core}/bin/3d-dna:$PATH"
-module load gnu-parallel/20160622 java/22 lastz/1.04.03 python/3.8.1
+module load gnu-parallel/20160622 lastz/1.04.03 python/3.8.1
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
@@ -28,9 +28,6 @@ jd=${sandbox}/juicer_formanualcur
 export TMPDIR=${core}
 3DDNA_fulldir=${core}/manual_curation_round2/3DDNA_pipeline
 3DDNA_mancurdir=${core}/manual_curation_round2/3DDNA_justmancur
-if [[ ! -d ${3DDNA_dir} ]] ; then
-  mkdir ${3DDNA_dir}
-fi
 
 echo "`date`:[M]: Beginning juicer run."
 
