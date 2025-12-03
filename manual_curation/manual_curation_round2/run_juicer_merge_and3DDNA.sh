@@ -26,8 +26,8 @@ site="Arima"
 threads=36
 jd=${sandbox}/juicer_formanualcur
 export TMPDIR=${core}
-3DDNA_fulldir=${core}/manual_curation_round2/3DDNA_pipeline
-3DDNA_mancurdir=${core}/manual_curation_round2/3DDNA_justmancur
+out_fulldir=${core}/manual_curation_round2/3DDNA_pipeline
+out_mancurdir=${core}/manual_curation_round2/3DDNA_justmancur
 
 echo "`date`:[M]: Beginning juicer run."
 
@@ -47,7 +47,7 @@ fi
 mv work/intdf137/aligned/merged_nodups.txt .
 tar -cvzf aligned.tar.gz aligned/
 
-cd ${3DDNA_fulldir}
+cd ${out_fulldir}
 merged_nodups=${jd}/work/intdf137/merged_nodups.txt
 
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
@@ -55,7 +55,7 @@ ${core}/bin/3d-dna/run-asm-pipeline.sh ${jd}/references/interior_primary_final.f
 
 echo -e "\n`date`:[M]: Done full 3DDNA pipeline. Beginning just manual curation pipeline.\n"
 
-cd ${3DDNA_mancurdir}
+cd ${out_mancurdir}
 ${core}/bin/3d-dna/visualize/run-assembly-visualizer.sh "$asm_file" "$merge_nodups"
 
 echo -e "\n`data`:[M]: Done JBAT 3DDNA pipeline. Bye!"
