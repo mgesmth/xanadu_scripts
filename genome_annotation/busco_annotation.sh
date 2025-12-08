@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J busco
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 10
 #SBATCH --mem=84G
 #SBATCH -o /core/projects/EBP/smith/manual_curation_files/log/%x.%j.out
