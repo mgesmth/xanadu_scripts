@@ -19,8 +19,9 @@ export PATH="/core/projects/EBP/smith/bin/genomescope2.0:$PATH"
 
 ##DATA STRUCTURES---
 home=/home/FCAM/msmith
+core=/core/projects/EBP/smith
 pg_dir=${home}/whitespruce_hifi
-outdir=${pg_dir}/kmers
+outdir=${core}/whitespruce_kmers
 k=22
 threads="$(getconf _NPROCESSORS_ONLN)"
 meryl_db=piceaglauca_hifi.meryl
@@ -31,16 +32,16 @@ fi
 echo "`date`:[M]: Hey! We are getting k-mer based genome quality estimates for Picea glauca."
 echo -e "`date`:[M]: Please note we are running this analysis with 6 of 8 HiFi cells.\n"
 
-if [[ ! -f hifi.iterator ]] ; then
+if [[ ! -f ${pg_dir}/hifi.iterator ]] ; then
   cd ${pg_dir}
   ls -1 *.fastq.gz > hifi.iterator
 fi
 
 cd ${outdir}
 
-for read in $(cat ../hifi.iterator) ; do
+for read in $(cat ${pg_dir}/hifi.iterator) ; do
   pfx=${read//.fastq.gz/}
-  meryl k=$k count output ${pfx}.meryl ../${read}
+  meryl k=$k count output ${pfx}.meryl ${pg_dir}/${read}
 done
 
 echo -e "\n`date`:[M]: Done counting individual hifi fastqs. Running union-sum...\n"
@@ -56,5 +57,3 @@ echo -e "\n`date`:[M]: Done generating histogram. Running GenomeScope2...\n"
 genomescope.R -i "${meryl_db}.hist" -o . -k ${k}
 
 echo -e "\n`date`:[M]: K-mer analysis complete. Bye!"
-
-
