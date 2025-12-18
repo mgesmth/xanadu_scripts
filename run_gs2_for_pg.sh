@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J kmers
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 12
 #SBATCH --mem=80G
 #SBATCH -o %x.%j.out
