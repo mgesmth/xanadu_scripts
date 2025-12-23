@@ -60,14 +60,6 @@
 #             through a "*" in the name because the wildcard was not able to
 #             match any files with the read1str.
 # Juicer version 2.0
-
-##NOTE:
-###This is a version of the CP Juicer script I modified to only process chimeric reads.
-###I wanted to parallelize Juicer myself as a SLURM array, and so I use this as part
-###of the array in the run_juicer_chimeric.sh script. For the second juicer script,
-###which requires the alignments be merged, I use juicer.sh (here), which I also modi-
-###fied. See that script for more details.
-
 shopt -s extglob
 export LC_ALL=C
 juicer_version="2.0"
@@ -278,7 +270,8 @@ then
 fi
 
 ## Set ligation junction based on restriction enzyme
-if [ -z "$ligation" ]; then
+if [ -z "$ligation" ]
+then
     case $site in
 	HindIII) ligation="AAGCTAGCTT";;
 	MseI)  ligation="TTATAA";;
@@ -355,16 +348,16 @@ else
 fi
 
 ## Create output directory, only if not in postproc, dedup or final stages
-#if [[ -d "$outputdir" && -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" ]]
-#then
-#    echo "***! Move or remove directory \"$outputdir\" before proceeding."
-#    echo "***! Type \"juicer.sh -h \" for help"
-#    exit 1
-#else
-#    if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" ]]; then
-        #mkdir "$outputdir" || { echo "***! Unable to create ${outputdir}, check permissions." ; exit 1; }
-#    fi
-#fi
+if [[ -d "$outputdir" && -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" ]]
+then
+    echo "***! Move or remove directory \"$outputdir\" before proceeding."
+    echo "***! Type \"juicer.sh -h \" for help"
+    exit 1
+else
+    if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" ]]; then
+        mkdir "$outputdir" || { echo "***! Unable to create ${outputdir}, check permissions." ; exit 1; }
+    fi
+fi
 
 ## Create split directory
 if [ -d "$splitdir" ]; then
@@ -376,55 +369,54 @@ fi
 if [ -z "$read1files" ]
 then
 ## Check that fastq directory exists and has proper fastq files; only if necessary
-	if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" && -z "$merge" && -z "$mergeonly" ]]; then
-		if [ ! -d "$topDir/fastq" ]; then
-			echo "Directory \"$topDir/fastq\" does not exist."
-			echo "Create \"$topDir/fastq\" and put fastq files to be aligned there."
-			echo "Type \"juicer.sh -h\" for help"
-			exit 1
+    if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" && -z "$merge" && -z "$mergeonly" ]]; then
+	if [ ! -d "$topDir/fastq" ]; then
+	    echo "Directory \"$topDir/fastq\" does not exist."
+	    echo "Create \"$topDir/fastq\" and put fastq files to be aligned there."
+	    echo "Type \"juicer.sh -h\" for help"
+	    exit 1
+	else
+	    if stat -t ${fastqdir} >/dev/null 2>&1
+	    then
+		echo "(-: Looking for fastq files...fastq files exist"
+		if [ ! $splitdirexists ]
+		then
+		    echo "(-: Created $splitdir."
+		    ln -s ${fastqdir} ${splitdir}/.
 		else
-			if stat -t ${fastqdir} >/dev/null 2>&1
-	   		then
-				echo "(-: Looking for fastq files...fastq files exist"
-				if [ ! $splitdirexists ]
-				then
-					echo "(-: Created $splitdir."
-					ln -s ${fastqdir} ${splitdir}/.
-				else
-    					echo -e "---  Using already created files in $splitdir\n"
-				fi
-				testname=$(ls -lgG ${fastqdir} | awk 'NR==1{print $7}')
-				if [ "${testname: -3}" == ".gz" ]
-				then
-					read1=${splitdir}"/*${read1str}*.fastq.gz"
-					gzipped=1
-				else
-					read1=${splitdir}"/*${read1str}*.fastq"
-				fi
-
-			else
-				if [ ! -d "$splitdir" ]; then
-					echo "***! Failed to find any files matching ${fastqdir}"
-					echo "***! Type \"juicer.sh -h \" for help"
-					exit
-				fi
-			fi
+		    echo -e "---  Using already created files in $splitdir\n"
 		fi
+		testname=$(ls -lgG ${fastqdir} | awk 'NR==1{print $7}')
+		if [ "${testname: -3}" == ".gz" ]
+		then
+		    read1=${splitdir}"/*${read1str}*.fastq.gz"
+		    gzipped=1
+		else
+		    read1=${splitdir}"/*${read1str}*.fastq"
+		fi
+	    else
+		if [ ! -d "$splitdir" ]; then
+		    echo "***! Failed to find any files matching ${fastqdir}"
+		    echo "***! Type \"juicer.sh -h \" for help"
+		    exit
+		fi
+	    fi
 	fi
-	read1files=()
-	read2files=()
-	for i in ${read1}
-	do
-		ext=${i#*$read1str}
-		name=${i%$read1str*}
-        	# these names have to be right or it'll break
-		name1=${name}${read1str}
-		name2=${name}${read2str}
-		read1filesstr+=$name1$ext" "
-		read2filesstr+=$name2$ext" "
-	done
-	read1files=( $read1filesstr )
-	read2files=( $read2filesstr )
+    fi
+    read1files=()
+    read2files=()
+    for i in ${read1}
+    do
+	ext=${i#*$read1str}
+	name=${i%$read1str*}
+        # these names have to be right or it'll break
+	name1=${name}${read1str}
+	name2=${name}${read2str}
+	read1filesstr+=$name1$ext" "
+	read2filesstr+=$name2$ext" "
+    done
+    read1files=( $read1filesstr )
+    read2files=( $read2filesstr )
 else
     if [ -z "$read2files" ]
     then
@@ -443,29 +435,116 @@ then
     exit 1
 fi
 
-#Don't need headfile stuff here - deleted
 ## Arguments have been checked and directories created. Now begins
 ## the real work of the pipeline
+headfile=${outputdir}/header
+date >> $headfile
+# Experiment description
+if [ -n "${about}" ]
+then
+    echo -ne 'Experiment description: ${about}; ' >> $headfile
+else
+    echo -ne 'Experiment description: ' >> $headfile
+fi
+echo -ne "Sample name $sampleName;"  >> $headfile
+# Get version numbers of all software
+echo -ne " Juicer version $juicer_version;" >> $headfile
+$bwa_cmd 2>&1 | awk '$1=="Version:"{printf(" BWA %s; ", $2)}' >> $headfile
+if [ "$methylation" = 1 ]
+then
+    $call_bwameth  --version 2>&1 | awk '{printf("%s; ",$0)}' >> $headfile
+fi
+echo -ne "$threads threads; " >> $headfile
+java -version 2>&1 | awk 'NR==1{printf("%s; ", $0);}' >> $headfile
+${juiceDir}/scripts/common/juicer_tools -V 2>&1 | awk '$1=="Juicer" && $2=="Tools"{printf("%s; ", $0);}' >> $headfile
+echo "$0 $@" >> $headfile
 
-######ARRAY -------
-file1=${read1files[$SLURM_ARRAY_TASK_ID]}
-file2=${read2files[$SLURM_ARRAY_TASK_ID]}
-ext=${file1#*$read1str}
-name=${file1%$read1str*}
-name1=${name}${read1str}
-name2=${name}${read2str}
-jname=$(basename "$name")${ext}
 
-# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
-if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
-	if [ $singleend -eq 1 ] ; then
-		awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
+## ALIGN FASTQ IN SINGLE END MODE, SORT BY READNAME, HANDLE CHIMERIC READS
+
+## Not in merge, dedup, final, or postproc stage, i.e. need to align files.
+if [ -z $merge ] && [ -z $mergeonly ] && [ -z $final ] && [ -z $dedup ] && [ -z $deduponly ] && [ -z $postproc ]
+then
+    if [ "$nofrag" -eq 0 ] && [ "$chimeric" -eq 0 ]
+    then
+	echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with site file $site_file"
+    elif [ "$nofrag" -eq 1 ] && [ "$chimeric" -eq 0 ] ; then
+        echo -e "(-: Aligning files matching $fastqdir\n to genome $refSeq with no fragment delimited maps."
+    fi
+
+    for ((i = 0; i < ${#read1files[@]}; ++i)); do
+	usegzip=0
+	file1=${read1files[$i]}
+	file2=${read2files[$i]}
+
+  #file extension (i.e., fastq.gz)
+	ext=${file1#*$read1str}
+  #file name without read info, i.e., sample1_R1.fastq.gz -> sample1_
+	name=${file1%$read1str*}
+
+	# these names have to be right or it'll break
+	name1=${name}${read1str}
+	name2=${name}${read2str}
+	jname=$(basename "$name")${ext}
+	# RG group; ID derived from paired-end name, sample and library can be user set
+	if [ $singleend -eq 1 ]
+	then
+	    rg="@RG\\tID:${jname%.fastq*}\\tSM:${sampleName}\\tPL:LS454\\tLB:${libraryName}"
 	else
+	    rg="@RG\\tID:${jname%.fastq*}\\tSM:${sampleName}\\tPL:ILM\\tLB:${libraryName}"
+	fi
+
+	if [ ${file1: -3} == ".gz" ]
+	then
+	    usegzip=1
+	fi
+
+	if [ -z "$chimeric" ] ; then
+ 	source ${juiceDir}/scripts/common/countligations.sh
+	  if [ "$methylation" = 1 ] ; then
+		  conda activate
+	  fi
+	  if [ $singleend -eq 1 ] ; then
+      #I'm commenting out the alignment lines because I think something is running when it shouldn't be
+      if [ "$methylation" = 1 ] ; then
+        # The -M flag is already used in bwameth.py
+        echo "Running bwameth.py $threadstring -5 --do-not-penalize-chimeras --reference ${refSeq} --read-group $rg $name1$ext > $name$ext.sam"
+        #$call_bwameth $threadstring -5 --do-not-penalize-chimeras --reference ${refSeq} --read-group '$rg' $name1$ext > $name$ext.sam
+		  else
+		    echo "Running command $bwa_cmd mem -5M $threadstring -R $rg $refSeq $name1$ext > $name$ext.sam"
+		    #$bwa_cmd mem -K 320000000 -5M $threadstring -R "$rg" $refSeq $file1 > $name$ext.sam
+		  fi
+	  else
+		  if [ "$methylation" = 1 ] ; then
+		    # The -M flag is already used in bwameth.py
+		    echo "Running bwameth.py $threadstring -5SP --do-not-penalize-chimeras --read-group '$rg'  --reference ${refSeq} $name1$ext $name2$ext > $name$ext.sam"
+		    #$call_bwameth $threadstring -5SP --do-not-penalize-chimeras --read-group '$rg' --reference ${refSeq} $name1$ext $name2$ext > $name$ext.sam
+		  else
+		    echo "Running command bwa mem -SP5M $threadstring -R $rg $refSeq $file1 $file2 > $name$ext.sam"
+		    #$bwa_cmd mem -K 320000000 -SP5M $threadstring -R "$rg" $refSeq $file1 $file2 > $name$ext.sam
+		  fi
+	  fi
+	    if [ $? -ne 0 ] ; then
+		    echo "***! Alignment of $file1 $file2 failed."
+		    exit 1
+	    else
+		    echo "(-:  Align of $name$ext.sam done successfully"
+	    fi
+	else
+   #I'm only doing chimeric reads so I'm only editting the second pertinent to what I'm doing
+	  echo "Using already aligned reads $name$ext.bam"
+  fi
+
+	# call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
+	if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
+	  if [ $singleend -eq 1 ] ; then
+		  awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
+	  else
 		echo "(-: Beginning chimeric handling of $name$ext.bam"
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
-      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" &&
+      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_1.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	else
@@ -478,7 +557,7 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | awk -v stem=${name}${ext}_norm -f $juiceDir/scripts/common/chimeric_sam.awk - | \
 		awk -v avgInsertFile=${name}${ext}_norm.txt.res.txt -f $juiceDir/scripts/common/adjust_insert_size.awk - | \
-    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && \
+    		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	fi
@@ -492,3 +571,208 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
 # done looping over all fastq split files
 fi
 # Not in merge, dedup,  or final stage, i.e. need to split and align files.
+
+if [ -n "$alignonly" ]
+then
+    exit 0
+fi
+
+#MERGE SORTED AND ALIGNED FILES
+# Not in final, dedup, or postproc
+if [ -z $final ] && [ -z $dedup ] && [ -z $deduponly ] && [ -z $postproc ]
+then
+    if [ -d $donesplitdir ]
+    then
+	mv $donesplitdir/* $splitdir/.
+    fi
+
+    if ! samtools merge -c -t cb -n $sthreadstring $outputdir/merged_sort.bam $splitdir/*.bam
+    then
+	echo "***! Some problems occurred somewhere in creating sorted align files."
+	exit 1
+    else
+	echo "(-: Finished sorting all sorted files into a single merge."
+    fi
+fi
+
+if [ -n "$mergeonly" ]
+then
+    exit 0
+fi
+
+#REMOVE DUPLICATES
+if [ -z $final ] && [ -z $postproc ]
+then
+    if [ $justexact -eq 1 ]
+    then
+	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk -v nowobble=1 | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
+    else
+	samtools view $sthreadstring -h $outputdir/merged_sort.bam | awk -f $juiceDir/scripts/common/dups_sam.awk | samtools view -b > $outputdir/merged_dedup.bam && rm $outputdir/merged_sort.bam
+    fi
+    if [ $? -ne 0 ]
+    then
+	echo "***! Mark duplicates of $outputdir/merged_sort.bam failed."
+	exit 1
+    else
+	echo "(-:  Mark duplicates done successfully"
+
+    fi
+fi
+
+
+if [ -n "$deduponly" ]
+then
+    exit 0
+fi
+
+#CREATE HIC FILES
+if [ -z "$genomePath" ]
+then
+    #If no path to genome is give, use genome ID as default.
+    genomePath=$genomeID
+fi
+
+#Skip if post-processing only is required
+if [ -z $postproc ]
+then
+  # if we haven't already zipped up merged_dedup
+  #REMOVING THIS CHECK - I modified the script to handle bam files, so this check will not work.
+
+  #if [ ! -s  ${outputdir}/merged_dedup.bam ]
+  #then
+      # Check that dedupping worked properly
+      # in ideal world, we would check this in split_rmdups and not remove before we know they are correct
+	#size1=$(samtools view $sthreadstring -h ${outputdir}/merged_sort.bam | wc -l | awk '{print $1}')
+	#size2=$(wc -l ${outputdir}/merged_dedup.bam | awk '{print $1}')
+
+	#if [ $size1 -ne $size2 ]
+	#then
+	    #echo "***! Error! The sorted file and dups/no dups files do not add up, or were empty."
+	    #exit 1
+	#fi
+	#samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
+	#samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
+	if [ ! -s ${outputdir}/merged1.txt ]
+	then
+	    samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged1.txt
+	fi
+	if [ ! -s ${outputdir}/merged30.txt ]
+	then
+	    samtools view $sthreadstring -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
+	fi
+fi
+
+if [[ $threadsHic -gt 1 ]]
+then
+	if [ ! -s ${outputdir}/merged1_index.txt ]
+	then
+	    time ${juiceDir}/scripts/common/index_by_chr.awk ${outputdir}/merged1.txt 500000 > ${outputdir}/merged1_index.txt
+	fi
+	if [ ! -s ${outputdir}/merged30_index.txt ]
+	then
+	    time ${juiceDir}/scripts/common/index_by_chr.awk ${outputdir}/merged30.txt 500000 > ${outputdir}/merged30_index.txt
+	fi
+fi
+
+if [ ! -s  ${outputdir}/merged_dedup.bam ]
+then
+  if samtools view -b $sthreadstring ${outputdir}/merged_dedup.sam > ${outputdir}/merged_dedup.bam
+	then
+	    rm ${outputdir}/merged_dedup.sam
+	    rm ${outputdir}/merged_sort.bam
+	fi
+fi
+
+if [ "$methylation" = 1 ]
+then
+	$load_methyl
+	samtools sort $sthreadstring ${outputdir}/merged_dedup.bam > ${outputdir}/merged_dedup_sort.bam
+	$call_methyl extract -F 1024 --keepSingleton --keepDiscordant $refSeq ${outputdir}/merged_dedup_sort.bam
+	$call_methyl extract -F 1024 --keepSingleton --keepDiscordant --cytosine_report  --CHH --CHG $refSeq ${outputdir}/merged_dedup_sort.bam
+	${juiceDir}/scripts/common/conversion.sh ${outputdir}/merged_dedup_sort.cytosine_report.txt > ${outputdir}/conversion_report.txt
+	rm ${outputdir}/merged_dedup_sort.bam ${outputdir}/merged_dedup_sort.cytosine_report.txt*
+fi
+
+
+export IBM_JAVA_OPTIONS="-Xmx1000G -Xgcthreads1"
+export _JAVA_OPTIONS="-Xmx1000G -Xms10G"
+tail -n1 $headfile | awk '{printf"%-1000s\n", $0}' > $outputdir/inter.txt
+if [ $singleend -eq 1 ]
+then
+	ret=$(samtools view $sthreadstring -f 1024 -F 256 $outputdir/merged_dedup.bam | awk '{if ($0~/rt:A:7/){singdup++}else{dup++}}END{print dup,singdup}')
+	dups=$(echo $ret | awk '{print $1}')
+	singdups=$(echo $ret | awk '{print $2}')
+	cat $splitdir/*.res.txt | awk -v dups=$dups -v singdups=$singdups -v ligation=$ligation -v singleend=1 -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
+else
+	dups=$(samtools view -c -f 1089 -F 256 $sthreadstring $outputdir/merged_dedup.bam)
+	cat $splitdir/*.res.txt | awk -v dups=$dups -v ligation=$ligation -f ${juiceDir}/scripts/common/stats_sub.awk >> $outputdir/inter.txt
+fi
+
+cp $outputdir/inter.txt $outputdir/inter_30.txt
+
+if [ $assembly -eq 1 ]
+then
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
+else
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt $genomePath
+	${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt $genomePath
+fi
+
+    # if early exit, we stop here, once the stats are calculated
+if [ ! -z "$earlyexit" ]
+then
+  if [ $assembly -eq 1 ]
+    then
+      samtools view $sthreadstring -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
+  fi
+	export splitdir=${splitdir}; export outputdir=${outputdir}; export early=1;
+  if ${juiceDir}/scripts/common/check.sh && [ "$cleanup" = 1 ]
+	then
+	    #${juiceDir}/scripts/common/cleanup.sh
+		echo "skipping cleanup"
+	fi
+	exit
+fi
+
+export IBM_JAVA_OPTIONS="-Xmx1000G -Xgcthreads1"
+export _JAVA_OPTIONS="-XX:+UseParallelGC -Xms250G -Xmx1000G"
+mkdir ${outputdir}"/HIC_tmp"
+if [ "$qc" = 1 ] || [ "$insitu" = 1 ]
+then
+  resstr="-r 2500000,1000000,500000,250000,100000,50000,25000,10000,5000,2000,1000"
+else
+  resstr="-r 2500000,1000000,500000,250000,100000,50000,25000,10000,5000,2000,1000,500,200,100"
+fi
+
+if [ "$nofrag" -eq 1 ]
+then
+  fragstr=""
+else
+	fragstr="-f $site_file"
+fi
+
+time ${juiceDir}/scripts/common/juicer_tools pre -n -s $outputdir/inter.txt -g $outputdir/inter_hists.m $fragstr $resstr $threadHicString $outputdir/merged1.txt $outputdir/inter.hic $genomePath
+time ${juiceDir}/scripts/common/juicer_tools addNorm $threadNormString ${outputdir}/inter.hic
+
+rm -R ${outputdir}"/HIC_tmp"
+date
+mkdir ${outputdir}"/HIC30_tmp"
+time ${juiceDir}/scripts/common/juicer_tools pre -n -s $outputdir/inter_30.txt -g $outputdir/inter_30_hists.m $fragstr $resstr $threadHic30String $outputdir/merged30.txt $outputdir/inter_30.hic $genomePath
+time ${juiceDir}/scripts/common/juicer_tools addNorm $threadNormString ${outputdir}/inter_30.hic
+
+rm -R ${outputdir}"/HIC30_tmp"
+    # POSTPROCESSING
+if [ "$qc" != 1 ]
+then
+  ${juiceDir}/scripts/common/juicer_postprocessing.sh -j ${juiceDir}/scripts/common/juicer_tools -i ${outputdir}/inter_30.hic -m ${juiceDir}/references/motif -g ${genomeID}
+fi
+
+#CHECK THAT PIPELINE WAS SUCCESSFUL
+export early=$earlyexit
+export splitdir=$splitdir
+export outputdir=$outputdir
+if ${juiceDir}/scripts/common/check.sh && [ "$cleanup" = 1 ]
+then
+    ${juiceDir}/scripts/common/cleanup.sh
+fi
