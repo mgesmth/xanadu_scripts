@@ -31,6 +31,8 @@ out_mancurdir=${core}/manual_curation_round2/3DDNA_justmancur
 
 echo "`date`:[M]: Beginning juicer re-run, post merge."
 
+cd ${jd}
+
 #Okay - now run juicer (CPU version, modified for better handling of large files)
 scripts/juicer.sh -f --assembly -g "$gid" -d "${jd}/work/intdf137" -s "$site" -S dedup \
 -p references/intdf137.chrom.sizes -y restriction_sites/intdf137_Arima.txt \
