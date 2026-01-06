@@ -2,7 +2,13 @@
 #SBATCH -J mergeredo
 #SBATCH -p general
 #SBATCH -q general
+#SBATCH -c 36
+#SBATCH --mem=500G
+#SBATCH -o %x.%j.out
+#SBATCH -e %x.%j.err
 
+echo `hostname`
+set -e 
 
 module load samtools/1.19 java-sdk/1.8.0_92
 home=/home/FCAM/msmith
