@@ -19,5 +19,6 @@ juiceDir=${sandbox}/juicer_formanualcur
 topDir=${juiceDir}/work/intdf137
 outputdir=${topDir}/aligned
 scaff="scaffold_9_primary"
+export PATH="${core}/CBP_assemblyfiles:${PATH}"
 
 samtools view -@ 36 -b -o ${scratch}/scaffold_9_primary.bam ${outputdir}/merged_dedup.bam "$scaff"
