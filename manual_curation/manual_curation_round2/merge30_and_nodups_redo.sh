@@ -25,13 +25,10 @@ site_file=${juiceDir}/restriction_sites/intdf137_Arima.txt
 ligation="'(GAATAATC|GAATACTC|GAATAGTC|GAATATTC|GAATGATC|GACTAATC|GACTACTC|GACTAGTC|GACTATTC|GACTGATC|GAGTAATC|GAGTACTC|GAGTAGTC|GAGTATTC|GAGTGATC|GATCAATC|GATCACTC|GATCAGTC|GATCATTC|GATCGATC|GATTAATC|GATTACTC|GATTAGTC|GATTATTC|GATTGATC)'"
 export TMPDIR=${core}
 
-#create merged30.txt
-samtools view -@ 24 -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${scratch}/merged30.txt
-
-#move merged30 to working dir
 cd ${outputdir}
-mv merged30.txt merged30_old.txt
-mv ${scratch}/merged30.txt .
+
+#create merged30.txt
+samtools view -@ 24 -F 1024 -O sam ${outputdir}/merged_dedup.bam | awk -v mapq=30 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged30.txt
 
 #index the merged*.txt files
 time ${juiceDir}/scripts/common/index_by_chr.awk ${outputdir}/merged1.txt 500000 > ${outputdir}/merged1_index.txt
@@ -45,4 +42,4 @@ cp $outputdir/inter.txt $outputdir/inter_30.txt
 ${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter.txt $outputdir/merged1.txt none
 ${juiceDir}/scripts/common/juicer_tools statistics $site_file $outputdir/inter_30.txt $outputdir/merged30.txt none
 
-samtools view -@ 24 -O SAM -F 1024 $outputdir/merged_dedup.*am | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
+samtools view -@ 24 -O SAM -F 1024 $outputdir/merged_dedup.bam | awk -v mnd=1 -f ${juiceDir}/scripts/common/sam_to_pre.awk > ${outputdir}/merged_nodups.txt
