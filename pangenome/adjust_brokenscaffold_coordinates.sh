@@ -27,9 +27,12 @@ done && rm index.tmp
 
 awk -v OFS="\t" '{
   scaffold=$1
-  if (scaffold ~ /HiC_scaffold_[0-9]+_/){
+  #skip header
+  if ($1 ~ /^scaffold$/) {
     next
-  } else if {
+  } else if (scaffold ~ /HiC_scaffold_[0-9]+_/){
+    next
+  } else {
     gsub(/HiC_/,"",$1)
     print
   }
