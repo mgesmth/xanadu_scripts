@@ -28,14 +28,20 @@ jd=${sandbox}/juicer_formanualcur
 export TMPDIR=${core}
 out_fulldir=${core}/manual_curation_round2/3DDNA_pipeline
 out_mancurdir=${core}/manual_curation_round2/3DDNA_justmancur
+prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
 cd ${out_fulldir}
 merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
 
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
-${core}/bin/3d-dna/run-asm-pipeline.sh ${jd}/references/interior_primary_final.fa ${merged_nodups}
+${core}/bin/3d-dna/run-asm-pipeline.sh -r 6 ${prim} ${merged_nodups}
 
 echo -e "\n`date`:[M]: Done full 3DDNA pipeline. Beginning just manual curation pipeline.\n"
+
+cd ${core}/CBP_assemblyfiles
+awk –f ${core}/bin/3d-dna/utils/generate-assembly-file-from-fasta.awk ${prim} >
+interior_primary_final.assembly
+asm_file=${core}/CBP_assemblyfiles/interior_primary_final.assembly
 
 cd ${out_mancurdir}
 ${core}/bin/3d-dna/visualize/run-assembly-visualizer.sh "$asm_file" "$merge_nodups"
