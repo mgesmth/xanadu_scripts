@@ -34,7 +34,7 @@ cd ${out_fulldir}
 merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
 
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
-${core}/bin/3d-dna/run-asm-pipeline.sh -r 6 ${prim} ${merged_nodups}
+${core}/bin/3d-dna/run-asm-pipeline.sh ${prim} ${merged_nodups}
 
 echo -e "\n`date`:[M]: Done full 3DDNA pipeline. Beginning just manual curation pipeline.\n"
 
