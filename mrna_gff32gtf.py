@@ -4,7 +4,7 @@ import sys
 import os
 
 if __name__ == "__main__":
-	ingff=sys.argv[1]
+    ingff=sys.argv[1]
     outgtf=sys.argv[2]
 
 with open(ingff) as f, open(outgtf, "w") as of:
