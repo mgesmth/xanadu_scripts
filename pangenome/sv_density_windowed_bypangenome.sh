@@ -54,22 +54,19 @@ for scaffold in $(cut -f1 ${fai}) ; do
   #get the number of records that will be passed to awk, so we can control the last record
   num_windows=$(seq 1 ${window_size} ${len} | wc -l)
   #create index with scaffold name, start and end of each XMb window
-  seq 1 ${window_size} ${len} | awk -v ws="$window_size" -v scaff="$scaffold" -v len="$len" -v nw="$num_windows" -v OFS="\t" '{
+  seq 1 ${window_size} ${len} | awk -v ws="$window_size" -v scaff="$scaffold" -v len="$len" -v nw="$num_windows" -v OFS="," '{
     if (NR < nw) {
       window_end=$1+(ws-1)
       print scaff,$1,window_end
     } else {
       print scaff,$1,len
     }
-  }' > "${scaffold}_${window_size_hr}.idx"
-
-  for window in $(cat "${scaffold}_${window_size_hr}.idx") ; do
-    #scaffold name
-    sc=$(echo "$window" | cut -f1)
+  }' | while read -r window ; do
+    sc=$(echo "$window" | cut -f1 -d ',')
     #start of window
-    st=$(echo "$window" | cut -f2)
+    st=$(echo "$window" | cut -f2 -d ',')
     #end of window
-    en=$(echo "$window" | cut -f3)
+    en=$(echo "$window" | cut -f3 -d ',')
     #extract pangenome in ech window
     gfatools view -R "${sc}:${st}-${en}" ${pangenome} > "${window}.gfa"
     #get stats on sub-pangenome, store proportion of non-rank-0 sequence
@@ -87,5 +84,5 @@ for scaffold in $(cut -f1 ${fai}) ; do
     echo -e "${sc}\t${st}\t${en}\t${prop}" >> sv_density_${window_size_hr}.tsv
     rm tmp.gfa
     echo "`date`:[M]: Complete calculations for ${scaffold}"
-  done && rm "${scaffold}_${window_size_hr}.idx"
+  done
 done
