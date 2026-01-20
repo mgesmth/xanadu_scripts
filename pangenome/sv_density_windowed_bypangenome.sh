@@ -48,6 +48,7 @@ window_size_hr="$(echo $((${window_size}/1000000)))Mb"
 touch ${outfile}
 
 for scaffold in $(cut -f1 ${fai}) ; do
+  echo "`date`:[M]: Beginning calculations for ${scaffold}"
   #get length of the scaffold
   len=$(grep -w "$scaffold" ${fai} | cut -f2)
   #get the number of records that will be passed to awk, so we can control the last record
@@ -85,5 +86,6 @@ for scaffold in $(cut -f1 ${fai}) ; do
     #add data on this window to output file
     echo -e "${sc}\t${st}\t${en}\t${prop}" >> sv_density_${window_size_hr}.tsv
     rm tmp.gfa
+    echo "`date`:[M]: Complete calculations for ${scaffold}"
   done && rm "${scaffold}_${window_size_hr}.idx"
 done
