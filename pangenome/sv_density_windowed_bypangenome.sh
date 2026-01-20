@@ -68,7 +68,7 @@ for scaffold in $(cut -f1 ${fai}) ; do
     #end of window
     en=$(echo "$window" | cut -f3 -d ',')
     #extract pangenome in ech window
-    gfatools view -R "${sc}:${st}-${en}" ${pangenome} > "${window}.gfa"
+    gfatools view -R "${sc}:${st}-${en}" ${pangenome} > "tmp.gfa"
     #get stats on sub-pangenome, store proportion of non-rank-0 sequence
     prop=$(gfatools stat "tmp.gfa" | awk '{
       if ($1 ~ "Total") {
@@ -79,7 +79,6 @@ for scaffold in $(cut -f1 ${fai}) ; do
         exit
       }
     }')
-
     #add data on this window to output file
     echo -e "${sc}\t${st}\t${en}\t${prop}" >> sv_density_${window_size_hr}.tsv
     rm tmp.gfa
