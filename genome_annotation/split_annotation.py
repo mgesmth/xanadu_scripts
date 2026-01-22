@@ -18,7 +18,7 @@ with open("gene_coord.tmp") as f2:
 
         search_for="HiC_scaffold_" + str(chrnum) + "_1"
 
-        chr_fragone_len=scaff_idx[search_for]
+        chr_fragone_len=int(scaff_idx[search_for])
 
         start=int(fields[1])
         end=int(fields[2])
