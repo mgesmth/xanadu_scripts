@@ -1,5 +1,7 @@
 #!/bin/env python
 
+import sys
+
 scaff_idx = {}
 
 with open("split_scaffold_lengths.tsv") as f1:
@@ -43,5 +45,7 @@ with open("gene_coord.tmp") as f2, open("gene_coord_split.tmp","w") as of:
                 print(fields)
                 print("error parsing coordinates")
 
-        else:
+        elif chrnum >=7 and chrnum < 14:
             of.write("\t".join(map(str, fields)) + '\n')
+        else:
+            sys.exit(0)
