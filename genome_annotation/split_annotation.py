@@ -27,7 +27,8 @@ with open("gene_coord.tmp") as f2:
             continue
 
         if end <= chr_fragone_len:
-            continue
+            print("hi")
+            #continue
             #fields[0]=search_for
             #print("\t".join(map(str,fields)) + '\n')
         elif end < chr_fragone_len and start > chr_fragone_len:
