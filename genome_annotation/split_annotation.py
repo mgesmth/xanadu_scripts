@@ -10,7 +10,6 @@ with open("split_scaffold_lengths.tsv") as f1:
         else:
             continue
 
-
 with open("gene_coord.tmp") as f2:
     for line in f2:
         fields=line.strip().split("\t")
@@ -23,8 +22,6 @@ with open("gene_coord.tmp") as f2:
 
         start=int(fields[1])
         end=int(fields[2])
-
-        print(chr_fragone_len,start,end)
 
         if start > end:
             continue
