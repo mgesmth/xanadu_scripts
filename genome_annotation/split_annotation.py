@@ -31,7 +31,7 @@ with open("gene_coord.tmp") as f2, open("gene_coord_split.tmp","w") as of:
                 continue
                 fields[0]=search_for
                 of.write("\t".join(map(str,fields)) + '\n')
-            elif end > chr_fragone_len and start =< chr_fragone_len:
+            elif end > chr_fragone_len and start <= chr_fragone_len:
                 continue
                     #skip records that are on the split
             elif start > chr_fragone_len:
