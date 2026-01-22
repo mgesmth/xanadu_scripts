@@ -10,9 +10,7 @@ with open("split_scaffold_lengths.tsv") as f1:
         else:
             continue
 
-print(scaff_idx)
 
-'''
 with open("gene_coord.tmp") as f2:
     for line in f2:
         fields=line.strip().split("\t")
@@ -42,8 +40,7 @@ with open("gene_coord.tmp") as f2:
             subt=chr_fragone_len-1
             fields[1]=start-subt
             fields[2]=end-subt
-            print("\t".join(map(str,fields)) + '\n')
+            print(fields)
         else:
-            print(line)
+            print(fields)
             print("error parsing coordinates")
-'''
