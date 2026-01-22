@@ -27,12 +27,11 @@ with open("gene_coord.tmp") as f2:
             continue
 
         if end <= chr_fragone_len:
-            print("hi")
-            #continue
+            continue
             #fields[0]=search_for
             #print("\t".join(map(str,fields)) + '\n')
-        elif end < chr_fragone_len and start > chr_fragone_len:
-            continue
+        elif end > chr_fragone_len and start < chr_fragone_len:
+            print(line)
         elif start > chr_fragone_len:
             fields[0]="HiC_scaffold_" + str(chrnum) + "_2"
             subt=chr_fragone_len-1
