@@ -33,6 +33,7 @@ with open("gene_coord.tmp") as f2:
         elif end > chr_fragone_len and start < chr_fragone_len:
             print(line)
         elif start > chr_fragone_len:
+            print(fields)
             fields[0]="HiC_scaffold_" + str(chrnum) + "_2"
             subt=chr_fragone_len-1
             fields[1]=start-subt
