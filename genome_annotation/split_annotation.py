@@ -39,7 +39,7 @@ with open("gene_coord.tmp") as f2, open("gene_coord_split.tmp","w") as of:
                 subt=chr_fragone_len-1
                 fields[1]=start-subt
                 fields[2]=end-subt
-                of.write("\t".join(map(str,fields) + '\n'))
+                of.write("\t".join(map(str,fields)) + '\n')
             else:
                 print(fields)
                 print("error parsing coordinates")
