@@ -16,7 +16,7 @@ with open("gene_coord.tmp") as f2:
         unbroken_scaff=fields[0]
         chrnum=int(unbroken_scaff.split("_")[2])
 
-        search_for="HiC_scaffold" + str(chrnum) + "_1"
+        search_for="HiC_scaffold_" + str(chrnum) + "_1"
 
         chr_fragone_len=scaff_idx[search_for]
 
