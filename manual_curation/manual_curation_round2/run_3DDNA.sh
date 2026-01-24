@@ -13,7 +13,7 @@ set -e
 
 echo -e "`date`:[M]: Host Name: `hostname`"
 
-module load samtools/1.20 bwa/0.7.17 java-sdk/1.8.0_92
+module load samtools/1.20 bwa/0.7.17 java/22
 export PATH="${core}/bin/3d-dna:$PATH"
 module load gnu-parallel/20160622 lastz/1.04.03 python/3.8.1
 
