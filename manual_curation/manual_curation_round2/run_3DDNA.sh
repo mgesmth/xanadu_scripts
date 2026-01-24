@@ -36,14 +36,4 @@ merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
 ${core}/bin/3d-dna/run-asm-pipeline.sh ${prim} ${merged_nodups}
 
-echo -e "\n`date`:[M]: Done full 3DDNA pipeline. Beginning just manual curation pipeline.\n"
-
-cd ${core}/CBP_assemblyfiles
-awk –f ${core}/bin/3d-dna/utils/generate-assembly-file-from-fasta.awk ${prim} >
-interior_primary_final.assembly
-asm_file=${core}/CBP_assemblyfiles/interior_primary_final.assembly
-
-cd ${out_mancurdir}
-${core}/bin/3d-dna/visualize/run-assembly-visualizer.sh "$asm_file" "$merge_nodups"
-
-echo -e "\n`data`:[M]: Done JBAT 3DDNA pipeline. Bye!"
+echo -e "\n`date`:[M]: Done full 3DDNA pipeline."
