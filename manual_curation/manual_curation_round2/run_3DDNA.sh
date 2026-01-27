@@ -25,7 +25,7 @@ gid="intdf137"
 site="Arima"
 threads=36
 jd=${sandbox}/juicer_formanualcur
-export TMPDIR=${core}
+export TMPDIR=${scratch}
 out_fulldir=${sandbox}/3ddna
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
