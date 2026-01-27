@@ -4,7 +4,7 @@
 #SBATCH -q himem
 #SBATCH -c 36
 #SBATCH --mem=1000G
-#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
@@ -26,8 +26,7 @@ site="Arima"
 threads=36
 jd=${sandbox}/juicer_formanualcur
 export TMPDIR=${core}
-out_fulldir=${core}/manual_curation_round2/3DDNA_pipeline
-out_mancurdir=${core}/manual_curation_round2/3DDNA_justmancur
+out_fulldir=${sandbox}/3ddna
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
 cd ${out_fulldir}
