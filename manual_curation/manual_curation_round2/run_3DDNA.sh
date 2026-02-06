@@ -20,13 +20,12 @@ module load gnu-parallel/20160622 lastz/1.04.03 python/3.8.1
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-sandbox=/sandbox/msmith
 gid="intdf137"
 site="Arima"
 threads=36
-jd=${sandbox}/juicer_formanualcur
+jd=${scratch}/juicer_formanualcur
 export TMPDIR=${scratch}
-out_fulldir=${sandbox}/3ddna
+out_fulldir=${scratch}/3ddna
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
 cd ${out_fulldir}
