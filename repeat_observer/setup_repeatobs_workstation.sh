@@ -6,7 +6,7 @@
 core=/core/projects/EBP/smith
 sp_name="intDF_H0"
 #testing on scaffold 10 of V2
-genome=${core}/projects/EBP/smith/manual_curation_files/interior_primary_final_mancur2_10.fa
+genome=${core}/manual_curation_files/interior_primary_final_mancur2_10.fa
 
 module load seqkit/2.10.0
 
