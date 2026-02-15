@@ -25,7 +25,7 @@ site="Arima"
 threads=36
 jd=${scratch}/juicer_formanualcur
 export TMPDIR=${scratch}
-out_fulldir=${scratch}/3ddna
+out_fulldir=${core}/3ddna_again
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 
 cd ${out_fulldir}
