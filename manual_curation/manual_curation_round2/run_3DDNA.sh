@@ -24,9 +24,9 @@ gid="intdf137"
 site="Arima"
 threads=36
 jd=${scratch}/juicer_formanualcur
-export TMPDIR=${scratch}
 out_fulldir=${core}/3ddna_again
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
+export TMPDIR=${out_fulldir}/tmp
 
 cd ${out_fulldir}
 merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
