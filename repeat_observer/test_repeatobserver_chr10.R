@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 
 #code modified from Marie's run on the first version of intDF
 
@@ -8,7 +9,7 @@ inpath="input_chrs/intDF_H0"
 fname="intDF_H0"
 outpath="output_chrs/intDF_H0"
 
-x_cpu=24
+x_cpu=18
 pflag=FALSE
 writeflag=FALSE
 plotflag=FALSE
