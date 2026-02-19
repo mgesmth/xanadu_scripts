@@ -5,7 +5,7 @@
 #this is being run within a repeat_observer working dir - paths not absolute
 library(RepeatOBserverV1)
 library(tidyverse)
-inpath="input_chrs/intDF_H0"
+inpath="input_chrs/intDF_H0/chromosome_files"
 fname="intDF_H0"
 outpath="output_chrs/intDF_H0"
 
