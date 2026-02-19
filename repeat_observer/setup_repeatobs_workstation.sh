@@ -3,6 +3,8 @@
 #adapted from Marie's DouglasFirNotes/repeats_notes_scripts/repeat_observer_workstation_setup.sh,
 #which was adapted from RepeatObservers's Setup_Run_Repeats.sh 
 
+#copied this dir to Ubuntu machine, ~/Documents/repeat_obserer
+
 core=/core/projects/EBP/smith
 sp_name="intDF_H0"
 #testing on scaffold 10 of V2
