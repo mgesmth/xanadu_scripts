@@ -5,6 +5,7 @@
 #this is being run within a repeat_observer working dir - paths not absolute
 library(RepeatOBserverV1)
 library(tidyverse)
+setwd("/media/megsmith/overflow/data/repeat_observer/")
 inpath="input_chrs/intDF_H0/chromosome_files"
 fname="intDF_H0"
 outpath="output_chrs/intDF_H0"
@@ -22,7 +23,8 @@ nam_list3 <- stringr::str_split(nam_list2[,3], "part", simplify =TRUE)
 chr_list <- nam_list3[,1]
 
 #Manual run on smallest chromosome
-chromosome="chr10"
+##I have chr 1 here, but it's actually chr10 - just an artifact of the setup procedure running on only one chr
+chromosome="chr1"
 
 for (i in 1:10){
   if (i < 10) {
