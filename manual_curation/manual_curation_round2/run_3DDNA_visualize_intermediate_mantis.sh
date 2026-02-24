@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J run_3DDNA
-#SBATCH -p himem2
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -c 36
 #SBATCH --mem=500G
 #SBATCH -o %x.%j.out
