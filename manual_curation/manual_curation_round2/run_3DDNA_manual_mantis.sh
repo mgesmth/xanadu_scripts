@@ -35,18 +35,26 @@ cd ${out_fulldir}
 
 #round 1----
 #defaults and variables
-ROUND=1
 pipeline=${core}/bin/3d-dna
+mapq=1
 genomeid="interior_primary_final"
 orig_cprops=${genomeid}.cprops
 orig_mnd=${genomeid}.mnd.txt
 
-ln -sf ${orig_cprops} ${genomeid}.${ROUND}.cprops
-ln -sf ${orig_mnd} ${genomeid}.mnd.${ROUND}.txt
+#iterative scaffolding
+for ((ROUND=1 ; ROUND<3 ; ROUND++)) ; do
+  ln -sf ${orig_cprops} ${genomeid}.${ROUND}.cprops
+  ln -sf ${orig_mnd} ${genomeid}.mnd.${ROUND}.txt
+  current_cprops=${genomeid}.${ROUND}.cprops
+  current_mnd=${genomeid}.mnd.${ROUND}.txt
 
-echo "...starting round ${ROUND} of scaffolding:" >&1
-bash ${pipeline}/scaffold/run-liger-scaffolder.sh -p true -s ${input_size} -q ${mapq} ${current_cprops} ${current_mnd}
+  echo "...starting round ${ROUND} of scaffolding:" >&1
+  bash ${pipeline}/scaffold/run-liger-scaffolder.sh -p true -s ${input_size} -q ${mapq} ${current_cprops} ${current_mnd}
 
-asm_mnd=${scratch}/temp.interior_primary_final.0.asm_mnd.txt
+  echo "...visualizing round ${ROUND} results:" >&1
+  bash ${pipeline}/visualize/run-asm-visualizer.sh -p true -q ${mapq} -i -c ${current_cprops} ${genomeid}.${ROUND}.asm ${current_mnd}
+done
+
+
 
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
