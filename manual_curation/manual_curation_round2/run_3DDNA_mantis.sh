@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J run_3DDNA
+#SBATCH -J run_3DDNA_mantis
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 36
