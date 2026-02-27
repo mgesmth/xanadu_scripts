@@ -30,5 +30,9 @@ export TMPDIR=${scratch}
 cd ${out_fulldir}
 merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
 
+if [[ ! -f interior_primary_final.0.hic ]] ; then
+  cp ${out_vis}/interior_primary_final.0.hic .
+fi
+
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
 ${core}/bin/3d-dna/visualize/run-asm-pipeline.sh -f ${prim} ${merged_nodups}
