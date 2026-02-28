@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J run_3DDNA
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 36
-#SBATCH --mem=500G
+#SBATCH --mem=1000G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
@@ -23,7 +23,7 @@ site="Arima"
 threads=36
 jd=${scratch}/juicer_formanualcur
 out_fulldir=${core}/3ddna_again
-out_vis=${scratch}/3ddna
+out_vis=${scratch}/3ddna_2
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
 export TMPDIR=${scratch}
 
