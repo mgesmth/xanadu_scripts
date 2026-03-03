@@ -23,16 +23,17 @@ site="Arima"
 threads=36
 jd=${scratch}/juicer_formanualcur
 out_fulldir=${core}/3ddna_again
-out_vis=${scratch}/3ddna
+out_vis=${scratch}/3ddna_2
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
+merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
 export TMPDIR=${scratch}
 
+cd $out_vis
+ls -1 * > copy_files.txt
 cd ${out_fulldir}
-merged_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
-
-if [[ ! -f interior_primary_final.0.hic ]] ; then
-  cp ${out_vis}/interior_primary_final.0.hic .
-fi
+for file in $(cat ${out_vis}/copy_files.txt) ; do
+  cp ${out_vis}/${file} .
+done
 
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
 ${core}/bin/3d-dna/visualize/run-asm-pipeline.sh -f --splitter-coarse-stringency 65 \
