@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J run_3DDNA_mantis
+#SBATCH -J run_3DDNA_mantis_testargs
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 2
@@ -32,7 +32,7 @@ cd ${out_fulldir}
 
 echo -e "\n`date`:[M]: Beginning full 3DDNA pipeline.\n"
 ${core}/bin/3d-dna/run-asm-pipeline.sh -f --splitter-coarse-stringency 65 \
---splitter-fine-resolution 2500000 --splitter-coarse-resolution 2500000 \
+--splitter-fine-resolution 1000000 --splitter-coarse-resolution 2500000 \
 --editor-coarse-stringency 65 --editor-fine-resolution 500000 \
 --editor-coarse-resolution 1000000 --editor-coarse-region 3000000 \
 ${prim} ${merged_nodups}
