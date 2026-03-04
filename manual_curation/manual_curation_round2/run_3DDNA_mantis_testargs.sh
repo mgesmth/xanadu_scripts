@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J run_3DDNA_mantis
-#SBATCH -p himem
-#SBATCH -q himem
-#SBATCH -c 36
-#SBATCH --mem=1000G
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 2
+#SBATCH --mem=4G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
