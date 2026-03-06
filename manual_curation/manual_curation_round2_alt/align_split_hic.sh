@@ -18,8 +18,9 @@ module load samtools/1.20
 home=/home/FCAM/msmith
 scratch=/scratch/msmith
 core=/core/projects/EBP/smith
-fq_dir=${scratch}/hic_split
-bam_dir=${scratch}/hic_bams
+jd=${core}/juicer_alt
+fq_dir=${jd}/work/intdf137_alt/fastq
+bam_dir=${jd}/work/intdf137_alt/splits
 ref=${core}/CBP_assemblyfiles/interior_alternate_final.fa
 ref_name=$(basename ${ref})
 export SLURM_ARRAY_TASK_ID=$SLURM_ARRAY_TASK_ID
@@ -35,7 +36,7 @@ libraryName="HiC_library"
 gid="intdf137_alt"
 site="Arima"
 threads=6
-jd=${core}/juicer_alt
+
 rg="@RG\\tID:${name}\\tSM:${sampleName}\\tPL:LS454\\tLB:${libraryName}"
 
 echo -e "`date`[M]: Welcome to task ${SLURM_ARRAY_TASK_ID}."
@@ -51,4 +52,3 @@ touch ${jd}/work/${gid}/fastq/${name//.fastq.gz/}_R2.fastq
 cd ${jd}/work/${gid}/splits
 ln -s ../fastq/${name//.fastq.gz/}_R1.fastq .
 ln -s ../fastq/${name//.fastq.gz/}_R2.fastq .
-mv "${bam_dir}/${out}" ${jd}/work/${gid}/splits/
