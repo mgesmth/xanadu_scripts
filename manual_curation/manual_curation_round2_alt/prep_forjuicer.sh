@@ -10,7 +10,7 @@
 set -e
 
 date
-echo "[M]: Host Name: `host name`"
+echo "[M]: Host Name: `hostname`"
 
 module load bwa/0.7.17 samtools/1.20 python/3.8.1 seqkit/2.10.0
 home=/home/FCAM/msmith
