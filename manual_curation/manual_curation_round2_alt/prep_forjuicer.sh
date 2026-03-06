@@ -25,8 +25,8 @@ enzyme="Arima"
 
 R1=${home}/hiC_data/allhiC_R1.fastq.gz
 R2=${home}/hiC_data/allhiC_R2.fastq.gz
-hic_split=${juicedir}/work/intdf_137/fastq
-hic_bams=${juicedir}/work/intdf_137/splits
+hic_split=${juicedir}/work/${gid}/fastq
+hic_bams=${juicedir}/work/${gid}/splits
 splitN=300
 
 echo -e "\n[M]: Splitting Hi-C data\n"
