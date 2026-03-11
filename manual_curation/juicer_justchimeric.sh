@@ -22,28 +22,28 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 ##########
-# Single CPU version of Juicer.
+# Single CPU version of Juicer. 
 #
 # Alignment script. Sets the reference genome and genome ID based on the input
-# arguments (default human, none). Optional arguments are the description for stats file,
+# arguments (default human, none). Optional arguments are the description for stats file, 
 # stage to relaunch at, paths to various files if needed,
-# path to scripts directory, and the top-level directory (default
+# path to scripts directory, and the top-level directory (default 
 # current directory). In lieu of setting the genome ID, you can instead set the
-# reference sequence and the chrom.sizes file path, but the directory
+# reference sequence and the chrom.sizes file path, but the directory 
 # containing the reference sequence must also contain the BWA index files.
 #
-# Aligns the fastq files, handles chimeric reads, sorts, and merges.
+# Aligns the fastq files, handles chimeric reads, sorts, and merges. 
 #
 # If all is successful, takes the final merged bam file, marks duplicates,
-# creates hic contact maps, normalizes, and annotates features.
+# creates hic contact maps, normalizes, and annotates features. 
 # Final product will be hic file, stats file, dedup bam in the aligned directory.
-#
+#                                                                       
 # [topDir]/fastq  - Should contain the fastq files. This code assumes that
 #                   there is an "R" in the appropriate files, i.e. *R*.fastq
 # From the top-level directory, the following two directories are created:
-#
+#                                                                              
 # [topDir]/splits  - Where to write the scratch split files (fastq files and
-#                    intermediate SAM files). This can be deleted after
+#                    intermediate SAM files). This can be deleted after 
 #                    execution.
 # [topDir]/aligned - Where to write the final output files.
 #
@@ -58,32 +58,24 @@
 #             also align read 2 and merge.  If this is not set correctly,
 #             script will not work. The error will often manifest itself
 #             through a "*" in the name because the wildcard was not able to
-#             match any files with the read1str.
+#             match any files with the read1str.   
 # Juicer version 2.0
-
-##NOTE:
-###This is a version of the CP Juicer script I modified to only process chimeric reads.
-###I wanted to parallelize Juicer myself as a SLURM array, and so I use this as part
-###of the array in the run_juicer_chimeric.sh script. For the second juicer script,
-###which requires the alignments be merged, I use juicer.sh (here), which I also modi-
-###fied. See that script for more details.
-
 shopt -s extglob
 export LC_ALL=C
 juicer_version="2.0"
-### LOAD BWA AND SAMTOOLS
+### LOAD BWA AND SAMTOOLS 
 bwa_cmd="bwa"
 call_bwameth="/gpfs0/home/neva/bwa-meth/bwameth.py"
 load_methyl="export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/gpfs0/home/neva/lib"
 call_methyl="/gpfs0/home/neva/bin/MethylDackel"
-# fastq files should look like filename_R1.fastq and filename_R2.fastq
-# if your fastq files look different, change this value
+# fastq files should look like filename_R1.fastq and filename_R2.fastq 
+# if your fastq files look different, change this value 
 read1str="_R1"
 read2str="_R2"
 
-## Default options, overridden by command line arguments
-# Juicer directory, contains scripts/, references/, and restriction_sites/
-# can also be set in options via -D
+## Default options, overridden by command line arguments 
+# Juicer directory, contains scripts/, references/, and restriction_sites/ 
+# can also be set in options via -D   
 juiceDir="/aidenlab"
 
 # size to split fastqs. adjust to match your needs. 4000000=1M reads per split
@@ -106,7 +98,7 @@ wobbleDist=4
 assembly=0
 # force cleanup
 cleanup=0
-# qc apa
+# qc apa 
 qc_apa=0
 # single-end input, default no
 singleend=0
@@ -115,7 +107,7 @@ sampleName="HiC_sample"
 # library name for RG tag
 libraryName="HiC_library"
 
-## Read arguments
+## Read arguments                                                     
 usageHelp="Usage: ${0##*/} [-g genomeID] [-d topDir] [-s site]\n                 [-a about] [-S stage] [-p chrom.sizes path]\n                 [-y restriction site file] [-z reference genome file]\n                 [-D Juicer scripts parent dir] [-b ligation] [-t threads]\n                 [-T threadsHic] [-i sample] [-k library] [-w wobble]\n                 [-e] [-h] [-f] [-j] [-u] [-m] [--assembly] [--cleanup] [--qc]"
 genomeHelp="* [genomeID] must be defined in the script, e.g. \"hg19\" or \"mm10\" (default \n  \"$genomeID\"); alternatively, it can be defined using the -z command"
 dirHelp="* [topDir] is the top level directory (default\n  \"$topDir\")\n     [topDir]/fastq must contain the fastq files\n     [topDir]/splits will be created to contain the temporary split files\n     [topDir]/aligned will be created for the final alignment"
@@ -182,7 +174,7 @@ while getopts "d:g:a:hs:p:y:z:S:D:b:t:jfuecT:1:2:i:-:w:k:m" opt; do
 	d) topDir=$OPTARG ;;
 	s) site=$OPTARG ;;
 	a) about=$OPTARG ;;
-	p) genomePath=$OPTARG ;;
+	p) genomePath=$OPTARG ;;  
 	y) site_file=$OPTARG ;;
 	z) refSeq=$OPTARG ;;
 	S) stage=$OPTARG ;;
@@ -200,14 +192,14 @@ while getopts "d:g:a:hs:p:y:z:S:D:b:t:jfuecT:1:2:i:-:w:k:m" opt; do
 	m) methylation=1 ;;
 	1) read1files=$OPTARG ;;
 	2) read2files=$OPTARG ;;
-	-) case "${OPTARG}" in
+	-) case "${OPTARG}" in 
 	    assembly) earlyexit=1; assembly=1 ;;
 	    cleanup)  cleanup=1 ;;
 	    qc) qc=1 ;;
 	    qc_apa)   qc_apa=1 ;;
 	    "help")   printHelpAndExit 0;;
 	    in-situ) insitu=1 ;;
-	    *) echo "Unknown argument --${OPTARG}";
+	    *) echo "Unknown argument --${OPTARG}"; 
 	           printHelpAndExit 1;;
            esac;;
     [?]) printHelpAndExit 1;;
@@ -222,7 +214,7 @@ then
         dedup) dedup=1 ;;
         early) earlyexit=1 ;;
         final) final=1 ;;
-	postproc) postproc=1 ;;
+	postproc) postproc=1 ;; 
 	alignonly) alignonly=1 ;;
 	chimericonly) chimericonly=1 ;;
 	deduponly) deduponly=1 ;;
@@ -234,16 +226,16 @@ fi
 
 ## Set reference sequence based on genome ID
 if [ -z "$refSeq" ]
-then
+then 
     case $genomeID in
 	mm9)	refSeq="${juiceDir}/references/Mus_musculus_assembly9_norandom.fasta";;
 	mm10)	refSeq="${juiceDir}/references/Mus_musculus_assembly10/v0/Mus_musculus_assembly10.fasta";;
 	hg38)	refSeq="${juiceDir}/references/hg38/hg38.fa";;
-	GRCh38)
+	GRCh38) 
 	    refSeq="${juiceDir}/references/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
 	    site_file="${juiceDir}/restriction_sites/ENCFF132WAM.txt"
 	    genomeID="hg38"
-		;;
+		;; 
 	hg19)	refSeq="${juiceDir}/references/Homo_sapiens_assembly19.fasta";;
 	hg18)	refSeq="${juiceDir}/references/hg18.fasta";;
 	*)	echo "$usageHelp"
@@ -251,7 +243,7 @@ then
 	    exit 1
     esac
 else
-    ## Reference sequence passed in, so genomePath must be set for the .hic
+    ## Reference sequence passed in, so genomePath must be set for the .hic 
     ## file to be properly created
     if [[ -z "$genomePath" ]] && [[ -z $earlyexit ]] && [ -z "$alignonly" ]
     then
@@ -260,17 +252,17 @@ else
     fi
 fi
 
-## Alignment checks; not necessary if later stages
+## Alignment checks; not necessary if later stages 
 if [[ -z "$chimeric" && -z "$merge" &&  -z "$final" && -z "$dedup" && -z "$postproc" ]]
 then
-    ## Check that refSeq exists
+    ## Check that refSeq exists 
     if [ ! -e "$refSeq" ]; then
 	echo "***! Reference sequence $refSeq does not exist";
 	exit 1;
     fi
 
     ## Check that index for refSeq exists
-    if [[ ! -e "${refSeq}.bwt" ]]
+    if [[ ! -e "${refSeq}.bwt" ]] 
     then
 	echo "***! Reference sequence $refSeq does not appear to have been indexed. Please run bwa index on this file before running juicer.";
 	exit 1;
@@ -299,7 +291,7 @@ then
 fi
 
 ## If DNAse-type experiment, no fragment maps; or way to get around site file
-if [[ "$site" == "none" ]]
+if [[ "$site" == "none" ]] 
 then
     nofrag=1;
 fi
@@ -359,10 +351,10 @@ fi
 #then
 #    echo "***! Move or remove directory \"$outputdir\" before proceeding."
 #    echo "***! Type \"juicer.sh -h \" for help"
-#    exit 1
+#    exit 1			
 #else
 #    if [[ -z "$final" && -z "$dedup" && -z "$postproc" && -z "$deduponly" ]]; then
-        #mkdir "$outputdir" || { echo "***! Unable to create ${outputdir}, check permissions." ; exit 1; }
+        #mkdir "$outputdir" || { echo "***! Unable to create ${outputdir}, check permissions." ; exit 1; } 
 #    fi
 #fi
 
@@ -417,7 +409,7 @@ then
 	do
 		ext=${i#*$read1str}
 		name=${i%$read1str*}
-        	# these names have to be right or it'll break
+        	# these names have to be right or it'll break   
 		name1=${name}${read1str}
 		name2=${name}${read2str}
 		read1filesstr+=$name1$ext" "
@@ -431,7 +423,7 @@ else
 	echo "***! When fastqs for read1 are specified with \"-1\", corresponding read2 fastqs must be specified with \"-2\" "
 	exit 1
     else
-	 # replace commas with spaces for iteration, put in array
+	 # replace commas with spaces for iteration, put in array 
 	read1files=($(echo $read1files | tr ',' ' '))
 	read2files=($(echo $read2files | tr ',' ' '))
     fi
@@ -444,20 +436,20 @@ then
 fi
 
 #Don't need headfile stuff here - deleted
-## Arguments have been checked and directories created. Now begins
+## Arguments have been checked and directories created. Now begins 
 ## the real work of the pipeline
 
 ######ARRAY -------
 file1=${read1files[$SLURM_ARRAY_TASK_ID]}
 file2=${read2files[$SLURM_ARRAY_TASK_ID]}
 ext=${file1#*$read1str}
-name=${file1%$read1str*}
+name=${file1%$read1str*} 
 name1=${name}${read1str}
-name2=${name}${read2str}
+name2=${name}${read2str}	
 jname=$(basename "$name")${ext}
-
+  
 # call chimeric script to deal with chimeric reads; sorted file is sorted by read name at this point
-if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
+if [ "$site" != "none" ] && [ -e "$site_file" ] ; then		
 	if [ $singleend -eq 1 ] ; then
 		awk -v stem=${name}${ext}_norm -v site_file=$site_file -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort  -t cb -n $sthreadstring >  ${name}${ext}.bam
 	else
@@ -465,12 +457,12 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
   		mv $name$ext.bam "${name}${ext}_in.bam"
 		samtools view -h "${name}${ext}_in.bam" | \
     		awk -v stem=${name}${ext}_norm -v site_file=$site_file -f $juiceDir/scripts/common/chimeric_sam.awk | \
-      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && rm "${name}${ext}_in.bam" &&
+      		samtools sort -t cb -n $sthreadstring > ${name}${ext}.bam && \
 		echo "(-: Finished chimeric handling of $name$ext.bam"
 	  fi
 	else
 	  if [ $singleend -eq 1 ] ; then
-
+   		
 		  awk -v stem=${name}${ext}_norm -v singleend=$singleend -f $juiceDir/scripts/common/chimeric_sam.awk $name$ext.sam | samtools sort -t cb -n $sthreadstring >  ${name}${ext}.bam
 	  else
      #This is me, I think
@@ -486,9 +478,9 @@ if [ "$site" != "none" ] && [ -e "$site_file" ] ; then
 	if [ $? -ne 0 ]
 	then
 	    echo "***! Failure during chimera handling of $name${ext}"
-	    exit 1
-	fi
-    done
+	    exit 1 
+	fi  
+    done 
 # done looping over all fastq split files
-fi
+fi  
 # Not in merge, dedup,  or final stage, i.e. need to split and align files.
