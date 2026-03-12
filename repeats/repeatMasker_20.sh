@@ -2,8 +2,8 @@
 #SBATCH -J repeatMasker
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 6
-#SBATCH --mem=60G
+#SBATCH -c 12
+#SBATCH --mem=36G
 #SBATCH --array=[0-19]
 #SBATCH -o %x.%a.%j.out
 #SBATCH -e %x.%a.%j.err

@@ -62,10 +62,10 @@
 # Juicer version 2.0
 
 ##NOTE:
-###This is a version of the CP Juicer script I modified to only process chimeric reads.
+###This is a version of the CPU Juicer script I modified to only process chimeric reads.
 ###I wanted to parallelize Juicer myself as a SLURM array, and so I use this as part
 ###of the array in the run_juicer_chimeric.sh script. For the second juicer script,
-###which requires the alignments be merged, I use juicer.sh (here), which I also modi-
+###which requires the alignments be merged, I use juicer_merge.sh (here), which I also modi-
 ###fied. See that script for more details.
 
 shopt -s extglob
