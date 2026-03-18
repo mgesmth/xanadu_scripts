@@ -1,7 +1,7 @@
 #!/bin/bash
 
 module load genometools/1.6.2 bedtools/2.29.0
-annotation=$1
+annotation=interior_primary_mancur_masked_500kb.pseudo_label.allvdata.s.gff
 
 #I'm using genometools here, and it was having trouble with my annotations that came from protein db evidence due to formatting
 awk -F "\t" -v OFS="\t" '{
@@ -70,7 +70,9 @@ awk -v OFS="\t" -F "\t" 'NR==FNR{
   arr[$1]=1
   next
 }{
-  if ($3 == "gene") {
+  if ($0 ~ /^#/) {
+    print
+  } else if ($3 == "gene") {
     split($9,m,";")
     split(m[1],n,"=")
     id=n[2]
@@ -87,11 +89,45 @@ awk -v OFS="\t" -F "\t" 'NR==FNR{
   }
 }' blacklist.txt tmp_introns.gff3 > tmp_introns_filt.gff3
 
+##now overlapping genes are filtered out; can move onto collapsing introns
+#formatting as bed and sorting
 
 awk -F "\t" -v OFS="\t" '{
-  if ($3 == "intron") {
-    print
+  if ($0 ~ /^#/){
+    next
+  } else if ($3 == "intron") {
+    split($9,m,"=")
+    split(m[2],n,"-")
+    id=n[1]
+    print $1,$4,$5,id
   } else {
     next
   }
-}' tmp_introns.gff3 | less
+}' tmp_introns_filt.gff3 > tmp_introns_filt.bed
+
+touch tmp_introns_filt.s.bed
+for scaffold in $(cat scaffolds.txt) ; do
+  awk -F "\t" -v OFS="\t" -v scaffold="$scaffold" '{
+    if ($1 == scaffold) {
+      print
+    } else {
+      next
+    }
+  }' tmp_introns_filt.bed | sort -g -k2,2 >> tmp_introns_filt.s.bed
+done
+
+##Actually collapse the introns here
+bedtools merge -c 4 -o distinct -i tmp_introns_filt.s.bed > collapsed_introns_filt.s.bed
+
+#check to make sure there wasn't collapse across loci
+awk -F "\t" -v OFS="\t" '{
+  n=split($4,m,",")
+  if (n > 1) {
+    print NR, "Two loci:" $0
+    exit
+  }
+} END {
+  print "No double loci detected."
+}' collapsed_introns_filt.s.bed
+
+#get intron counts and lengths with python script:
