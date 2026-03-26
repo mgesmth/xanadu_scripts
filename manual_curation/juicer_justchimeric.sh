@@ -60,6 +60,17 @@
 #             through a "*" in the name because the wildcard was not able to
 #             match any files with the read1str.   
 # Juicer version 2.0
+<<<<<<< HEAD
+=======
+
+##NOTE:
+###This is a version of the CPU Juicer script I modified to only process chimeric reads.
+###I wanted to parallelize Juicer myself as a SLURM array, and so I use this as part
+###of the array in the run_juicer_chimeric.sh script. For the second juicer script,
+###which requires the alignments be merged, I use juicer_merge.sh (here), which I also modi-
+###fied. See that script for more details.
+
+>>>>>>> 4681aca808761c716880c6edc3a8cc960a0994b9
 shopt -s extglob
 export LC_ALL=C
 juicer_version="2.0"
