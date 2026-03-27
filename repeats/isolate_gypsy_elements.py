@@ -38,5 +38,3 @@ with open(input_outfile, "r") as f, open(output_outfile, "w") as of:
             #if the coverage of the element is more than 85%, keep the record; else, write it to the error file
             if prop_covered >= threshold:
                 of.write('\t'.join(map(str,fields)) + '\n')
-            else:
-                ef.write('\t'.join(map(str,fields)) + '\n')
