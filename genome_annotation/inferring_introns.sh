@@ -89,6 +89,17 @@ awk -v OFS="\t" -F "\t" 'NR==FNR{
   }
 }' blacklist.txt tmp_introns.gff3 > tmp_introns_filt.gff3
 
+#get gene coordinates
+awk -F "\t" -v OFS="\t" '{
+  if ($3 == "gene") {
+    split($9,m,";")
+    split(m[1],n,"=")
+    print $1,$4,$5,n[2]
+  } else {
+    next
+  }
+}' tmp_introns_filt.gff3 > gene_coordinates_filt.bed
+
 ##now overlapping genes are filtered out; can move onto collapsing introns
 #formatting as bed and sorting
 
@@ -130,4 +141,5 @@ awk -F "\t" -v OFS="\t" '{
   print "No double loci detected."
 }' collapsed_introns_filt.s.bed
 
-#get intron counts and lengths with python script:
+#get intron counts and lengths with R script and subtract from gene length:
+#using collapsed_introns_filt.s.bed and gene_coordinates_filt.bed
