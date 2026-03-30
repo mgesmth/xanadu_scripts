@@ -12,7 +12,7 @@ core=/core/projects/EBP/smith
 asm=${home}/dummy.fasta
 outdir=${home}/mitohifi/reads
 
-module load MitoHiFi/3.2.1 python/3.8.1
+module load MitoHiFi/3.2.1 python/3.8.1 singularity/3.9.2
 
 #findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
@@ -23,4 +23,5 @@ echo -e "`date`:[M]: Beginning mitogenome assembly from scaffolded assembly.\n"
 
 cd ${outdir}
 
+singularity exec ${core}/bin/MitoHiFi.sif \
 mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gbk" -t 4 -a "plant"
