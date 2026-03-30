@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J mitohifi
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 24
 #SBATCH --mem=250G
 #SBATCH -o %x.%j.out
