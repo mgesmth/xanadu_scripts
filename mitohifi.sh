@@ -2,8 +2,8 @@
 #SBATCH -J mitohifi
 #SBATCH -p himem
 #SBATCH -q himem
-#SBATCH -c 24
-#SBATCH --mem=250G
+#SBATCH -c 36
+#SBATCH --mem=500G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
