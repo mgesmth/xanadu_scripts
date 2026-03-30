@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J mitohifi
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 24
 #SBATCH --mem=250G
 #SBATCH -o %x.%j.out
@@ -12,7 +12,7 @@ core=/core/projects/EBP/smith
 asm=${core}/manual_curation_files/interior_primary_final_mancur2.fa
 outdir=${home}/mitohifi/contigs
 
-module load MitoHiFi/3.2.1 python/3.8.1
+module load MitoHiFi/3.2.1 python/3.8.1 singularity/3.9.2
 
 #findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
@@ -23,4 +23,5 @@ echo -e "`date`:[M]: Beginning mitogenome assembly from scaffolded assembly.\n"
 
 cd ${outdir}
 
-mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gbk" -t 24 -a "plant"
+singularity exec ${core}/bin/MitoHiFi.sif \
+mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gb" -t 24 -a "plant"
