@@ -10,6 +10,7 @@
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 asm=${core}/manual_curation_files/minor_scaffolds.fa
+#just running on the minor scaffolds - was running out of memory and just going to assume no mtDNA made it into major scaffs
 outdir=${home}/mitohifi/contigs
 
 module load singularity/3.9.2
