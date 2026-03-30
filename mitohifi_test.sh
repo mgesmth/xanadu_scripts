@@ -21,6 +21,6 @@ relative="PQ593531.1"
 echo "`date`:[M]: Host name: `hostname`"
 echo -e "`date`:[M]: Beginning mitogenome assembly from scaffolded assembly.\n"
 
-cd ${outdir_c}
+cd ${outdir}
 
-mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gbk" -t 4 -a "plant" 
+mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gbk" -t 4 -a "plant"

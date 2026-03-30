@@ -12,7 +12,7 @@ core=/core/projects/EBP/smith
 asm=${core}/manual_curation_files/interior_primary_final_mancur2.fa
 outdir=${home}/mitohifi/contigs
 
-module load MitoHiFi/3.2.1
+module load MitoHiFi/3.2.1 python/3.8.1
 
 #findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
@@ -21,6 +21,6 @@ relative="PQ593531.1"
 echo "`date`:[M]: Host name: `hostname`"
 echo -e "`date`:[M]: Beginning mitogenome assembly from scaffolded assembly.\n"
 
-cd ${outdir_c}
+cd ${outdir}
 
-MitoHiFi -c ${asm} -f "${relative}.fasta" -g "${relative}.gbk" -t 24 -a "plant"
+mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gbk" -t 24 -a "plant"
