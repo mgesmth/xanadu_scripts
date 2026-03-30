@@ -9,7 +9,7 @@
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-asm=${core}/manual_curation_files/interior_primary_final_mancur2.fa
+asm=${core}/manual_curation_files/minor_scaffolds.fa
 outdir=${home}/mitohifi/contigs
 
 module load singularity/3.9.2
