@@ -12,7 +12,7 @@ core=/core/projects/EBP/smith
 asm=${home}/dummy.fasta
 outdir=${home}/mitohifi/reads
 
-module load MitoHiFi/3.2.1 python/3.8.1 singularity/3.9.2
+module load python/3.8.1 singularity/3.9.2
 
 #findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
