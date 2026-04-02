@@ -34,7 +34,7 @@ name=${array[0]}
 
 # Run over file
     #input_file=$(echo "$file" | perl -pe 's/_R1.*\.fastq.gz//')
-    echo "Still working for you... Cleaning: $input_file"
+    echo "Still working for you... Cleaning: $name"
 
     fastp -w ${SLURM_CPUS_PER_TASK} \
         -i $INDIR/${name}_R1.fastq.gz \

@@ -28,8 +28,8 @@ HR_QOS="himem"
 
 
 # How many samples are there?
-FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
-  FILE_ARRAY=$(( $(($FASTQ_N / 2))-1 ))
+#FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
+#  FILE_ARRAY=$(( $(($FASTQ_N / 2))-1 ))
 
 '''
 ##########################
