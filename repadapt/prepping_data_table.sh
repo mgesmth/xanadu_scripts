@@ -9,31 +9,33 @@ linkdir=${top}/scratch/mg615512/linkage_data
 
 cd ${linkdir}
 
+#rename files to be easier to parse
+ls -l *.gz > ori_filenames.txt
+#all fastqs have these in their name (the same). they're not informative, i want them gone.
+front_remove="NS.1712.001.NEBNext_dual_i7_"
+end_remove="---NEBNext_dual_i5_"
+
+for file in $(cat ori_filenames.txt) ; do
+  new_name=$(echo "$file" | awk -v front=${front_remove} -v end=${end_remove} '{
+    #get the unique identifier within the adapter section of the name (number or alphanumeric)
+    #between two front sections, i.e., NS.1712.001.NEBNext_dual_i7_E2---NEBNext_dual_i5_, where E2 is the id
+    #id is repeated at the end of string 2, so not losing that
+    split($1,m,"-")
+    split(m[1],n,"_")
+    id=n[4]
+    remove=front id end
+    gsub(remove,"",$1)
+    print
+  }')
+  mv "$file" "$newname"
+  mv "${file}.md5" "${newname}.md5"
+done
+
 #name of each sample
 ##megagametophyte first
 ls -1 *mg*R1.*.gz | sed 's/_R1.fastq.gz//g' > samples.txt
 ##now parents
 ls -1 *DFI_p1*R1.*.gz | sed 's/_R1.fastq.gz//g' >> samples.txt
-
-#defining sra based on library id
-awk 'NR <= 100 {
-  n=split($1,m,"_")
-  print m[n]
-  next
-} {
-  n=split($1,m,"_")
-  print m[n-1]
-}' samples.txt > sra.txt
-
-#individual based on id following adapter info (i.e., i7_*)
-awk -v trim="NS.1712.001.NEBNext_dual_i7_" '{
-  split($1,m,"-")
-  gsub(trim,"",m[1])
-  print "DFI_" m[1]
-}' samples.txt > individual.txt
-
-#rg combining id and "sra"
-paste -d "_" individual.txt sra.txt | tail -n 102 > rg.txt
 
 #ploidy
 yes 1 | head -n 100 > ploidy.txt
@@ -65,8 +67,8 @@ for samp in $(cat samples.txt) ; do
 done
 
 #put it all together!
-paste -d "\t" sra.txt ploidy.txt files.txt rg.txt instrument.txt individual.txt ftp.txt md5.txt > datatable.txt
-rm sra.txt ploidy.txt files.txt rg.txt instrument.txt individual.txt ftp.txt md5.txt samples.txt
+paste -d "\t" samples.txt ploidy.txt files.txt samples.txt instrument.txt samples.txt ftp.txt md5.txt > datatable.txt
+rm ploidy.txt files.txt instrument.txt ftp.txt md5.txt samples.txt
 mv datatable.txt ${dtdir}/
 
 cd ${rawdir}

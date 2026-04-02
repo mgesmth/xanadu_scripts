@@ -8,8 +8,10 @@
 #SBATCH --mem=48G
 #SBATCH --time=0-24:00:00
 
+set -e
+
 # Load needed modules
-module load bwa samtools
+module load StdEnv/2023 bwa/0.7.17 samtools/1.20
 
 ##Keep some info. about the run/script
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
@@ -75,7 +77,7 @@ name=${array[$SLURM_ARRAY_TASK_ID]}
     bwa mem -t $NCPU -R $ID $GENOMEFOLDER/$GENOME $RAWDATAFOLDER/$file1 $RAWDATAFOLDER/$file2 | samtools view -Sb -q 10 - > $ALIGNEDFOLDER/${name}.bam
 
     # Sort
-    samtools sort --threads $NCPU $ALIGNEDFOLDER/${name}.bam > $ALIGNEDFOLDER/${name}.sorted.bam
+    samtools sort --threads $NCPU $ALIGNEDFOLDER/${name}.bam > $ALIGNEDFOLDER/${name}.sorted.bam && rm $ALIGNEDFOLDER/${name}.bam
 
     # Index
     samtools index $ALIGNEDFOLDER/${name}.sorted.bam

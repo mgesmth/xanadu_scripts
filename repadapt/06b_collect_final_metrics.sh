@@ -47,7 +47,8 @@ mkdir $METRICSFOLDER
     # file=$(basename "$i")
 
     # Fetch filename from the array
-    file=$(cut -f14 02_info_files/datatable.txt | sort | uniq | sed "${SLURM_ARRAY_TASK_ID}q;d")
+    array=($(cut -f1 02_info_files/datatable.txt))
+    file=${array[$SLURM_ARRAY_TASK_ID]}
     bamfile=${file}.realigned.bam
 
     echo \n">>> Computing alignment metrics for $file <<<"\n

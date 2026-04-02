@@ -1,13 +1,15 @@
 
 #!/bin/bash
 
-#SBATCH -J "05.RG"
+#SBATCH -J 05.RG
 #SBATCH -o 98_log_files/%x_%A_array%a.out
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=50G
 #SBATCH --time=00-01:30:00
+
+set -e
 
 #cd $SLURM_SUBMIT_DIR
 
@@ -38,8 +40,9 @@ echo "Editing RG...
 "
 
 # Fetch filename from the array
-sample_name=$(cut -f1 02_info_files/datatable.txt | sed "${SLURM_ARRAY_TASK_ID}q;d")
-file=${sample_name}.dedup.bam
+array=($(cut -f1 02_info_files/datatable.txt))
+name=${array[$SLURM_ARRAY_TASK_ID]}
+file=${name}.dedup.bam
 
 # Fetch all our RG info...
 new_RGSM=$(grep $sample_name $DATATABLE | cut -f14)
@@ -49,17 +52,17 @@ new_RGSM=$(grep $sample_name $DATATABLE | cut -f14)
              "
         java -jar $PICARD $ADDRG \
 	    I=$INBAM/$file \
-	    O=$OUTBAM/${sample_name}_RG.bam \
-	    RGID=${sample_name} \
-	    RGLB=${sample_name}_LB \
+	    O=$OUTBAM/${name}_RG.bam \
+	    RGID=${name} \
+	    RGLB=${name}_LB \
 	    RGPL=ILLUMINA \
 	    RGPU=unit1 \
-	    RGSM=${new_RGSM}
+	    RGSM=${name}
         # Index
         echo "
-            >>> Indexing ${sample_name}_RG.bam <<<
+            >>> Indexing ${name}_RG.bam <<<
             "
-        samtools index $INBAM/${sample_name}_RG.bam
+        samtools index $INBAM/${name}_RG.bam
 
 echo " >>> Cleaning a bit...
 "

@@ -10,6 +10,7 @@
 #SBATCH --mem=10G
 #SBATCH --time=0-06:00:00
 
+set -e
 # Load up fastp
 module load StdEnv/2020 fastp/0.20.1
 
@@ -31,7 +32,7 @@ mkdir $OUTDIR/01_reports
 cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"_%J
 
 # Pull file from the FASTP_ARRAY
-array=($(cut -f3 02_info_files/datatable.txt | sed 's/_R1.fastq.gz//'))
+array=($(cut -f1 02_info_files/datatable.txt))
 name=${array[$SLURM_ARRAY_TASK_ID]}
 
 # Run over file

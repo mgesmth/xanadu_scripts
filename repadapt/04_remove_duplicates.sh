@@ -10,6 +10,9 @@
 #SBATCH --mem 200G
 #SBATCH --time=00-01:00:00
 
+set -e
+
+
 # Load required modules
 module load picard java
 
@@ -29,15 +32,16 @@ export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "
 export _JAVA_OPTIONS="-Xms2g -Xmx50g "
 
 # Fetch filename from the array
-sample_name=$(cut -f1 02_info_files/datatable.txt | sed "${SLURM_ARRAY_TASK_ID}q;d")
-file=${sample_name}.sorted.bam
+array=($(cut -f1 02_info_files/datatable.txt))
+name=${array[$SLURM_ARRAY_TASK_ID]}
+file=${name}.sorted.bam
 
     echo "DEduplicatING sample $file"
 
     java -jar $PICARD $MARKDUPS \
         INPUT=$ALIGNEDFOLDER/$file \
-        OUTPUT=$ALIGNEDFOLDER/${sample_name}.dedup.bam \
-        METRICS_FILE=$METRICSFOLDER/${sample_name}_DUP_metrics.txt \
+        OUTPUT=$ALIGNEDFOLDER/${name}.dedup.bam \
+        METRICS_FILE=$METRICSFOLDER/${name}_DUP_metrics.txt \
         VALIDATION_STRINGENCY=SILENT \
         REMOVE_DUPLICATES=true
 

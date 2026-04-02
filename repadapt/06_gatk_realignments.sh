@@ -10,6 +10,8 @@
 #SBATCH --mem=32G
 #SBATCH --time=00-168:00:00
 
+set -e
+
 #cd $SLURM_SUBMIT_DIR
 
 # Copy script to log folder
@@ -39,15 +41,13 @@ echo " >>> Realigning...
 
 
 # Fetch filename from the array
-sample_name=$(cut -f14 $DATATABLE | sort | uniq | sed "${SLURM_ARRAY_TASK_ID}q;d")
-file=${sample_name}.merged.bam
+array=($(cut -f1 02_info_files/datatable.txt))
+name=${array[$SLURM_ARRAY_TASK_ID]}
+file=${name}_RG.bam
 
     echo "
          >>> Realigning TARGET for $file <<<
          "
-
-    # Index the bam file First
-    samtools index $BAM/$file
 
     # Now load modules
     module purge
@@ -59,7 +59,7 @@ file=${sample_name}.merged.bam
         -T RealignerTargetCreator \
         -R $GENOMEFOLDER/$GENOME \
         -I $BAM/$file \
-        -o $BAM/${sample_name}.intervals
+        -o $BAM/${name}.intervals
 
     echo "
          >>> Realigning INDELs for $file <<<
@@ -68,9 +68,9 @@ file=${sample_name}.merged.bam
         -T IndelRealigner \
         -R $GENOMEFOLDER/$GENOME \
         -I $BAM/$file \
-        -targetIntervals $BAM/${sample_name}.intervals \
+        -targetIntervals $BAM/${name}.intervals \
         --consensusDeterminationModel USE_READS  \
-        -o $BAM/${sample_name}.realigned.bam
+        -o $BAM/${name}.realigned.bam
 
 echo ">>> Cleaning a bit...
 "

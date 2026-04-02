@@ -10,6 +10,8 @@
 #SBATCH --mem 10G
 #SBATCH --time=0-12:00:00
 
+set -e
+
 # Load modules
 module load picard java
 
@@ -32,26 +34,28 @@ LOG_FOLDER="98_log_files"
 cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${SCRIPTNAME}
 
     # Fetch filename from the array
-    file=$(cut -f1 02_info_files/datatable.txt | sed "${SLURM_ARRAY_TASK_ID}q;d")
-    bamfile=${file}.realigned.bam
+
+    array=($(cut -f1 02_info_files/datatable.txt))
+    name=${array[$SLURM_ARRAY_TASK_ID]}
+    bamfile=${name}.realigned.bam
 
     echo \n">>> Computing alignment metrics for $file <<<"\n
     java -jar $PICARD $ALIGN \
         R=$GENOMEFOLDER/$GENOME \
         I=$ALIGNEDFOLDER/$bamfile \
-        O=$METRICSFOLDER/${file}_alignment_metrics.txt
+        O=$METRICSFOLDER/${name}_alignment_metrics.txt
 
     echo \n">>> Computing insert size metrics for $file <<<"\n
     java -jar $PICARD $INSERT \
         I=$ALIGNEDFOLDER/$bamfile \
-        OUTPUT=$METRICSFOLDER/${file}_insert_size_metrics.txt \
-        HISTOGRAM_FILE=$METRICSFOLDER/${file}_insert_size_histogram.pdf
+        OUTPUT=$METRICSFOLDER/${name}_insert_size_metrics.txt \
+        HISTOGRAM_FILE=$METRICSFOLDER/${name}_insert_size_histogram.pdf
 
     echo \n">>> Computing coverage metrics for $file <<<"\n
     java -jar $PICARD $COVERAGE \
         R=$GENOMEFOLDER/$GENOME \
         I=$ALIGNEDFOLDER/$bamfile \
-        OUTPUT=$METRICSFOLDER/${file}_collect_wgs_metrics.txt\
-        CHART=$METRICSFOLDER/${file}_collect_wgs_metrics.pdf
+        OUTPUT=$METRICSFOLDER/${name}_collect_wgs_metrics.txt\
+        CHART=$METRICSFOLDER/${name}_collect_wgs_metrics.pdf
 
     echo \n">>> DONE! <<<"\n
