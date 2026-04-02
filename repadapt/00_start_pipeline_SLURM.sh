@@ -26,7 +26,7 @@ CC_ACCOUNT="def-booker"
 
 # How many samples are there?
 FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
-FILE_ARRAY=$(( $FASTQ_N / 2 ))
+  FILE_ARRAY=$(( $(($FASTQ_N / 2))-1 ))
 
 '''
 ##########################
@@ -36,7 +36,7 @@ FILE_ARRAY=$(( $FASTQ_N / 2 ))
 
 # Trim
 job01=$(sbatch --account=$CC_ACCOUNT \
-   --array=1-${FILE_ARRAY} \
+   --array=0-${FILE_ARRAY} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -46,7 +46,7 @@ job01=$(sbatch --account=$CC_ACCOUNT \
 # Index reference & Align reads to reference
 # Note - If fastq files include .1 and .2 suffixes, bwa will fail. Lines in script 02 can be commented out to handle this
 job02=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${FILE_ARRAY} \
+   --array=0-${FILE_ARRAY} \
    --dependency=afterok:$job01 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -56,7 +56,7 @@ job02=$(sbatch --account=$CC_ACCOUNT  \
 
 # Collect sample data metrics
 job03=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${FILE_ARRAY} \
+   --array=0-${FILE_ARRAY} \
    --dependency=afterok:$job02 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -72,7 +72,7 @@ job03=$(sbatch --account=$CC_ACCOUNT  \
 
 # Remove duplicates
 job04=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${FILE_ARRAY} \
+   --array=0-${FILE_ARRAY} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -82,7 +82,7 @@ job04=$(sbatch --account=$CC_ACCOUNT  \
 
 # Change bam files RG
 job05=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${FILE_ARRAY} \
+   --array=0-${FILE_ARRAY} \
    --dependency=afterok:$job04 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -98,9 +98,9 @@ job05=$(sbatch --account=$CC_ACCOUNT  \
 
 # New step here now to merge BAM files over samples...
 # Count the number of unique samples in $DATATABLE
-SAMPLE_ARRAY=$(cut -f14 $DATATABLE | sort | uniq | wc -l)
+SAMPLE_ARRAY=$(($(cut -f1 $DATATABLE | sort | uniq | wc -l)-1))
 job05b=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${SAMPLE_ARRAY} \
+   --array=0-${SAMPLE_ARRAY} \
    --dependency=afterok:$job05 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -110,7 +110,7 @@ job05b=$(sbatch --account=$CC_ACCOUNT  \
 
 # Realign around indels...
 job06=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${SAMPLE_ARRAY} \
+   --array=0-${SAMPLE_ARRAY} \
    --dependency=afterok:$job05b \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -120,7 +120,7 @@ job06=$(sbatch --account=$CC_ACCOUNT  \
 
 # Stats of final bam files...
 job06b=$(sbatch --account=$CC_ACCOUNT  \
-   --array=1-${SAMPLE_ARRAY} \
+   --array=0-${SAMPLE_ARRAY} \
    --dependency=afterok:$job06 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -149,7 +149,7 @@ else
 fi
 
 # Set SNP-calling array over these scaffold clusters...
-SCAFF_ARRAY=$(ls 02_info_files/all_scafs*pos | wc -l)
+SCAFF_ARRAY=$(($(ls 02_info_files/all_scafs*pos | wc -l)-1))
 
 ##########################
 ##### Make some metadata

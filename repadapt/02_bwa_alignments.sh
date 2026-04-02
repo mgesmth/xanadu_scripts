@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
+#SBATCH --mem=48G
 #SBATCH --time=0-24:00:00
 
 # Load needed modules
@@ -33,13 +33,13 @@ then
 fi
 
 # If this is our first run, make a list of all the trimmed reads for cleaning
-if [ $SLURM_ARRAY_TASK_ID -eq 1 ]
+if [ $SLURM_ARRAY_TASK_ID -eq 0 ]
 then
   ls -1 $RAWDATAFOLDER/*R1.trimmed.fastq.gz | xargs -n 1 basename | sed 's/.R1.trimmed.fastq.gz//g' > $RAWDATAFOLDER/all_trimmed_ids.txt
 fi
 
-# Pull individual ID from the batch array
-name=$(cut -f1 02_info_files/datatable.txt | sed "${SLURM_ARRAY_TASK_ID}q;d")
+array=($(cat $RAWDATAFOLDER/all_trimmed_ids.txt))
+name=${array[$SLURM_ARRAY_TASK_ID]}
 
     # Name of uncompressed file
     file1=${name}.R1.trimmed.fastq.gz
@@ -72,15 +72,13 @@ name=$(cut -f1 02_info_files/datatable.txt | sed "${SLURM_ARRAY_TASK_ID}q;d")
     ID="@RG\tID:ind\tSM:ind\tPL:Illumina"
 
     # Align reads
-    bwa mem -t $NCPU -R $ID $GENOMEFOLDER/$GENOME $RAWDATAFOLDER/$file1 $RAWDATAFOLDER/$file2 |
-    samtools view -Sb -q 10 - > $ALIGNEDFOLDER/${name%}.bam
+    bwa mem -t $NCPU -R $ID $GENOMEFOLDER/$GENOME $RAWDATAFOLDER/$file1 $RAWDATAFOLDER/$file2 | samtools view -Sb -q 10 - > $ALIGNEDFOLDER/${name}.bam
 
     # Sort
-    samtools sort --threads $NCPU $ALIGNEDFOLDER/${name%.R1.trimmed.fastq.gz}.bam \
-        > $ALIGNEDFOLDER/${name%.R1.trimmed.fastq.gz}.sorted.bam
+    samtools sort --threads $NCPU $ALIGNEDFOLDER/${name}.bam > $ALIGNEDFOLDER/${name}.sorted.bam
 
     # Index
-    samtools index $ALIGNEDFOLDER/${name%.R1.trimmed.fastq.gz}.sorted.bam
+    samtools index $ALIGNEDFOLDER/${name}.sorted.bam
 
     &> $LOG_FOLDER/02_mapping_${name}_${TIMESTAMP}.log
 #done

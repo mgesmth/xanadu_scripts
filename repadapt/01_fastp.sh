@@ -31,18 +31,18 @@ mkdir $OUTDIR/01_reports
 cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"_%J
 
 # Pull file from the FASTP_ARRAY
-input_file=$(cut -f1 02_info_files/datatable.txt | sed "${SLURM_ARRAY_TASK_ID}q;d")
+array=($(cut -f3 02_info_files/datatable.txt | sed 's/_R1.fastq.gz//'))
+name=${array[$SLURM_ARRAY_TASK_ID]}
 
 # Run over file
     #input_file=$(echo "$file" | perl -pe 's/_R1.*\.fastq.gz//')
-    output_file=$(basename "$input_file")
     echo "Still working for you... Cleaning: $input_file"
 
     fastp -w ${SLURM_CPUS_PER_TASK} \
-        -i $INDIR/${input_file}_R1.fastq.gz \
-        -I $INDIR/${input_file}_R2.fastq.gz \
-        -o $OUTDIR/"$output_file".R1.trimmed.fastq.gz \
-        -O $OUTDIR/"$output_file".R2.trimmed.fastq.gz \
-        -j $OUTDIR/01_reports/"$output_file".json \
-        -h $OUTDIR/01_reports/"$output_file".html \
-        &> "$LOG"/01_fastp_"$output_file"_"$TIMESTAMP".out
+        -i $INDIR/${name}_R1.fastq.gz \
+        -I $INDIR/${name}_R2.fastq.gz \
+        -o $OUTDIR/"$name".R1.trimmed.fastq.gz \
+        -O $OUTDIR/"$name".R2.trimmed.fastq.gz \
+        -j $OUTDIR/01_reports/"$name".json \
+        -h $OUTDIR/01_reports/"$name".html \
+        &> "$LOG"/01_fastp_"$name"_"$TIMESTAMP".out
