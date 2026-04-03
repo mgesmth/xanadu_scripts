@@ -3,21 +3,19 @@
 # 30 Go
 
 #SBATCH -J 04.Duplicates
-#SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=64
-#SBATCH --mem 200G
+#SBATCH --cpus-per-task=18
+#SBATCH --mem=68G
 #SBATCH --time=00-01:00:00
 
 set -e
-
-
 # Load required modules
-module load picard java
+module load picard/3.1.1
 
 # Global variables
-PICARD=$EBROOTPICARD/picard.jar
 MARKDUPS="MarkDuplicates"
 ALIGNEDFOLDER="06_bam_files"
 METRICSFOLDER="99_metrics"
@@ -33,7 +31,7 @@ export _JAVA_OPTIONS="-Xms2g -Xmx50g "
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[$SLURM_ARRAY_TASK_ID]}
+name=${array[0]}
 file=${name}.sorted.bam
 
     echo "DEduplicatING sample $file"

@@ -4,6 +4,7 @@
 
 #SBATCH -J 03.Metrics
 #SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -e 98_log_files/%x_%A_array%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -37,7 +38,7 @@ cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${SCRIPTNAME}
 
     array=($(cut -f1 02_info_files/datatable.txt))
     name=${array[$SLURM_ARRAY_TASK_ID]}
-    bamfile=${name}.realigned.bam
+    bamfile=${name}.sorted.bam
 
     echo \n">>> Computing alignment metrics for $file <<<"\n
     java -jar $PICARD $ALIGN \

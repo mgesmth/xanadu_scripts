@@ -2,13 +2,13 @@
 #!/bin/bash
 # Submit scripts from the $SPECIES_DIR directory
 
-home=/home/mg615512/projects/def-booker/mg615512
+home=/home/FCAM/msmith
 
 # Variables
 # Name of general working directory
 MAIN=${home}
 # Name of directory where snp calling is happening
-DATASET="snp_calling"
+DATASET="test_snp_calling"
 SPECIES_DIR=$MAIN/$DATASET
 cd $SPECIES_DIR
 

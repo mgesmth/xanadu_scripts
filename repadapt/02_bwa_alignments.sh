@@ -80,7 +80,7 @@ name=${array[$SLURM_ARRAY_TASK_ID]}
     samtools sort --threads $NCPU $ALIGNEDFOLDER/${name}.bam > $ALIGNEDFOLDER/${name}.sorted.bam && rm $ALIGNEDFOLDER/${name}.bam
 
     # Index
-    samtools index $ALIGNEDFOLDER/${name}.sorted.bam
+    samtools index -c $ALIGNEDFOLDER/${name}.sorted.bam
 
     &> $LOG_FOLDER/02_mapping_${name}_${TIMESTAMP}.log
 #done

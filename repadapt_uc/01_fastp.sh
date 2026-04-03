@@ -26,7 +26,7 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 mkdir $OUTDIR/01_reports
 
 # Make a log file to the species log directory
-cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"_%J
+cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"
 
 # Pull file from the FASTP_ARRAY
 array=($(cut -f1 02_info_files/datatable.txt))
