@@ -2,6 +2,7 @@
 
 #SBATCH -J 02.BWA
 #SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH -c 8
 #SBATCH --mem=48G
 
