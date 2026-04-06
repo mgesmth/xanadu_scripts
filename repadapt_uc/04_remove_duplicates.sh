@@ -9,7 +9,6 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=18
 #SBATCH --mem=68G
-#SBATCH --time=00-01:00:00
 
 set -e
 # Load required modules

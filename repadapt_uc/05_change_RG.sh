@@ -2,12 +2,12 @@
 #!/bin/bash
 
 #SBATCH -J 05.RG
-#SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=50G
-#SBATCH --time=00-01:30:00
 
 set -e
 
@@ -23,7 +23,7 @@ cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 # Load needed modules - ComputeCanada clusters
 module load picard
 module load java
-module load StdEnv/2020 gcc/9.3.0 samtools/1.13
+module load samtools/1.20
 
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "
 export _JAVA_OPTIONS="-Xms2g -Xmx50g "
@@ -32,7 +32,7 @@ export _JAVA_OPTIONS="-Xms2g -Xmx50g "
 INBAM="06_bam_files"
 OUTBAM="06_bam_files"
 ADDRG="AddOrReplaceReadGroups"
-PICARD=$EBROOTPICARD/picard.jar
+#PICARD=$EBROOTPICARD/picard.jar
 DATATABLE=02_info_files/datatable.txt
 
 # Remove duplicates from bam alignments
@@ -41,11 +41,11 @@ echo "Editing RG...
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[$SLURM_ARRAY_TASK_ID]}
+name=${array[0]}
 file=${name}.dedup.bam
 
 # Fetch all our RG info...
-new_RGSM=$(grep $sample_name $DATATABLE | cut -f14)
+new_RGSM=${name}
 
         echo "
              >>> Computing RG for $file<<<
@@ -62,7 +62,7 @@ new_RGSM=$(grep $sample_name $DATATABLE | cut -f14)
         echo "
             >>> Indexing ${name}_RG.bam <<<
             "
-        samtools index $INBAM/${name}_RG.bam
+        samtools index -c $INBAM/${name}_RG.bam
 
 echo " >>> Cleaning a bit...
 "
