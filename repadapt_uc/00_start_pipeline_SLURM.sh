@@ -31,6 +31,13 @@ HR_QOS="himem"
 #FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
 #  FILE_ARRAY=$(( $(($FASTQ_N / 2))-1 ))
 
+job00=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+-D $SPECIES_DIR \
+--mail-type=ALL \
+--mail-user=$EMAIL \
+--parsable \
+$PIPE_DIR/00a_prep_genome.sh)
+
 '''
 ##########################
 # Part 1 of the pipeline #
@@ -39,6 +46,7 @@ HR_QOS="himem"
 
 # Trim
 job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job00} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -71,8 +79,7 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 '''
 
 # Remove duplicates
-job04=$(sbatch --account=$CC_ACCOUNT  \
-   --array=0-${FILE_ARRAY} \
+job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -81,8 +88,7 @@ job04=$(sbatch --account=$CC_ACCOUNT  \
 
 
 # Change bam files RG
-job05=$(sbatch --account=$CC_ACCOUNT  \
-   --array=0-${FILE_ARRAY} \
+job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --dependency=afterok:$job04 \
    -D $SPECIES_DIR \
    --mail-type=ALL \

@@ -2,6 +2,7 @@
 
 #SBATCH --job-name="09.concatVCF"
 #SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -e 98_log_files/%x_%A_array%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1

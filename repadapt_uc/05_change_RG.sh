@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 #SBATCH -J 05.RG
