@@ -4,6 +4,7 @@
 
 #SBATCH -J "06.ReAlignmentS"
 #SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -e 98_log_files/%x_%A_array%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=12
@@ -53,7 +54,7 @@ file=${name}_RG.bam
     module load GATK/3.7
 
     # Realign
-    java -jar $EBROOTGATK/GenomeAnalysisTK.jar \
+    java -jar $GATK \
         -T RealignerTargetCreator \
         -R $GENOMEFOLDER/$GENOME \
         -I $BAM/$file \
@@ -62,7 +63,7 @@ file=${name}_RG.bam
     echo "
          >>> Realigning INDELs for $file <<<
          "
-    java -jar $EBROOTGATK/GenomeAnalysisTK.jar \
+    java -jar $GATK \
         -T IndelRealigner \
         -R $GENOMEFOLDER/$GENOME \
         -I $BAM/$file \
