@@ -22,7 +22,7 @@ LOG_FOLDER="98_log_files"
 cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Load needed modules
-module load StdEnv/2020 samtools/1.12
+module load samtools
 
 # Uncomment these for big genomes
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx32g "
@@ -42,7 +42,7 @@ echo " >>> Realigning...
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[$SLURM_ARRAY_TASK_ID]}
+name=${array[0]}
 file=${name}_RG.bam
 
     echo "
@@ -50,9 +50,7 @@ file=${name}_RG.bam
          "
 
     # Now load modules
-    module purge
-    module load nixpkgs/16.09
-    module load java gatk/3.8
+    module load GATK/3.7
 
     # Realign
     java -jar $EBROOTGATK/GenomeAnalysisTK.jar \
