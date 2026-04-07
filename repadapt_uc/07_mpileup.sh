@@ -3,7 +3,8 @@
 # 30 Go
 
 #SBATCH -J "07.mpileup"
-#SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
@@ -22,7 +23,7 @@ cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${NAME}
 begin=`date +%s`
 
 # Load needed modules
-module load bcftools/1.11
+module load bcftools
 
 # Global variables
 INFO="02_info_files"

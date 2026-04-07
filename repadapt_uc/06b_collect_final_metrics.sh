@@ -3,7 +3,8 @@
 # 10 Go
 
 #SBATCH -J 06b.Final_Metrics
-#SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
@@ -48,7 +49,7 @@ mkdir $METRICSFOLDER
 
     # Fetch filename from the array
     array=($(cut -f1 02_info_files/datatable.txt))
-    file=${array[$SLURM_ARRAY_TASK_ID]}
+    file=${array[0]}
     bamfile=${file}.realigned.bam
 
     echo \n">>> Computing alignment metrics for $file <<<"\n
