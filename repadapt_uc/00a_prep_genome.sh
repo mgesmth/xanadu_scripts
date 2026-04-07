@@ -33,7 +33,7 @@ if [[ ! -f "${GENOME}.dict" ]] ; then
   module load picard
   echo ">> No Sequence Dictionary detected. Generating... <<"
   java -jar $PICARD CreateSequenceDictionary \
-  -I ${GENOME} \
+  -R ${GENOME} \
   -O "${GENOME}.dict"
   echo ">> Done. <<"
 else

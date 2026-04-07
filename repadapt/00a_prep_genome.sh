@@ -34,7 +34,7 @@ if [[ ! -f "${GENOME}.dict" ]] ; then
   echo ">> No Sequence Dictionary detected. Generating... <<"
   PICARD=$EBROOTPICARD/picard.jar
   java -jar $PICARD CreateSequenceDictionary \
-  -I ${GENOME} \
+  -R ${GENOME} \
   -O "${GENOME}.dict"
   echo ">> Done. <<"
 else
