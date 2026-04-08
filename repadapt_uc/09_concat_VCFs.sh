@@ -8,8 +8,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=8G
 
-module load vcftools bcftools
-module load StdEnv/2020 intel/2020.1.217 tabix/0.2.6
+module load vcftools bcftools/1.19
+module load tabix/0.2.6
 
 cd $SLURM_SUBMIT_DIR
 

@@ -3,14 +3,14 @@
 
 #SBATCH --job-name="08.FiltVCF"
 #SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -e 98_log_files/%x_%A_array%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G
-#SBATCH --time=00-12:00:00
 
-module load vcftools bcftools
-module load StdEnv/2020 intel/2020.1.217 tabix/0.2.6
+module load vcftools bcftools/1.19
+module load gnu-parallel/20160622 tabix/0.2.6
 
 cd $SLURM_SUBMIT_DIR
 
@@ -28,7 +28,8 @@ VCF="07_raw_VCFs"
 FILTVCF="08_filtered_VCFs"
 
 # Pull from the array...
-REGION_FILE=$(ls 02_info_files/all_scafs*pos | sed "${SLURM_ARRAY_TASK_ID}q;d")
+ARRAY=($(cat 02_info_files/pos.txt))
+REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
 
     echo "
     >>> Filtering through BCFtools first!
