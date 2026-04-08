@@ -80,6 +80,7 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Remove duplicates
 job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job03} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -115,9 +116,8 @@ job05b=$(sbatch --account=$CC_ACCOUNT  \
    $PIPE_DIR/05b_merge_bams.sh)
 
 # Realign around indels...
-job06=$(sbatch --account=$CC_ACCOUNT  \
-   --array=0-${SAMPLE_ARRAY} \
-   --dependency=afterok:$job05b \
+job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job05} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -125,8 +125,7 @@ job06=$(sbatch --account=$CC_ACCOUNT  \
    $PIPE_DIR/06_gatk_realignments.sh)
 
 # Stats of final bam files...
-job06b=$(sbatch --account=$CC_ACCOUNT  \
-   --array=0-${SAMPLE_ARRAY} \
+job06b=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --dependency=afterok:$job06 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -140,8 +139,6 @@ job06b=$(sbatch --account=$CC_ACCOUNT  \
 ##########################
 '''
 
-##### Set up scaffold input files to fit with Compute Canada max jobs
-# How many scaffolds are in the genome...
 SCAFF_N=$(cat $SPECIES_DIR/03_genome/*fai | wc -l)
 SPLIT_N=200
 
@@ -175,8 +172,8 @@ done
 ##########################
 # Call SNPs - Mpileup runs first and filtering starts based on the dependency
 export DATASET=$DATASET
-job07=$(sbatch --account=$CC_ACCOUNT \
-   --array=1-${SCAFF_ARRAY} \
+job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+   --array=0-${SCAFF_ARRAY} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
@@ -185,9 +182,9 @@ job07=$(sbatch --account=$CC_ACCOUNT \
 
 # Filter the SNPs
 export DATASET=$DATASET
-job08=$(sbatch --account=$CC_ACCOUNT \
+job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --dependency=afterok:$job07 \
-   --array=1-${SCAFF_ARRAY} \
+   --array=0-${SCAFF_ARRAY} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
@@ -196,7 +193,7 @@ job08=$(sbatch --account=$CC_ACCOUNT \
 
 # Concatenate the per-scaffold VCFs to a single VCF
 export DATASET=$DATASET
-sbatch --account=$CC_ACCOUNT \
+sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --dependency=afterok:$job08 \
    --mail-user=$EMAIL \

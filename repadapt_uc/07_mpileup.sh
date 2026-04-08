@@ -3,13 +3,12 @@
 # 30 Go
 
 #SBATCH -J "07.mpileup"
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -e 98_log_files/%x_%A_array%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=12G
-#SBATCH --time=00-72:00:00
 
 cd $SLURM_SUBMIT_DIR
 

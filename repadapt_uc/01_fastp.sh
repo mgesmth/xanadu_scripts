@@ -4,6 +4,7 @@
 
 #SBATCH -J 01.fastp
 #SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH -c 6
 #SBATCH --mem=10G
 

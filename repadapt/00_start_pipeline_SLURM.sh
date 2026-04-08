@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 # Submit scripts from the $SPECIES_DIR directory
 
 home=/home/mg615512/projects/def-booker/mg615512
@@ -28,6 +27,13 @@ CC_ACCOUNT="def-booker"
 FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
   FILE_ARRAY=$(( $(($FASTQ_N / 2))-1 ))
 
+job00=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+  -D $SPECIES_DIR \
+  --mail-type=ALL \
+  --mail-user=$EMAIL \
+  --parsable \
+  $PIPE_DIR/00a_prep_genome.sh)
+
 '''
 ##########################
 # Part 1 of the pipeline #
@@ -36,6 +42,7 @@ FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
 
 # Trim
 job01=$(sbatch --account=$CC_ACCOUNT \
+--dependency=afterok:${job00} \
    --array=0-${FILE_ARRAY} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -72,6 +79,7 @@ job03=$(sbatch --account=$CC_ACCOUNT  \
 
 # Remove duplicates
 job04=$(sbatch --account=$CC_ACCOUNT  \
+--dependency=afterok:${job03} \
    --array=0-${FILE_ARRAY} \
    -D $SPECIES_DIR \
    --mail-type=ALL \

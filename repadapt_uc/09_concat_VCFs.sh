@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #SBATCH --job-name="09.concatVCF"
-#SBATCH -o 98_log_files/%x_%A_array%a.out
+#SBATCH -o 98_log_files/%x_%j.out
+#SBATCH -e 98_log_files/%x_%j.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=8G
-#SBATCH --time=00-12:00:00
 
 module load vcftools bcftools
 module load StdEnv/2020 intel/2020.1.217 tabix/0.2.6

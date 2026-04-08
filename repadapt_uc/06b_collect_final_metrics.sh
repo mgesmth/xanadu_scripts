@@ -8,8 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem 50G
-#SBATCH --time=0-12:00:00
+#SBATCH --mem=50G
 
 # Load modules
 module load picard java r
