@@ -103,18 +103,6 @@ job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 ##########################
 '''
 
-# New step here now to merge BAM files over samples...
-# Count the number of unique samples in $DATATABLE
-SAMPLE_ARRAY=$(($(cut -f1 $DATATABLE | sort | uniq | wc -l)-1))
-job05b=$(sbatch --account=$CC_ACCOUNT  \
-   --array=0-${SAMPLE_ARRAY} \
-   --dependency=afterok:$job05 \
-   -D $SPECIES_DIR \
-   --mail-type=ALL \
-   --mail-user=$EMAIL \
-   --parsable \
-   $PIPE_DIR/05b_merge_bams.sh)
-
 # Realign around indels...
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job05} \
@@ -126,7 +114,6 @@ job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Stats of final bam files...
 job06b=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --dependency=afterok:$job06 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -151,6 +138,9 @@ else
  split -l$((`wc -l < 02_info_files/all_scafs.txt`/${SCAFF_N})) 02_info_files/all_scafs.txt 02_info_files/all_scafs.split. -da 4 --additional-suffix=".pos"
 fi
 
+cd 02_info_files
+ls -1 all_scafs*pos > pos.txt
+
 # Set SNP-calling array over these scaffold clusters...
 SCAFF_ARRAY=$(($(ls 02_info_files/all_scafs*pos | wc -l)-1))
 
@@ -165,7 +155,7 @@ rm -f 02_info_files/ploidymap.txt
 for BAM in $(cat 02_info_files/bammap.txt)
 do
  BAM_CLEAN=$(basename $BAM | sed 's/.realigned.bam//g')
- BAM_PLOIDY=$(grep -w $BAM_CLEAN 02_info_files/datatable.txt | cut -f4 | head -n1)
+ BAM_PLOIDY=$(grep -w $BAM_CLEAN 02_info_files/datatable.txt | cut -f2 | head -n1)
  echo -e "$BAM_CLEAN\t$BAM_PLOIDY" >> 02_info_files/ploidymap.txt
 done
 

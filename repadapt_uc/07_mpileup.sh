@@ -33,7 +33,8 @@ VCF="./07_raw_VCFs"
 # POP="02_info_files/popmap.txt"
 BAM="02_info_files/bammap.txt"
 PLD="02_info_files/ploidymap.txt"
-REGION_FILE=$(ls 02_info_files/all_scafs*pos | sed "${SLURM_ARRAY_TASK_ID}q;d")
+ARRAY=($(cat 02_info_files/pos.txt))
+REGION_FILE=${ARRAY[$SLURM_ARRAY_TASK_ID]}
 
     for scaf in $(cut -f1 $REGION_FILE)
     do
