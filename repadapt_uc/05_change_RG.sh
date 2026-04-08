@@ -61,7 +61,7 @@ new_RGSM=${name}
         echo "
             >>> Indexing ${name}_RG.bam <<<
             "
-        samtools index -c $INBAM/${name}_RG.bam
+        samtools index $INBAM/${name}_RG.bam
 
 echo " >>> Cleaning a bit...
 "

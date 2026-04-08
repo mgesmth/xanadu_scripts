@@ -1,9 +1,9 @@
 #!/bin/bash
 
-module load seqkit/
+module load seqkit
 
 asm=interior_primary_final.fa
-maxlen=1000000000
+maxlen=500000000
 
 #first 7 scaffolds are above 1Gb. These will be split.
 awk '{ if ($0 == ">scaffold_8_primary") {
