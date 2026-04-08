@@ -35,7 +35,6 @@ SCRIPTNAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${SCRIPTNAME}
 
-mkdir $METRICSFOLDER
 
 # Load needed modules
 # module load java

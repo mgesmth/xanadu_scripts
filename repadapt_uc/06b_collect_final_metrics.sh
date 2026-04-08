@@ -18,7 +18,7 @@ GENOMEFOLDER="03_genome"
 GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 ALIGNEDFOLDER="06_bam_files"
 METRICSFOLDER="99_metrics_merged"
-PICARD=$EBROOTPICARD/picard.jar
+#PICARD=$EBROOTPICARD/picard.jar
 ALIGN="CollectAlignmentSummaryMetrics"
 INSERT="CollectInsertSizeMetrics"
 COVERAGE="CollectWgsMetricsWithNonZeroCoverage"
@@ -33,8 +33,6 @@ SCRIPT=$0
 SCRIPTNAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${SCRIPTNAME}
-
-mkdir $METRICSFOLDER
 
 # Load needed modules
 # module load java
