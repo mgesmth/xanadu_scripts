@@ -9,7 +9,7 @@
 set -e
 
 # Load needed modules
-module load bwa/0.7.17 samtools/1.20
+module load bwa/0.7.17 samtools/1.19
 
 ##Keep some info. about the run/script
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)

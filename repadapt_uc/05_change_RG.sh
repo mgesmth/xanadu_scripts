@@ -22,7 +22,7 @@ cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 # Load needed modules - ComputeCanada clusters
 module load picard
 module load java
-module load samtools/1.20
+module load samtools/1.19
 
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "
 export _JAVA_OPTIONS="-Xms2g -Xmx50g "

@@ -23,7 +23,7 @@ LOG_FOLDER="98_log_files"
 cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Load needed modules
-module load samtools
+module load samtools/1.19
 
 # Uncomment these for big genomes
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx32g "
