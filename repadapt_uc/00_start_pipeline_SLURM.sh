@@ -140,6 +140,7 @@ fi
 
 cd 02_info_files
 ls -1 all_scafs*pos > pos.txt
+cd ..
 
 # Set SNP-calling array over these scaffold clusters...
 SCAFF_ARRAY=$(($(ls 02_info_files/all_scafs*pos | wc -l)-1))

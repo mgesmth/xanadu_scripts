@@ -22,7 +22,7 @@ cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${NAME}
 begin=`date +%s`
 
 # Load needed modules
-module load bcftools
+module load bcftools gnu-parallel/20160622
 
 # Global variables
 INFO="02_info_files"
@@ -34,7 +34,7 @@ VCF="./07_raw_VCFs"
 BAM="02_info_files/bammap.txt"
 PLD="02_info_files/ploidymap.txt"
 ARRAY=($(cat 02_info_files/pos.txt))
-REGION_FILE=${ARRAY[$SLURM_ARRAY_TASK_ID]}
+REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
 
     for scaf in $(cut -f1 $REGION_FILE)
     do
