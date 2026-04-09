@@ -16,7 +16,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 outdir_prim=${home}/genome_annotation/busco_primary_annotation_allv
-transcripts_prim=${core}/eviann/eviann_int_allvdata/interior_primary_mancur_masked_500kb.allvdata.transcripts.fa
+transcripts_prim=${core}/eviann/eviann_int_allvdata/interior_primary_mancur_masked_500kb.allvdata.proteins.fa
 
 database=$1
 echo -e "`date`:[M]: Beginning BUSCO analysis of primary annotation against database ${database}.\n"
