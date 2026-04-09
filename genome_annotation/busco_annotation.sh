@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J busco
-#SBATCH -p himem
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -c 10
 #SBATCH --mem=84G
 #SBATCH -o %x.%j.out
