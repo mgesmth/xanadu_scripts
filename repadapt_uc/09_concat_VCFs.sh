@@ -27,7 +27,7 @@ FILTVCF="08_filtered_VCFs"
 begin=`date +%s`
 
 # Concatenate all the scaffold-VCF files into one global VCF file
-vcf-concat $(ls -1 $FILTVCF/*_filtered.vcf.gz | perl -pe 's/\n/ /g') > ${FILTVCF}/${DATASET}_full_concatened.vcf && bgzip ${FILTVCF}/${DATASET}_full_concatened.vcf
+bcftools concat $(ls -1 $FILTVCF/*_filtered.vcf.gz | perl -pe 's/\n/ /g') > ${FILTVCF}/${DATASET}_full_concatened.vcf && bgzip ${FILTVCF}/${DATASET}_full_concatened.vcf
 
 # Add final maf filtering here...
 bcftools view --min-af 0.01:minor ${FILTVCF}/${DATASET}_full_concatened.vcf.gz -Oz -o ${FILTVCF}/${DATASET}_full_concatened_maf01.vcf.gz
