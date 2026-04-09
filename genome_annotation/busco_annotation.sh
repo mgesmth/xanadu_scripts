@@ -19,6 +19,7 @@ outdir_prim=${home}/genome_annotation/busco_primary_annotation_allv
 transcripts_prim=${core}/eviann/eviann_int_allvdata/interior_primary_mancur_masked_500kb.allvdata.proteins.fa
 
 database=$1
+db_name=$(basename ${database})
 echo -e "`date`:[M]: Beginning BUSCO analysis of primary annotation against database ${database}.\n"
 #Module files
 #source /home/FCAM/msmith/busco/.venv/bin/activate
@@ -29,4 +30,4 @@ export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
 export PATH="/core/projects/EBP/smith/bin/miniprot:$PATH"
 outbusco=${outdir_prim}
 
-busco -c ${threads} -i ${transcripts_prim} -m "protein" -f -l ${database} -o "prim_annotation_${database}" --out_path ${outbusco}
+busco -c ${threads} -i ${transcripts_prim} -m "protein" -f -l ${database} -o "prim_annotation_${db_name}" --out_path ${outbusco}
