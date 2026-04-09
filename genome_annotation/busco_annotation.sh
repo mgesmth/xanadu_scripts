@@ -15,10 +15,8 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-outdir_prim=${home}/genome_annotation/busco_primary_annotation
-outdir_alt=${home}/genome_annotation/busco_alternate_annotation
-transcripts_prim=${core}/eviann/eviann_justint/interior_primary_mancur_masked_500kb.justint.proteins.fa
-transcripts_alt=${core}/eviann/eviann_alt_justint/interior_alternate_masked.fa.proteins.fasta
+outdir_prim=${home}/genome_annotation/busco_primary_annotation_allv
+transcripts_prim=${core}/eviann/eviann_int_allvdata/interior_primary_mancur_masked_500kb.allvdata.transcripts.fa
 
 database=$1
 echo -e "`date`:[M]: Beginning BUSCO analysis of primary annotation against database ${database}.\n"
@@ -32,8 +30,3 @@ export PATH="/core/projects/EBP/smith/bin/miniprot:$PATH"
 outbusco=${outdir_prim}
 
 busco -c ${threads} -i ${transcripts_prim} -m "protein" -f -l ${database} -o "prim_annotation_${database}" --out_path ${outbusco}
-
-echo -e "\n`date`:[M]: Done BUSCO analysis of primary annotation. Beginning alternate annotation against ${database}.\n"
-outbusco=${outdir_alt}
-
-busco -c ${threads} -i ${transcripts_alt} -m "protein" -f -l ${database} -o "alt_annotation_${database}" --out_path ${outbusco}
