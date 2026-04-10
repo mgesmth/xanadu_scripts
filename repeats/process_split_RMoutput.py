@@ -7,12 +7,12 @@ import re
 import pandas as pd
 import numpy as np
 
-out_dir='/home/FCAM/msmith/repeats_mancur/concatenated_results/fa.out_files'
+out_dir='/home/FCAM/msmith/repeats_round2/concatenated_results/fa.out_files'
 out_files=glob.glob(os.path.join(out_dir,"interior_primary_mancur_scaffold*.fa.out"))
-tbl_dir='/home/FCAM/msmith/repeats_mancur/concatenated_results/fa.tbl_files'
+tbl_dir='/home/FCAM/msmith/repeats_round2/concatenated_results/fa.tbl_files'
 tbl_files=glob.glob(os.path.join(tbl_dir,"interior_primary_mancur_scaffold*.fa.tbl"))
-merged_out='/home/FCAM/msmith/repeats_mancur/concatenated_results/repeatMasker_merged.out'
-merged_tbl='/home/FCAM/msmith/repeats_mancur/concatenated_results/repeatMasker_merged.tbl'
+merged_out='/home/FCAM/msmith/repeats_round2/concatenated_results/repeatMasker_merged.out'
+merged_tbl='/home/FCAM/msmith/repeats_round2/concatenated_results/repeatMasker_merged.tbl'
 
 
 '''

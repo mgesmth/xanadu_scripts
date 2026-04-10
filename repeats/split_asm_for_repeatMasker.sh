@@ -50,19 +50,19 @@ tail -n ${tailnum1} allelse_tmp.fa > below1Mb_tmp.fa
 rm allelse_tmp.fa* linenum1.tmp first_small_scaffold.tmp
 
 #split the tmp fasta files into 20 parts for each scaffold
-seqkit split -s 1 20_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O first_20
+seqkit split -s 1 20_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold_" -O first_20
 rm 20_tmp.fa
 cd first_20 && ls -1 *.fa > first20.txt
 cd ${splitdir}
 #for the rest - will have to rename scaffolds
-seqkit split -s 1 above1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O above_1Mb
+seqkit split -s 1 above1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold_" -O above_1Mb
 cd above_1Mb
 ls -1 * > above.txt
 mkdir tmp
 cat above.txt | while read -r file ; do
 no_suf=${file/.fa/}
 #scaffold number will be the original number plus 20 (since the first 20 are already split)
-new_name=$(echo "$no_suf" | awk '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+20".fa"}')
+new_name=$(echo "$no_suf" | awk '{split($0,m,"scaffold_") ; print "interior_primary_mancur_scaffold_" m[2]+20 ".fa"}')
 mv ${file} tmp/${new_name}
 done
 mv tmp/*.fa .
@@ -73,13 +73,13 @@ cd ${splitdir}
 samtools faidx above1Mb_tmp.fa
 #Get the number of the last above 1Mb scaffold - this will be added to the split scaffold names
 last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") ; print m[2]+20}')
-seqkit split -s 1 below1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold" -O below_1Mb
+seqkit split -s 1 below1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold_" -O below_1Mb
 cd below_1Mb
 ls -1 * > below.txt
 mkdir tmp
 cat below.txt | while read -r file ; do
 no_suf=${file/.fa/}
-new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold"m[2]+last".fa"}')
+new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold_" m[2]+last ".fa"}')
 mv ${file} tmp/${new_name}
 done
 mv tmp/*.fa .

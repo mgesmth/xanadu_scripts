@@ -1,14 +1,20 @@
 #!/bin/bash
+#SBATCH -J concatenate_results
+#SBATCH -c 8
+#SBATCH --mem=16G
 
-repeats_dir=/home/FCAM/msmith/repeats_mancur
+set -e
+
+repeats_dir=/home/FCAM/msmith/repeats_round2
 
 #Above 1Mb minor scaffolds ----
-##scaffold numbers 21-197
 cd ${repeats_dir}/above_1Mb
+
+cat above1Mb.txt |
 
 #get scaffolds in right order in an iterator
 touch scaffolds_rightorder.txt
-for ((i=21 ; i<198 ; i++)) ; do
+for ((i=21 ; i<${above_scaffnum} ; i++)) ; do
   echo "interior_primary_mancur_scaffold${i}.fa.masked" >> scaffolds_rightorder.txt
 done
 
@@ -24,7 +30,7 @@ done
 cd ${repeats_dir}/below_1Mb
 
 touch scaffolds_rightorder.txt
-for ((i=198 ; i<1798 ; i++)) ; do
+for ((i=$((${above_scaffnum}+1)) ; i<${below_scaffnum} ; i++)) ; do
   echo "interior_primary_mancur_scaffold${i}.fa.masked" >> scaffolds_rightorder.txt
 done
 
@@ -56,3 +62,7 @@ done
 #Concatenate all
 cd ..
 cat first_20/first20_masked.fa above_1Mb/above1Mb_masked.fa below_1Mb/below1Mb_masked.fa > interior_primary_mancur_masked.fa
+
+#concatenate tbl and out files
+module load python/3.8.1
+python ${repscripts}/process_split_RMoutput.py
