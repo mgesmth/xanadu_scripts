@@ -11,7 +11,7 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-primary=${core}/3ddna_again/interior_primary_final.final.fasta
+primary=$1
 splitdir=${home}/repeats_round2
 module load samtools/1.19
 module load seqkit/2.10.0

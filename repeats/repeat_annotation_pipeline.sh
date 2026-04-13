@@ -4,6 +4,7 @@ home=/home/FCAM/msmith
 workdir=${home}/repeats_round2
 log=${workdir}/log
 repscripts=${home}/scripts/repeats
+asm=/core/projects/EBP/smith/3ddna_again/interior_primary_final.final.fasta
 
 #prep workspace (if not already)
 cd ${workdir}
@@ -41,13 +42,14 @@ fi
 
 #split assembly to work in parallel
 split=$(sbatch -D ${workdir} -o ${log}/%x.%j.out -e ${log}/%x.%j.err \
---parsable ${repscripts}/split_asm_for_repeatMasker.sh)
+--parsable ${repscripts}/split_asm_for_repeatMasker.sh ${asm})
 
 #run repeatMasker on three scaffold categories
 first20=$(sbatch --dependency=afterok:${split} -D ${workdir} \
 -o ${log}/%x.%A.%a.out -e ${log}/%x.%A.%a.err \
 --parsable ${repscripts}/repeatMasker_20.sh)
 
+#wait until split job is done
 above_array_len=$(($(cat ${workdir}/above_1Mb/above1Mb.txt | wc -l)-1))
 
 above1Mb=$(sbatch --dependency=afterok:${split} -D ${workdir} \
