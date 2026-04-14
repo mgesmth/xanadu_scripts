@@ -7,7 +7,8 @@
 
 set -e
 
-repeats_dir=/home/FCAM/msmith/repeats_round2
+repeats_dir=$1
+repscripts=$2
 
 #Above 1Mb minor scaffolds ----
 cd ${repeats_dir}/above_1Mb
@@ -31,8 +32,10 @@ done
 
 cd ${repeats_dir}/below_1Mb
 
+below_scaffnum=$(cat below1Mb.txt | wc -l)
+
 touch scaffolds_rightorder.txt
-for ((i=$((${above_scaffnum}+1)) ; i<${below_scaffnum} ; i++)) ; do
+for ((i=$((${above_scaffnum}+21)) ; i<${below_scaffnum} ; i++)) ; do
   echo "interior_primary_mancur_scaffold_${i}.fa.masked" >> scaffolds_rightorder.txt
 done
 
@@ -51,20 +54,14 @@ done
 #Major scaffolds ----
 cd ${repeats_dir}/first_20
 
-cat first20.txt | awk '{
-  gsub(".fa","",$1)
-  split($1,m,"_")
-  gsub(m[5],m[5]*1,$1)
-  print $1 ".fa"}' > scaffolds_rightorder.txt
-
 touch first20_masked.fa
-for file in $(cat scaffolds_rightorder.txt) ; do
-  cat ${file} >> first20_masked.fa
+for file in $(cat first20.txt) ; do
+  cat ${file}.masked >> first20_masked.fa
 done
 
 #Concatenate all
 cd ..
-cat first_20/first20_masked.fa above_1Mb/above1Mb_masked.fa below_1Mb/below1Mb_masked.fa > interior_primary_mancur_masked.fa
+cat first_20/first20_masked.fa above_1Mb/above1Mb_masked.fa below_1Mb/below1Mb_masked.fa > concatenated_results/interior_primary_mancur_masked.fa
 
 #concatenate tbl and out files
 module load python/3.8.1

@@ -69,3 +69,6 @@ below1Mb=$(sbatch --dependency=afterok:${split} -D ${workdir} \
 sbatch \
 --dependency=afterok:${first_20},afterok:${above1Mb},afterok:${below1Mb} \
 -o ${log}/%x.%j.out -e ${log}/%x.%j.err ${repscripts}/concatenating_masked_sequences.sh
+
+sbatch -o ${log}/%x.%j.out -e ${log}/%x.%j.err \
+${repscripts}/concatenating_masked_sequences.sh ${workdir} ${repscripts}

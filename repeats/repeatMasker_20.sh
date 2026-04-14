@@ -23,4 +23,4 @@ files=($(cat first20.txt))
 file=${files[$SLURM_ARRAY_TASK_ID]}
 
 singularity exec $tetools \
-RepeatMasker -frag 1000000 -pa 12 -gff -q -dir ${repdir} -lib "${db}/primary-families.fa" "${file}"
+RepeatMasker -frag 1000000 -pa 12 -gff -q -dir . -lib "${db}/primary-families.fa" "${file}"

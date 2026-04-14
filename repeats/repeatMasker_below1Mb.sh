@@ -20,4 +20,4 @@ files=($(cat below1Mb.txt))
 file=${files[$SLURM_ARRAY_TASK_ID]}
 
 singularity exec $tetools \
-RepeatMasker -frag 100000 -pa 3 -gff -q -dir ${repdir} -lib "${db}/primary-families.fa" "${file}"
+RepeatMasker -frag 100000 -pa 3 -gff -q -dir . -lib "${db}/primary-families.fa" "${file}"
