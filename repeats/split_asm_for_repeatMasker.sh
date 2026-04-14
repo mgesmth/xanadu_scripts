@@ -72,19 +72,19 @@ cd ${splitdir}
 
 samtools faidx above1Mb_tmp.fa
 #Get the number of the last above 1Mb scaffold - this will be added to the split scaffold names
-last_above=$(tail -n1 above.txt | sed 's/.fa//g' | awk '{split($0,m,"scaffold") ; print m[2]+20}')
+last_above=$(($(tail -n1 above_1Mb/above.txt | sed 's/.fa//g' | cut -f5 -d "_")+20))
 seqkit split -s 1 below1Mb_tmp.fa --by-size-prefix "interior_primary_mancur_scaffold_" -O below_1Mb
 cd below_1Mb
-ls -1 * > below.txt
+ls -1 *.fa > below.txt
 mkdir tmp
-cat below.txt | while read -r file ; do
+for file in $(cat below.txt); do
 no_suf=${file/.fa/}
-new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold") ; print "interior_primary_mancur_scaffold_" m[2]+last ".fa"}')
+new_name=$(echo "$no_suf" | awk -v last=${last_above} '{split($0,m,"scaffold_") ; print "interior_primary_mancur_scaffold_" m[2]+last ".fa"}')
 mv ${file} tmp/${new_name}
 done
 mv tmp/*.fa .
 rm -r tmp/
-ls -1 *.fa > below1Mb.fa
+ls -1 *.fa > below1Mb.txt
 cd ${splitdir}
 rm above1Mb_tmp.fa* below1Mb_tmp.fa
 
