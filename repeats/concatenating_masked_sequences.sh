@@ -12,12 +12,12 @@ repeats_dir=/home/FCAM/msmith/repeats_round2
 #Above 1Mb minor scaffolds ----
 cd ${repeats_dir}/above_1Mb
 
-cat above1Mb.txt |
+above_scaffnum=$(cat above1Mb.txt | wc -l)
 
 #get scaffolds in right order in an iterator
 touch scaffolds_rightorder.txt
-for ((i=21 ; i<${above_scaffnum} ; i++)) ; do
-  echo "interior_primary_mancur_scaffold${i}.fa.masked" >> scaffolds_rightorder.txt
+for ((i=21 ; i < ${above_scaffnum} ; i++)) ; do
+  echo "interior_primary_mancur_scaffold_${i}.fa.masked" >> scaffolds_rightorder.txt
 done
 
 #concatenate sequences in the right order
@@ -33,7 +33,7 @@ cd ${repeats_dir}/below_1Mb
 
 touch scaffolds_rightorder.txt
 for ((i=$((${above_scaffnum}+1)) ; i<${below_scaffnum} ; i++)) ; do
-  echo "interior_primary_mancur_scaffold${i}.fa.masked" >> scaffolds_rightorder.txt
+  echo "interior_primary_mancur_scaffold_${i}.fa.masked" >> scaffolds_rightorder.txt
 done
 
 ##Some of the minor scaffolds had not repetitive sequence identified, so don't have a ".fa.masked" file. Have to check those
@@ -51,10 +51,11 @@ done
 #Major scaffolds ----
 cd ${repeats_dir}/first_20
 
-touch scaffolds_rightorder.txt
-for ((i=1 ; i<14 ; i++)) ; do
-  echo "interior_primary_mancur_scaffold${i}.fa.masked" >> scaffolds_rightorder.txt
-done
+cat first20.txt | awk '{
+  gsub(".fa","",$1)
+  split($1,m,"_")
+  gsub(m[5],m[5]*1,$1)
+  print $1 ".fa"}' > scaffolds_rightorder.txt
 
 touch first20_masked.fa
 for file in $(cat scaffolds_rightorder.txt) ; do

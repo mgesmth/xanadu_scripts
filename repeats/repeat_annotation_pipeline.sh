@@ -66,10 +66,6 @@ below1Mb=$(sbatch --dependency=afterok:${split} -D ${workdir} \
 --parsable ${repscripts}/repeatMasker_below1Mb.sh)
 
 #concatenate results
-above_scaffnum=$((${above_array_len}+1))
-below_scaffnum=$((${below_array_len}+1))
-export above_scaffnum
-export below_scaffnum
-sbatch --export $above_scaffnum --export $below_scaffnum --export ${repscripts} \
+sbatch \
 --dependency=afterok:${first_20},afterok:${above1Mb},afterok:${below1Mb} \
 -o ${log}/%x.%j.out -e ${log}/%x.%j.err ${repscripts}/concatenating_masked_sequences.sh
