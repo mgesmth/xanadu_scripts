@@ -1,4 +1,6 @@
 #!/bin/bash
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -J concatenate_results
 #SBATCH -c 8
 #SBATCH --mem=16G
