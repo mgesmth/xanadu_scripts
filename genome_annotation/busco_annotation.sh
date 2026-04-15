@@ -15,8 +15,8 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-outdir_prim=${home}/genome_annotation/busco_primary_annotation_allv
-transcripts_prim=${core}/eviann/eviann_int_allvdata/interior_primary_mancur_masked_500kb.allvdata.proteins.fa
+outdir_prim=${home}/genome_annotation/busco_primary_annotation_allv_new
+transcripts_prim=${core}/eviann/eviann_int_allvdata_new/interior_primary_mancur_masked_500kb.fa.no_pseudo_lnc.proteins_geneid.fa
 
 database=$1
 db_name=$(basename ${database})
