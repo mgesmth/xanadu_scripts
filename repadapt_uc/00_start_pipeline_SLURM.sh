@@ -80,7 +80,6 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Remove duplicates
 job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---dependency=afterok:${job03} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -103,9 +102,20 @@ job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 ##########################
 '''
 
+# New step here now to merge BAM files over samples...
+# Count the number of unique samples in $DATATABLE
+SAMPLE_ARRAY=$(($(cut -f1 $DATATABLE | sort | uniq | wc -l)-1))
+job05b=$(sbatch --account=$CC_ACCOUNT  \
+   --array=0-${SAMPLE_ARRAY} \
+   --dependency=afterok:$job05 \
+   -D $SPECIES_DIR \
+   --mail-type=ALL \
+   --mail-user=$EMAIL \
+   --parsable \
+   $PIPE_DIR/05b_merge_bams.sh)
+
 # Realign around indels...
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---dependency=afterok:${job05} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -113,7 +123,9 @@ job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    $PIPE_DIR/06_gatk_realignments.sh)
 
 # Stats of final bam files...
-job06b=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+job06b=$(sbatch --account=$CC_ACCOUNT  \
+   --array=0-${SAMPLE_ARRAY} \
+   --dependency=afterok:$job06 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -126,6 +138,8 @@ job06b=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 ##########################
 '''
 
+##### Set up scaffold input files to fit with Compute Canada max jobs
+# How many scaffolds are in the genome...
 SCAFF_N=$(cat $SPECIES_DIR/03_genome/*fai | wc -l)
 SPLIT_N=200
 
@@ -137,10 +151,6 @@ then
 else
  split -l$((`wc -l < 02_info_files/all_scafs.txt`/${SCAFF_N})) 02_info_files/all_scafs.txt 02_info_files/all_scafs.split. -da 4 --additional-suffix=".pos"
 fi
-
-cd 02_info_files
-ls -1 all_scafs*pos > pos.txt
-cd ..
 
 # Set SNP-calling array over these scaffold clusters...
 SCAFF_ARRAY=$(($(ls 02_info_files/all_scafs*pos | wc -l)-1))
@@ -156,15 +166,15 @@ rm -f 02_info_files/ploidymap.txt
 for BAM in $(cat 02_info_files/bammap.txt)
 do
  BAM_CLEAN=$(basename $BAM | sed 's/.realigned.bam//g')
- BAM_PLOIDY=$(grep -w $BAM_CLEAN 02_info_files/datatable.txt | cut -f2 | head -n1)
+ BAM_PLOIDY=$(grep -w $BAM_CLEAN 02_info_files/datatable.txt | cut -f4 | head -n1)
  echo -e "$BAM_CLEAN\t$BAM_PLOIDY" >> 02_info_files/ploidymap.txt
 done
 
 ##########################
 # Call SNPs - Mpileup runs first and filtering starts based on the dependency
 export DATASET=$DATASET
-job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --array=0-${SCAFF_ARRAY} \
+job07=$(sbatch --account=$CC_ACCOUNT \
+   --array=1-${SCAFF_ARRAY} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
@@ -173,9 +183,9 @@ job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Filter the SNPs
 export DATASET=$DATASET
-job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+job08=$(sbatch --account=$CC_ACCOUNT \
    --dependency=afterok:$job07 \
-   --array=0-${SCAFF_ARRAY} \
+   --array=1-${SCAFF_ARRAY} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
@@ -184,7 +194,7 @@ job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Concatenate the per-scaffold VCFs to a single VCF
 export DATASET=$DATASET
-sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+sbatch --account=$CC_ACCOUNT \
    --mail-type=ALL \
    --dependency=afterok:$job08 \
    --mail-user=$EMAIL \
