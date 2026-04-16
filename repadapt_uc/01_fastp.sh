@@ -24,7 +24,10 @@ INDIR="04_raw_data"
 OUTDIR="05_trimmed_data"
 LOG="98_log_files"
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
+if [[ $SLURM_ARRAY_TASK_ID == 0 ]] ; then
 mkdir $OUTDIR/01_reports
+fi
+
 
 # Make a log file to the species log directory
 cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"
