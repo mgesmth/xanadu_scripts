@@ -43,7 +43,7 @@ echo " >>> Realigning...
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 file=${name}_RG.bam
 
     echo "

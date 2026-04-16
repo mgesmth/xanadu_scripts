@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J 05.RG
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
@@ -40,7 +40,7 @@ echo "Editing RG...
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 file=${name}.dedup.bam
 
 # Fetch all our RG info...

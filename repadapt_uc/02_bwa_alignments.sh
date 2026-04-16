@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J 02.BWA
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH -c 8
 #SBATCH --mem=48G
 
@@ -36,7 +36,7 @@ fi
 ls -1 $RAWDATAFOLDER/*R1.trimmed.fastq.gz | xargs -n 1 basename | sed 's/.R1.trimmed.fastq.gz//g' > $RAWDATAFOLDER/all_trimmed_ids.txt
 
 array=($(cat $RAWDATAFOLDER/all_trimmed_ids.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 
     # Name of uncompressed file
     file1=${name}.R1.trimmed.fastq.gz

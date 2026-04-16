@@ -3,8 +3,8 @@
 # 10 Go
 
 #SBATCH -J 01.fastp
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH -c 6
 #SBATCH --mem=10G
 
@@ -31,7 +31,7 @@ cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"
 
 # Pull file from the FASTP_ARRAY
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 
 # Run over file
     #input_file=$(echo "$file" | perl -pe 's/_R1.*\.fastq.gz//')

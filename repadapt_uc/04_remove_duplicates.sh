@@ -3,8 +3,8 @@
 # 30 Go
 
 #SBATCH -J 04.Duplicates
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=18
@@ -30,7 +30,7 @@ export _JAVA_OPTIONS="-Xms2g -Xmx50g "
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 file=${name}.sorted.bam
 
     echo "DEduplicatING sample $file"
