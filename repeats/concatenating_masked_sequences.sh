@@ -10,6 +10,9 @@ set -e
 repeats_dir=$1
 repscripts=$2
 
+module load python/3.13.11-gcc-11.4.0-kifh66l
+source /home/FCAM/msmith/python_venv/bin/activate
+
 #Above 1Mb minor scaffolds ----
 cd ${repeats_dir}/above_1Mb
 
@@ -64,5 +67,4 @@ cd ..
 cat first_20/first20_masked.fa above_1Mb/above1Mb_masked.fa below_1Mb/below1Mb_masked.fa > concatenated_results/interior_primary_mancur_masked.fa
 
 #concatenate tbl and out files
-module load python/3.8.1
-python ${repscripts}/process_split_RMoutput.py
+python3 ${repscripts}/process_split_RMoutput.py
