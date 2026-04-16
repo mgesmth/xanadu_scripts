@@ -20,7 +20,6 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Load needed modules
 module load samtools/1.19
@@ -43,7 +42,7 @@ echo " >>> Realigning...
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 file=${name}_RG.bam
 
     echo "

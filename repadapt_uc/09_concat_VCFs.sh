@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=8G
 
-module load vcftools bcftools/1.19
+module load vcftools/0.1.16 bcftools/1.19
 module load tabix/0.2.6
 
 cd $SLURM_SUBMIT_DIR
@@ -18,7 +18,6 @@ SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 echo $SCRIPT
-cp $SCRIPT ${LOG_FOLDER}/${TIMESTAMP}_${NAME}
 
 # Variables
 VCF="07_raw_VCFs"

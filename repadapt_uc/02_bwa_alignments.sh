@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J 02.BWA
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH -c 8
 #SBATCH --mem=48G
 
@@ -16,7 +16,6 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-cp $SCRIPT $LOG_FOLDER/"$TIMESTAMP"_"$NAME"_%J
 
 # Global variables
 GENOMEFOLDER="03_genome"
@@ -36,7 +35,7 @@ fi
 ls -1 $RAWDATAFOLDER/*R1.trimmed.fastq.gz | xargs -n 1 basename | sed 's/.R1.trimmed.fastq.gz//g' > $RAWDATAFOLDER/all_trimmed_ids.txt
 
 array=($(cat $RAWDATAFOLDER/all_trimmed_ids.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 
     # Name of uncompressed file
     file1=${name}.R1.trimmed.fastq.gz

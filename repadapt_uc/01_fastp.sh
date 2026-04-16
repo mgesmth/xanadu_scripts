@@ -3,14 +3,14 @@
 # 10 Go
 
 #SBATCH -J 01.fastp
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH -c 6
 #SBATCH --mem=10G
 
 set -e
 # Load up fastp
-module load fastp/0.23.2
+module load fastp/0.23.4
 
 #cd $SLURM_SUBMIT_DIR
 
@@ -24,14 +24,13 @@ INDIR="04_raw_data"
 OUTDIR="05_trimmed_data"
 LOG="98_log_files"
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
+if [[ $SLURM_ARRAY_TASK_ID == 0 ]] ; then
 mkdir $OUTDIR/01_reports
-
-# Make a log file to the species log directory
-cp $SCRIPT $LOG/"$TIMESTAMP"_"$NAME"
+fi
 
 # Pull file from the FASTP_ARRAY
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 
 # Run over file
     #input_file=$(echo "$file" | perl -pe 's/_R1.*\.fastq.gz//')

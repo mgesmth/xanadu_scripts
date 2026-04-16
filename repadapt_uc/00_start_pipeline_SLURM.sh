@@ -2,13 +2,13 @@
 #!/bin/bash
 # Submit scripts from the $SPECIES_DIR directory
 
-home=/home/FCAM/msmith
+core=/core/projects/EBP/smith
 
 # Variables
 # Name of general working directory
-MAIN=${home}
+MAIN=${core}
 # Name of directory where snp calling is happening
-DATASET="test_snp_calling"
+DATASET="linkage_snp_calling"
 SPECIES_DIR=$MAIN/$DATASET
 cd $SPECIES_DIR
 
@@ -44,9 +44,12 @@ $PIPE_DIR/00a_prep_genome.sh)
 ##########################
 '''
 
+arrlen=$(($(cat 02_info_files/datatable.txt | wc -l)-1))
+
 # Trim
 job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job00} \
+--array=[0-${arrlen}] \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -56,6 +59,7 @@ job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Index reference & Align reads to reference
 # Note - If fastq files include .1 and .2 suffixes, bwa will fail. Lines in script 02 can be commented out to handle this
 job02=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--array=[0-${arrlen}] \
    --dependency=afterok:$job01 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -65,6 +69,7 @@ job02=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Collect sample data metrics
 job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--array=[0-${arrlen}] \
    --dependency=afterok:$job02 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -80,6 +85,8 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Remove duplicates
 job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--array=[0-${arrlen}] \
+--dependency=afterok:${job03} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -89,6 +96,7 @@ job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Change bam files RG
 job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--array=[0-${arrlen}] \
    --dependency=afterok:$job04 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -116,6 +124,8 @@ job05b=$(sbatch --account=$CC_ACCOUNT  \
 
 # Realign around indels...
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job05} \
+--array=[0-${arrlen}] \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -123,14 +133,17 @@ job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    $PIPE_DIR/06_gatk_realignments.sh)
 
 # Stats of final bam files...
-job06b=$(sbatch --account=$CC_ACCOUNT  \
-   --array=0-${SAMPLE_ARRAY} \
-   --dependency=afterok:$job06 \
+job06b=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=${job06} \
+--array=[0-${arrlen}] \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
    $PIPE_DIR/06b_collect_final_metrics.sh)
+
+#need to wait here; record job6b number, and wait until it finishes
+echo ${job06b} > job06b.tmp
 
 '''
 ##########################

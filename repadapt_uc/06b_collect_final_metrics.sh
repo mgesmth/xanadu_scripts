@@ -3,15 +3,15 @@
 # 10 Go
 
 #SBATCH -J 06b.Final_Metrics
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=50G
 
 # Load modules
-module load picard java r
+module load picard/3.1.1 java/22 R/4.2.2
 
 # Global variables
 GENOMEFOLDER="03_genome"
@@ -32,7 +32,6 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 SCRIPTNAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${SCRIPTNAME}
 
 # Load needed modules
 # module load java
@@ -46,7 +45,7 @@ cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${SCRIPTNAME}
 
     # Fetch filename from the array
     array=($(cut -f1 02_info_files/datatable.txt))
-    file=${array[0]}
+    file=${array[$SLURM_ARRAY_TASK_ID]}
     bamfile=${file}.realigned.bam
 
     echo \n">>> Computing alignment metrics for $file <<<"\n

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J 05.RG
-#SBATCH -o 98_log_files/%x_%j.out
-#SBATCH -e 98_log_files/%x_%j.err
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
@@ -17,11 +17,10 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Load needed modules - ComputeCanada clusters
-module load picard
-module load java
+module load picard/3.1.1
+module load java/22
 module load samtools/1.19
 
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "
@@ -40,7 +39,7 @@ echo "Editing RG...
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
-name=${array[0]}
+name=${array[$SLURM_ARRAY_TASK_ID]}
 file=${name}.dedup.bam
 
 # Fetch all our RG info...

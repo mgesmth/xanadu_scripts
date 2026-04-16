@@ -17,12 +17,11 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${NAME}
 
 begin=`date +%s`
 
 # Load needed modules
-module load bcftools gnu-parallel/20160622
+module load bcftools/1.23.1 gnu-parallel/20160622
 
 # Global variables
 INFO="02_info_files"
@@ -44,7 +43,7 @@ REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
 #ok
 #mpileup:
 ##-Ou = output as uncompressed bcf
-## -q 5 = min mapping quality of 5 
+## -q 5 = min mapping quality of 5
 ## -r {} = .. I think this is allowing us to important the scaffold which we are calling on this thread, given the fact that the output file has {} and, when actually outputted, the file has the name of the scaffold
 ## -I = skip calling indels
 ## -a FMT/AD = include allelic depth in INFO field of output
