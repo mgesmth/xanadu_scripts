@@ -15,7 +15,7 @@ awk -F "\t" -v OFS="\t" '$0 ~ !/^#/ && $3 == "gene" {
 }' ${annotation} > genes_unfiltered.bed
 
 #sort (first by chr, then by start coordinate)
-cut -f 1 genes_unfiltered.bed | sort -t "_" -k2,2 -g | uniq > scaffolds.txt
+cut -f 1 genes_unfiltered.bed | sort -t "_" -k3,3 -g | uniq > scaffolds.txt
 touch genes_unfiltered.s.bed
 for scaffold in $(cat scaffolds.txt) ; do
   awk -v OFS="\t" -v scaffold="$scaffold" -F "\t" '{

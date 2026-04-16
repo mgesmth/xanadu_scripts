@@ -11,7 +11,7 @@
 #SBATCH --mem=50G
 
 # Load modules
-module load picard java r
+module load picard/3.1.1 java/22 R/4.2.2
 
 # Global variables
 GENOMEFOLDER="03_genome"

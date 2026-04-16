@@ -20,8 +20,8 @@ LOG_FOLDER="98_log_files"
 cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Load needed modules - ComputeCanada clusters
-module load picard
-module load java
+module load picard/3.1.1
+module load java/22
 module load samtools/1.19
 
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "

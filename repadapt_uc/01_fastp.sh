@@ -10,7 +10,7 @@
 
 set -e
 # Load up fastp
-module load fastp/0.23.2
+module load fastp/0.23.4
 
 #cd $SLURM_SUBMIT_DIR
 

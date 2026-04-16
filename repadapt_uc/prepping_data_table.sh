@@ -1,11 +1,10 @@
 #!/bin/bash
 
-top=/home/mg615512
-home=${top}/projects/def-booker/mg615512
-rawdir=${home}/snp_calling/04_raw_data
-dtdir=${home}/snp_calling/02_info_files
-#where raw data is being stored
-linkdir=${top}/scratch/mg615512/linkage_data
+home=/home/FCAM/msmith
+core=/core/projects/EBP/smith
+linkdir=${home}/linkage_data
+rawdir=${core}/linkage_snp_calling/04_raw_data
+dtdir=${core}/linkage_snp_calling/02_info_files
 
 cd ${linkdir}
 
@@ -72,6 +71,6 @@ rm ploidy.txt files.txt instrument.txt ftp.txt md5.txt samples.txt
 mv datatable.txt ${dtdir}/
 
 cd ${rawdir}
-for file in $(ls -1 ~/scratch/mg615512/linkage_data/*.gz) ; do
+for file in $(ls -1 ${linkdir}/*.gz) ; do
   ln -s "$file" .
 done

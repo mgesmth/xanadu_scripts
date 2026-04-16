@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=8G
 
-module load vcftools bcftools/1.19
+module load vcftools/0.1.16 bcftools/1.19
 module load tabix/0.2.6
 
 cd $SLURM_SUBMIT_DIR
