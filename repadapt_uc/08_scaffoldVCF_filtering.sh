@@ -19,7 +19,6 @@ NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 echo "STARTING AT $TIMESTAMP"
 echo $SCRIPT
-cp $SCRIPT $LOG_FOLDER/${TIMESTAMP}_${NAME}
 begin=`date +%s`
 
 # Variables

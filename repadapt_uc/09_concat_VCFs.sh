@@ -18,7 +18,6 @@ SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 echo $SCRIPT
-cp $SCRIPT ${LOG_FOLDER}/${TIMESTAMP}_${NAME}
 
 # Variables
 VCF="07_raw_VCFs"

@@ -20,7 +20,6 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Load needed modules
 module load samtools/1.19
