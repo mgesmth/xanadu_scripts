@@ -149,27 +149,21 @@ SCAFF_ARRAY=$(($(ls 02_info_files/all_scafs*pos | wc -l)-1))
 ##########################
 ##### Make some metadata
 #### GVCF Sample List (after job 6 finishes)...
-ls -1 07b_gvcfs/*g.vcf | awk -v OFS="\t" '{
-  split($1,m,"/")
-  n=length(m[2])
-  #.g.vcf suffix is 6 characters long; remove
-  name=substr($1,1,n-6)
-  print name,$1
-}'> ../02_info_files/gvcfs_map
+cut -f1 02_info_files/datatable.txt | awk -v OFS="\t" '{
+  gvcf="07b_gvcfs/" $1 ".g.vcf"
+  print $1,gvcf
+}'> 02_info_files/gvcfs_map
+
 #### Ploidy file...
 # Ploidy information is built from gvcf list
-for GVCF in $(cat 02_info_files/gvcfs_map)
-do
- NAME=$(echo "$GVCF" | cut -f 1)
- PLOIDY=$(grep -w $NAME 02_info_files/datatable.txt | cut -f4 | head -n1)
- echo -e "$NAME\t$PLOIDY" >> 02_info_files/ploidymap.txt
-done
+cut -f1,2 02_info_files/datatable.txt > ploidymap.txt
 
 ##########################
 # Call SNPs - Mpileup runs first and filtering starts based on the dependency
 export DATASET=$DATASET
-job07=$(sbatch \
+job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --array=1-${SCAFF_ARRAY} \
+   --dependency=afterok:${job06} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
@@ -178,7 +172,7 @@ job07=$(sbatch \
 
 # Concatenate VCFs
 export DATASET=$DATASET
-job08=$(sbatch --account=$CC_ACCOUNT \
+job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --dependency=afterok:$job07 \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -188,7 +182,7 @@ job08=$(sbatch --account=$CC_ACCOUNT \
 
 # FILTER
 export DATASET=$DATASET
-sbatch \
+sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --dependency=afterok:$job08 \
    --mail-user=$EMAIL \
