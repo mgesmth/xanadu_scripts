@@ -9,7 +9,6 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=32G
-#SBATCH --time=00-168:00:00
 
 set -e
 
