@@ -30,7 +30,7 @@ export _JAVA_OPTIONS="-Xms2g -Xmx32g "
 
 # Global variables
 BAM="06_bam_files"
-GVCF="07b_gvcfs"
+GVCF="07b_gvcfs_2"
 GENOMEFOLDER="03_genome"
 GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 INDGENOME=${GENOME}.fai

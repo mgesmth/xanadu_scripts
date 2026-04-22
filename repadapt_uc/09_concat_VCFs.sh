@@ -22,15 +22,27 @@ echo $SCRIPT
 # Variables
 VCF="07_raw_VCFs"
 FILTVCF="08_filtered_VCFs"
+FINALVCF="09_final_vcf"
 
 begin=`date +%s`
 
+cd ${FILTVCF}
+ls -1 *_filtered.vcf.gz > look.txt
+mkdir empty/
+for file in $(cat look.txt) ; do
+  l=$(zcat ${file} | awk -F "\t" '$0 ~ !/^#/ { print }' | wc -l)
+  if [[ ${l} -eq 0 ]] ; then
+    mv $file* empty/
+  fi
+done
+cd ..
+
 # Concatenate all the scaffold-VCF files into one global VCF file
-bcftools concat $(ls -1 $FILTVCF/*_filtered.vcf.gz | perl -pe 's/\n/ /g') > ${FILTVCF}/${DATASET}_full_concatened.vcf && bgzip ${FILTVCF}/${DATASET}_full_concatened.vcf
+bcftools concat $(ls -1 $FILTVCF/*_filtered.vcf.gz | perl -pe 's/\n/ /g') > ${FINALVCF}/${DATASET}_full_concatened.vcf && bgzip ${FINALVCF}/${DATASET}_full_concatened.vcf
 
 # Add final maf filtering here...
-bcftools view --min-af 0.01:minor ${FILTVCF}/${DATASET}_full_concatened.vcf.gz -Oz -o ${FILTVCF}/${DATASET}_full_concatened_maf01.vcf.gz
-bcftools view --min-af 0.05:minor ${FILTVCF}/${DATASET}_full_concatened.vcf.gz -Oz -o ${FILTVCF}/${DATASET}_full_concatened_maf05.vcf.gz
+bcftools view --min-af 0.01:minor ${FINALVCF}/${DATASET}_full_concatened.vcf.gz -Oz -o ${FILTVCF}/${DATASET}_full_concatened_maf01.vcf.gz
+bcftools view --min-af 0.05:minor ${FINALVCF}/${DATASET}_full_concatened.vcf.gz -Oz -o ${FILTVCF}/${DATASET}_full_concatened_maf05.vcf.gz
 
 echo "
 DONE! Check you files"
