@@ -25,7 +25,7 @@ VCF="09b_raw_vcfs"
 begin=`date +%s`
 
 # Concatenate all the scaffold-VCF files into one global VCF file
-bcftools concat $(ls -1 $FILTVCF/*.vcf.gz | perl -pe 's/\n/ /g') > ${VCF}/${DATASET}_gatk_unfiltered.vcf && bgzip ${FILTVCF}/${DATASET}_gatk_unfiltered.vcf
+bcftools concat $(ls -1 $VCF/*.vcf.gz | perl -pe 's/\n/ /g') > ${VCF}/${DATASET}_gatk_unfiltered.vcf && bgzip ${FILTVCF}/${DATASET}_gatk_unfiltered.vcf
 
 echo "
 DONE! Check you files"
