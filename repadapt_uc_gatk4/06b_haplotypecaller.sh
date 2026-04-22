@@ -57,6 +57,9 @@ file=${name}_RG.bam
         -R $GENOMEFOLDER/$GENOME \
         -I $BAM/$file \
         --sample-ploidy ${ploidy} \
+        -G StandardAnnotation \
+        -G AS_StandardAnnotation \
+        -G StandardHCAnnotation \
         -ERC GVCF \
         -O $GVCF/${name}.g.vcf
 

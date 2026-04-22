@@ -19,22 +19,22 @@ LOG_FOLDER="98_log_files"
 VCF="09b_raw_vcfs"
 FILTVCF="10b_filt_vcfs"
 GENOMEDIR="03_genome"
-GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
+GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 echo "STARTING AT $TIMESTAMP"
 echo $SCRIPT
 begin=`date +%s`
 
 gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
--V $VCF/${DATASET}_gatk_unfiltered.vcf.gz \
+-V $VCF/${DATASET}_gatk_unfiltered.vcf \
 -O $FILTVCF/${DATASET}_gatk_filtered.vcf.gz \
---filterName "QualitybyDepth" --filterExpression "QD < 2.0" \
---filterName "MappingQuality" --filterExpression "MQ < 40.0" \
---filterName "StrandOddsRatio" --filterExpression "SOR > 3.0" \
---filterName "FisherStrand" --filterExpression "FS > 60.0" \
---filterName "MQRankSumTest" --filterExpression "MQRankSum < -12.5" \
---filterName "ReadPosRankSum" --filterExpression "ReadPosRankSum < -8.0" \
---filterName "Quality" --filterExpression "QUAL < 10.0"
+--filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
+--filter-name "MappingQuality" --filter-expression "MQ < 40.0" \
+--filter-name "StrandOddsRatio" --filter-expression "SOR > 3.0" \
+--filter-name "FisherStrand" --filter-expression "FS > 60.0" \
+--filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
+--filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
+--filter-name "Quality" --filter-expression "QUAL < 10.0"
 
 echo "
 DONE! Check you files"
