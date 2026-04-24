@@ -45,8 +45,6 @@ REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
     --genomicsdb-workspace-path $DB/$scaf \
     --batch-size 10 \
     -L $scaf \
-    -G StandardAnnotation \
-    -G AS_StandardAnnotation \
     --sample-name-map 02_info_files/gvcfs_map \
     --reader-threads 12
 

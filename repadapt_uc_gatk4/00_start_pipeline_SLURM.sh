@@ -45,6 +45,7 @@ $PIPE_DIR/00a_prep_genome.sh)
 '''
 
 arrlen=$(($(cat 02_info_files/datatable.txt | wc -l)-1))
+arrlen=$(($(cat failed2.names | wc -l)-1))
 
 # Trim
 job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
@@ -123,6 +124,14 @@ job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --parsable \
    $PIPE_DIR/06b_haplotypecaller.sh)
 
+   job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+   --array=[0] \
+      -D $SPECIES_DIR \
+      --mail-type=ALL \
+      --mail-user=$EMAIL \
+      --parsable \
+      $PIPE_DIR/06b_haplotypecaller_redo2.sh)
+
 '''
 ##########################
 # Part 4 of the pipeline #
@@ -159,7 +168,7 @@ cut -f1 02_info_files/datatable.txt | awk -v OFS="\t" '{
 cut -f1,2 02_info_files/datatable.txt > ploidymap.txt
 
 ##########################
-# Call SNPs - Mpileup runs first and filtering starts based on the dependency
+# Call SNPs
 export DATASET=$DATASET
 job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --array=0-${SCAFF_ARRAY} \
@@ -173,7 +182,7 @@ job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Concatenate VCFs
 export DATASET=$DATASET
 job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --dependency=afterok:$job07 \
+   --dependency=afterany:$job07 \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
