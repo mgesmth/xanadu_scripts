@@ -34,7 +34,8 @@ gatk VariantFiltration \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
---filter-name "Quality" --filter-expression "QUAL < 10.0"
+--filter-name "Quality" --filter-expression "QUAL < 10.0" \
+--filter-name "GenotypeQuality" --filter-expression "GQ < 10.0"
 
 #only move forward with variants that pass
 zcat $FILTVCF/${DATASET}_gatk_filtered.vcf.gz | awk -F "\t" -v OFS="\t" '{
@@ -45,7 +46,9 @@ zcat $FILTVCF/${DATASET}_gatk_filtered.vcf.gz | awk -F "\t" -v OFS="\t" '{
   } else {
     next
   }
-}' > $FILTVCF/${DATASET}_gatk_filtered_pass.vcf.gz
+}' > $FILTVCF/${DATASET}_gatk_filtered_pass.vcf && bgzip $FILTVCF/${DATASET}_gatk_filtered_pass.vcf
+
+tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_pass.vcf.gz
 
 #biallelic snps
 gatk SelectVariants \
@@ -53,29 +56,35 @@ gatk SelectVariants \
 -O $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz \
 --exclude-filtered TRUE --restrict-alleles-to BIALLELIC
 
-
+#FILTER SNPS AROUND INDELS
+#isolate SNPs
 vcftools --gzvcf $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz \
 --remove-indels --maf 0.0000001 \
 --recode --recode-INFO-all \
 --out $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.snp
 bgzip $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.snp.recode.vcf
 
+#isolate indels
 vcftools --gzvcf $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz \
 --keep-only-indels --maf 0.0000001 \
 --recode --recode-INFO-all \
 --out $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.indel
 bgzip $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.indel.recode.vcf
 
+#get the header
 bcftools view -h $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz > $FILTVCF/header.txt
 
+#print records that don't overlap with indels or 5bp in either direction
 bedtools window -v -a $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.snp.recode.vcf.gz \
 -b $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.indel.recode.vcf.gz \
 -w 5 > $FILTVCF/variant.rm_indel_mark.vcf
 
-cat $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf > $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf | \
-bgzip > $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf.gz && $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf
+#put filtered records and header together
+cat $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf > $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf
+bgzip $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf
+rm $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf
 
-tabix -p vcf linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf.gz
+tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf.gz
 
 echo "
 DONE! Check you files"
