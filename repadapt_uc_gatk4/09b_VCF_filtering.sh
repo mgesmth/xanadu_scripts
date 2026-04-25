@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G
 
-module load GATK/4.5.0.0
+module load GATK/4.5.0.0 vcftools/0.1.16 bcftools/1.23.1 bedtools/2.31.1 tabix/0.2.6
 
 cd $SLURM_SUBMIT_DIR
 
@@ -35,6 +35,47 @@ gatk VariantFiltration \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 10.0"
+
+#only move forward with variants that pass
+zcat $FILTVCF/${DATASET}_gatk_filtered.vcf.gz | awk -F "\t" -v OFS="\t" '{
+  if ($0 ~ /^#/) {
+    print
+  } else if ($7 == "PASS") {
+    print
+  } else {
+    next
+  }
+}' > $FILTVCF/${DATASET}_gatk_filtered_pass.vcf.gz
+
+#biallelic snps
+gatk SelectVariants \
+-V $FILTVCF/${DATASET}_gatk_filtered_pass.vcf.gz \
+-O $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz \
+--exclude-filtered TRUE --restrict-alleles-to BIALLELIC
+
+
+vcftools --gzvcf $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz \
+--remove-indels --maf 0.0000001 \
+--recode --recode-INFO-all \
+--out $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.snp
+bgzip $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.snp.recode.vcf
+
+vcftools --gzvcf $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz \
+--keep-only-indels --maf 0.0000001 \
+--recode --recode-INFO-all \
+--out $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.indel
+bgzip $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.indel.recode.vcf
+
+bcftools view -h $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.vcf.gz > $FILTVCF/header.txt
+
+bedtools window -v -a $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.snp.recode.vcf.gz \
+-b $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic.indel.recode.vcf.gz \
+-w 5 > $FILTVCF/variant.rm_indel_mark.vcf
+
+cat $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf > $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf | \
+bgzip > $FILTVCF/${DATASET}_gatk_filtered_pass_biallelic_indels.vcf.gz && $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf
+
+tabix -p vcf linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf.gz
 
 echo "
 DONE! Check you files"
