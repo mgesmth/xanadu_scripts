@@ -22,7 +22,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 #all megagametophyte samples have "mg" in name; parents don't
                 mgs=[(i,sample) for i,sample in enumerate(samples) if "mg" in sample]
                 parents=[(i,sample) for i,sample in enumerate(samples) if "mg" not in sample]
-                #of.write('\t'.join(map(str,header)) + '\n')
+                of.write('\t'.join(map(str,header)) + '\n')
                 continue
             else:
                 of.write(line.strip() + '\n')
