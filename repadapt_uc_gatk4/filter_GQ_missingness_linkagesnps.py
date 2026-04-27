@@ -227,13 +227,13 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                     if gq < 20:
                         #if GQ is less than 20, set the genotype to missing
                         #this will catch all the genotypes that are already missing
-                        genotypes[mg_i]="./.:0,0:.:0:0,0,0"
+                        genotypes[mg_i]=".:0,0:.:0:0,0,0"
                         missing_count+=1
                     else:
                         allele=genotype.split(":")[0]
                         if allele not in parent_alleles:
                             #if the genotype is not one of the parent alleles, set it to missing
-                            genotypes[mg_i]="./.:0,0:.:0:0,0,0"
+                            genotypes[mg_i]=".:0,0:.:0:0,0,0"
                             missing_count+=1
                         #else keep MG genotype
 
