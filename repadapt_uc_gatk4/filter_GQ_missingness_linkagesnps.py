@@ -243,7 +243,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                     if high == 0.01:
                         low=0
                     else:
-                        low=breaks[i-1]
+                        low=snp_missingness_breaks[i-1]
                     if (missing_count/(100-len(mg_blacklist)) > low and missing_count/(100-len(mg_blacklist)) <= high):
                         snp_missingness_count[i]+=1
 
