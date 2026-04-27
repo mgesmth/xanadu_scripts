@@ -65,6 +65,11 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 else:
                     raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
 
+
+                #if both parents are homozoygous for the same allele, not informative, filter
+                if parent_alleles == ['1','1','1','1'] or parent_alleles == ['0','0','0','0']:
+                    continue
+
                 #now we filter the MGs in a loop
                 #going to count samples so we can exclude the parents as we do
 
