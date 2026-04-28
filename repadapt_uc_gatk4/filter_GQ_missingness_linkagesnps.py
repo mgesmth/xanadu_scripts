@@ -29,7 +29,8 @@ with open(in_vcf) as f:
             if line.startswith("#CHROM") == True:
                 header=line.strip().split("\t")
                 #sample names start at field 10
-                samples=header[9:len(header)]
+                info=header[0:9]
+                samples=[field for field in header if field not in info]
                 #all megagametophyte samples have "mg" in name; parents don't
                 #prepare sample names and their indices separately for better access in loop
                 mgs=[sample for sample in samples if "mg" in sample]
@@ -140,8 +141,8 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             if line.startswith("#CHROM") == True:
                 header=line.strip().split("\t")
                 #sample names start at field 10
-                info=header[0:8]
-                samples=header[9:len(header)]
+                info=header[0:9]
+                samples=[field for field in header if field not in info]
                 samples_filt=[sample for sample in samples if sample not in mg_blacklist]
                 #create a list of blacklisted indices so we know what to remove in the SNP lines
                 blacklist_indices=[i for i,mg in enumerate(samples) if mg in mg_blacklist]
@@ -168,8 +169,8 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             #now begin processing SNPs
             total_record_counter+=1
             candidate_snp=line.strip().split('\t')
-            info=candidate_snp[0:8]
-            x=candidate_snp[9:len(candidate_snp)]
+            info=candidate_snp[0:9]
+            x=[field for field in candidate_snp if field not in info]
             genotypes=[geno for i,geno in enumerate(x) if i not in blacklist_indices]
             p1=genotypes[parents[0][0]]
             p2=genotypes[parents[1][0]]

@@ -165,7 +165,7 @@ cut -f1 02_info_files/datatable.txt | awk -v OFS="\t" '{
 
 #### Ploidy file...
 # Ploidy information is built from gvcf list
-cut -f1,2 02_info_files/datatable.txt > ploidymap.txt
+cut -f1,2 02_info_files/datatable.txt > 02_info_files/ploidymap.txt
 
 ##########################
 # Call SNPs
@@ -193,7 +193,6 @@ job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 export DATASET=$DATASET
 sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
-   --dependency=afterok:$job08 \
    --mail-user=$EMAIL \
    --export DATASET \
    $PIPE_DIR/09b_VCF_filtering.sh
