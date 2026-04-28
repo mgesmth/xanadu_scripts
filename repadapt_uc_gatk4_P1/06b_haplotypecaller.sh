@@ -32,6 +32,7 @@ BAM="06_bam_files"
 GVCF="07b_gvcfs"
 GENOMEFOLDER="03_genome"
 GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
+#GENOME=/core/projects/EBP/smith/linkage_snp_calling/03_genome/interior_primary_final.FINAL.500kb_split.fa
 INDGENOME=${GENOME}.fai
 DATATABLE=02_info_files/datatable.txt
 
