@@ -34,8 +34,7 @@ gatk VariantFiltration \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
---filter-name "Quality" --filter-expression "QUAL < 10.0" \
---filter-name "GenotypeQuality" --filter-expression "GQ < 10.0"
+--filter-name "Quality" --filter-expression "QUAL < 10.0" 
 
 #only move forward with variants that pass
 zcat $FILTVCF/${DATASET}_gatk_filtered.vcf.gz | awk -F "\t" -v OFS="\t" '{
