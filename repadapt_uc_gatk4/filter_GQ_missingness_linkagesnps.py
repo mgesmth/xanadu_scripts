@@ -240,7 +240,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
 
                 #now we filter the MGs in a loop
                 #going to count samples so we can exclude the parents as we do
-
+#hi
 
                 missing_count=0
                 for i,mg_i in enumerate(mgs_i):
