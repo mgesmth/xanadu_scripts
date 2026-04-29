@@ -16,8 +16,7 @@ out_snp_missing="missingness_per_snp.hist"
 
 '''
 filter by individual first; then filter by missingness
-tmp_vcf will be a file that will have individuals filtered out absent.
-NOTE: this evaluates missingness only for SNPs that will potentially be preserved. This is, in the end, more conservative
+NOTE: This evaluates MG missingness in the SNPs that are potential markers (not all SNPs)
 '''
 potential_record_counter=0
 
@@ -198,57 +197,73 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             else:
                 gq2=float(p2.split(":")[3])
 
-            #if either parent genotype is less than 20 GQ
+            #if both parent genotypes are less than 20 GQ
             #don't continue with candidate snp
-            if gq1 < 20.0:
+            #if one is bad, that's ok, record that and continue
+            if gq1 < 20.0 and gq2 < 20.0:
+                continue
+            elif gq1 < 20.0 and gq2 >= 20.0:
                 p1_poor_count+=1
-                continue
-            elif gq2 < 20.0:
+                genotypes[parents[0][0]] == "./.:0,0:.:0:0,0,0"
+                p1="./.:0,0:.:0:0,0,0"
+                p1_skip=True
+                p2_skip=False
+            elif gq2 < 20.0 and gq1 >= 20.0:
                 p2_poor_count+=1
-                continue
+                genotypes[parents[1][0]] == "./.:0,0:.:0:0,0,0"
+                p2="./.:0,0:.:0:0,0,0"
+                p2_skip=True
+                p1_skip=False
             else:
+                #both are live
+                p1_skip=False
+                p2_skip=False
 
-                parent_alleles=[]
+            parent_alleles=[]
+            if p1_skip == False:
                 if "/" in p1.split(":")[0]:
                     parent_alleles.extend(p1.split(":")[0].split("/"))
                 elif "|" in p1.split(":")[0]:
                     parent_alleles.extend(p1.split(":")[0].split("|"))
                 else:
-                    raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
-                if "/" in p1.split(":")[0]:
+                    raise ValueError("Parent genotype separator not recognized. SNP: " + total_record_counter)
+            elif p2_skip == False:
+                if "/" in p2.split(":")[0]:
                     parent_alleles.extend(p2.split(":")[0].split("/"))
-                elif "|" in p1.split(":")[0]:
+                elif "|" in p2.split(":")[0]:
                     parent_alleles.extend(p2.split(":")[0].split("|"))
                 else:
-                    raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
+                    raise ValueError("Parent genotype separator not recognized. SNP: " + total_record_counter)
+            else:
+                raise ValueError("Both parent genotypes are set to skip, but we have reached the allele parsing stage. Check:" + total_record_counter)
 
 
-                #if both parents are homozoygous for the same allele, not informative, filter
-                if parent_alleles == ['1','1','1','1'] or parent_alleles == ['0','0','0','0']:
-                    continue
+            #if both parents (or one surviving parent) are/is homozoygous for the same allele, not informative, filter
+            if parent_alleles == ['1','1','1','1'] or parent_alleles == ['0','0','0','0'] or parent_alleles == ['1','1'] or parent_alleles == ['0','0']:
+                continue
 
-                #now we filter the MGs in a loop
-                #going to count samples so we can exclude the parents as we do
+            #now we filter the MGs in a loop
+            #going to count samples so we can exclude the parents as we do
 
-                missing_count=0
-                for i,mg_i in enumerate(mgs_i):
-                    genotype=genotypes[mg_i]
-                    if genotype.split(":")[3] == ".":
-                        gq=0
-                    else:
-                        gq=float(genotype.split(":")[3])
-                    if gq < 20:
-                        #if GQ is less than 20, set the genotype to missing
-                        #this will catch all the genotypes that are already missing
+            missing_count=0
+            for i,mg_i in enumerate(mgs_i):
+                genotype=genotypes[mg_i]
+                if genotype.split(":")[3] == ".":
+                    gq=0
+                else:
+                    gq=float(genotype.split(":")[3])
+                if gq < 20:
+                    #if GQ is less than 20, set the genotype to missing
+                    #this will catch all the genotypes that are already missing
+                    genotypes[mg_i]=".:0,0:.:0:0,0,0"
+                    missing_count+=1
+                else:
+                    allele=genotype.split(":")[0]
+                    if allele not in parent_alleles:
+                        #if the genotype is not one of the parent alleles, set it to missing
                         genotypes[mg_i]=".:0,0:.:0:0,0,0"
                         missing_count+=1
-                    else:
-                        allele=genotype.split(":")[0]
-                        if allele not in parent_alleles:
-                            #if the genotype is not one of the parent alleles, set it to missing
-                            genotypes[mg_i]=".:0,0:.:0:0,0,0"
-                            missing_count+=1
-                        #else keep MG genotype
+                    #else keep MG genotype
 
 
                 # place missingness for this SNP in the missingness by snp histogram
