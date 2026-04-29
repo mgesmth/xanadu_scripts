@@ -1,6 +1,6 @@
 #!/bin/env python
 
-in_vcf="redo_P1_gatk_filtered_pass_biallelic_indels.vcf"
+in_vcf="redo_P2_gatk_filtered_pass_biallelic_indels.vcf"
 missingness_tolerance=0.4
 
 p1_poor_count=0
@@ -31,4 +31,4 @@ with open(in_vcf) as f:
                 p1_poor_count+=1
 
 print(f"Total Count: {total_counter}")
-print(f"P1 Poor Count: {p1_poor_count}")
+print(f"P2 Poor Count: {p1_poor_count}")
