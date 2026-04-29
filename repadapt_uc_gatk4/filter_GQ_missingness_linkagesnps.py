@@ -60,12 +60,19 @@ with open(in_vcf) as f:
             else:
                 gq2=float(p2.split(":")[3])
 
-            #if either parent genotype is less than 10 GQ
-            if gq1 < 20.0 or gq2 < 20.0:
+            #if both parent genotypes is less than 20 GQ
+            if gq1 < 20.0 and gq2 < 20.0:
                 #don't continue with candidate snp
                 continue
-            else:
-
+            elif gq1 < 20.0 and gq2 >= 20.0:
+                parent_alleles=[]
+                if "/" in p2.split(":")[0]:
+                    parent_alleles.extend(p2.split(":")[0].split("/"))
+                elif "|" in p2.split(":")[0]:
+                    parent_alleles.extend(p2.split(":")[0].split("|"))
+                else:
+                    raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
+            elif gq1 >= 20.0 and gq2 < 20.0:
                 parent_alleles=[]
                 if "/" in p1.split(":")[0]:
                     parent_alleles.extend(p1.split(":")[0].split("/"))
@@ -73,17 +80,21 @@ with open(in_vcf) as f:
                     parent_alleles.extend(p1.split(":")[0].split("|"))
                 else:
                     raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
+            else:
+                #both genotypes are good
+                parent_alleles=[]
                 if "/" in p1.split(":")[0]:
-                    parent_alleles.extend(p2.split(":")[0].split("/"))
+                    parent_alleles.extend(p1.split(":")[0].split("/"))
                 elif "|" in p1.split(":")[0]:
+                    parent_alleles.extend(p1.split(":")[0].split("|"))
+                else:
+                    raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
+                if "/" in p2.split(":")[0]:
+                    parent_alleles.extend(p2.split(":")[0].split("/"))
+                elif "|" in p2.split(":")[0]:
                     parent_alleles.extend(p2.split(":")[0].split("|"))
                 else:
                     raise ValueError("Parent genotype separator not recognized. SNP: " + total_recordcounter)
-
-
-                #if both parents are homozoygous for the same allele, not informative, filter
-                if parent_alleles == ['1','1','1','1'] or parent_alleles == ['0','0','0','0']:
-                    continue
 
             potential_record_counter+=1
             for i,mg_i in enumerate(mgs_i):
