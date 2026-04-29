@@ -60,6 +60,7 @@ with open(vcf) as f, open(raw_tmp, "w") as of, open("chrom_line.tmp","a") as chr
             #ANDDDD put it all together
             marker_name="*" + fields[0] + "_" + fields[1]
             newline=[marker_name,marker_type] + seg_genos
+            passed_counter+=1
             of.write(" ".join(map(str,newline)) + '\n')
 
             #write out chrom and pos info to tmp files
@@ -108,5 +109,7 @@ with open("pos_line.tmp") as pos_line, open(raw,"a") as of:
         #there's only one line
         line_trimmed=line.strip()
         of.write(line_trimmed + '\n')
+
+print(f"[M]: Done! Passed {passed_counter} markers.")
 
 ##DONE!
