@@ -5,9 +5,10 @@ import sys
 
 if __name__ == "__main__":
     #unformatted fa.out from RM, with annoying whitespace
-    missingness_tolerance=float(sys.argv[1])
-    in_vcf=sys.argv[2]
-    out_vcf=sys.argv[3]
+    snp_missingness_tolerance=float(sys.argv[1])
+    ind_missingness_tolerance=float(sys.argv[2])
+    in_vcf=sys.argv[3]
+    out_vcf=sys.argv[4]
 
 inds_passed_filter="inds_passed_filter.txt"
 out_mg_missing="missingness_per_mg.tsv"
@@ -131,7 +132,7 @@ mg_blacklist = []
 mg_keep = []
 mg_missingness_fraction=mg_missingness_fraction.reset_index()
 for i,row in mg_missingness_fraction.iterrows():
-    if row['fraction'] > missingness_tolerance:
+    if row['fraction'] > ind_missingness_tolerance:
         mg_blacklist.append(row['mg'])
     else:
         mg_keep.append(row['mg'])
@@ -260,7 +261,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                         snp_missingness_count[i]+=1
 
                 #filter SNP by missingness
-                if missing_count/(100-len(mg_blacklist)) > missingness_tolerance:
+                if missing_count/(100-len(mg_blacklist)) > snp_missingness_tolerance:
                     # if there's too many missing genotypes, filter out
                     continue
                 else:
