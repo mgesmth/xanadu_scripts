@@ -45,8 +45,16 @@ with open(vcf) as f, open(raw_tmp, "w") as of, open("chrom_line.tmp","a") as chr
             #parse parental genos
             ##first check if either are missing
             #at least one should be good
-            p1_gq=int(p1.split(":")[3])
-            p2_gq=int(p2.split(":")[3])
+            if p1.split(":")[3] == ".":
+                p1_gq=0
+            else:
+                p1_gq=int(p1.split(":")[3])
+
+            if p2.split(":")[3] == ".":
+                p2_gq=0
+            else:
+                p2_gq=int(p2.split(":")[3])
+            
             if p1_gq < 20:
                 if "|" in p2.split(":")[0]:
                     p2_1=int(p2.split(":")[0].split("|")[0])
