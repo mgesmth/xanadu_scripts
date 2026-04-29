@@ -2,6 +2,14 @@
 
 #get marker info, save to a tmp file (need passed marker count for first couple lines)
 
+import sys
+
+if __name__ == "__main__":
+    vcf=sys.argv[1]
+    raw=sys.argv[2]
+
+raw_tmp=raw.removesuffix(".raw") + ".tmp"
+
 heterozygote={1,0}
 marker_counter=0
 passed_counter=0
