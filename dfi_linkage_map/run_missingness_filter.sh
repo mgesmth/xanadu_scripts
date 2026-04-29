@@ -14,14 +14,12 @@ set -e
 module load python/3.13.11-gcc-11.4.0-kifh66l tabix/0.2.6
 source /home/FCAM/msmith/python_venv/bin/activate
 
-bgzip -d linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf.gz
+#bgzip -d linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf.gz
 
 in_vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf
 out_vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels_missingness.vcf
 
-python3 /home/FCAM/msmith/scripts/repadapt_uc_gatk4/filter_GQ_missingness_linkagesnps.py \
-0.5 0.3 "$in_vcf" "$out_vcf"
+python3 /home/FCAM/msmith/scripts/dfi_linkage_map/filter_GQ_missingness_maternal.py \
+0.3 0.5 "$in_vcf" "$out_vcf"
 
 bgzip "$in_vcf"
-bgzip "$out_vcf"
-tabix -p vcf "${out_vcf}.gz"

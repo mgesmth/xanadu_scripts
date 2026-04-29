@@ -26,10 +26,12 @@ with open(vcf) as f, open(raw_tmp, "w") as of, open("chrom_line.tmp","a") as chr
                 #sample names start at field 10
                 info=header[0:9]
                 samples=[field for field in header if field not in info]
-                p1=[sample for sample in samples if "libP1" in sample][0]
-                p1_i=[i for i,sample in enumerate(samples) if "libP1" in sample][0]
-                p2=[sample for sample in samples if "libP2" in sample][0]
-                p2_i=[i for i,sample in enumerate(samples) if "libP2" in sample][0]
+                pat=[sample for sample in samples if "libP2" in sample][0]
+                pat_i=[i for i,sample in enumerate(samples) if "libP2" in sample][0]
+                samples_nopat=[sample for sample in samples if sample != pat]
+                mat=[sample for sample in samples_nopat if "libP1" in sample][0]
+                mat_i=[i for i,sample in enumerate(samples_nopat) if "libP1" in sample][0]
+
 
             else:
                 continue
@@ -37,81 +39,13 @@ with open(vcf) as f, open(raw_tmp, "w") as of, open("chrom_line.tmp","a") as chr
             marker_counter+=1
             fields=line.strip().split('\t')
             info=fields[0:9]
-            all_genos=[field for field in fields if field not in info]
-            p1=all_genos[p1_i]
-            p2=all_genos[p2_i]
-            mg_genos=[field for i,field in enumerate(all_genos) if i not in [p1_i,p2_i]]
+            x=[field for field in fields if field not in info]
+            #exclude paternal genotype
+            all_genos=[geno for i,geno in enumerate(x) if i != pat_i]
+            mat=all_genos[mat_i]
+            mg_genos=[field for i,field in enumerate(all_genos) if i != mat_i]
 
-            #parse parental genos
-            ##first check if either are missing
-            #at least one should be good
-            if p1.split(":")[3] == ".":
-                p1_gq=0
-            else:
-                p1_gq=int(p1.split(":")[3])
-
-            if p2.split(":")[3] == ".":
-                p2_gq=0
-            else:
-                p2_gq=int(p2.split(":")[3])
-            
-            if p1_gq < 20:
-                if "|" in p2.split(":")[0]:
-                    p2_1=int(p2.split(":")[0].split("|")[0])
-                    p2_2=int(p2.split(":")[0].split("|")[1])
-                    p2_geno={p2_1,p2_2}
-                elif "/" in p2.split(":")[0]:
-                    p2_1=int(p2.split(":")[0].split("/")[0])
-                    p2_2=int(p2.split(":")[0].split("/")[1])
-                    p2_geno={p2_1,p2_2}
-
-                if p2_geno == heterozygote:
-                    marker_type="D2.16"
-                else:
-                    continue
-                    #if one geno is missing and the other is a homozygote, site is not informative
-            elif p2_gq < 20:
-                if "|" in p1.split(":")[0]:
-                    p1_1=int(p1.split(":")[0].split("|")[0])
-                    p1_2=int(p1.split(":")[0].split("|")[1])
-                    p1_geno={p1_1,p1_2}
-                elif "/" in p1.split(":")[0]:
-                    p1_1=int(p1.split(":")[0].split("/")[0])
-                    p1_2=int(p1.split(":")[0].split("/")[1])
-                    p1_geno={p1_1,p1_2}
-
-                if p1_geno == heterozygote:
-                    marker_type="D1.11"
-                else:
-                    continue
-            elif p1_gq >= 20 and p2_gq >= 20:
-                if "|" in p1.split(":")[0]:
-                    p1_1=int(p1.split(":")[0].split("|")[0])
-                    p1_2=int(p1.split(":")[0].split("|")[1])
-                    p1_geno={p1_1,p1_2}
-                elif "/" in p1.split(":")[0]:
-                    p1_1=int(p1.split(":")[0].split("/")[0])
-                    p1_2=int(p1.split(":")[0].split("/")[1])
-                    p1_geno={p1_1,p1_2}
-                if "|" in p2.split(":")[0]:
-                    p2_1=int(p2.split(":")[0].split("|")[0])
-                    p2_2=int(p2.split(":")[0].split("|")[1])
-                    p2_geno={p2_1,p2_2}
-                elif "/" in p2.split(":")[0]:
-                    p2_1=int(p2.split(":")[0].split("/")[0])
-                    p2_2=int(p2.split(":")[0].split("/")[1])
-                    p2_geno={p2_1,p2_2}
-
-                if p1_geno == heterozygote and p2_geno != heterozygote:
-                    marker_type="D1.11"
-                elif p1_geno != heterozygote and p2_geno == heterozygote:
-                    marker_type="D2.16"
-                elif p1_geno == heterozygote and p2_geno == heterozygote:
-                    marker_type="D2.16"
-                    # I trust P2 more
-                    #both parents are homozygous; site is not informative
-                    continue
-
+            marker_type="D1.11"
             #now get mg genotypes
             seg_genos=[]
             for mg in mg_genos:
@@ -124,7 +58,6 @@ with open(vcf) as f, open(raw_tmp, "w") as of, open("chrom_line.tmp","a") as chr
                     seg_genos.append("b")
 
             #ANDDDD put it all together
-            passed_counter+=1
             marker_name="*" + fields[0] + "_" + fields[1]
             newline=[marker_name,marker_type] + seg_genos
             of.write(" ".join(map(str,newline)) + '\n')
@@ -151,7 +84,6 @@ with open(vcf) as f:
             continue
 
 with open(raw_tmp) as f, open(raw,"w") as of:
-    num_mgs=len([sample for sample in samples if "libP" not in sample])
     #line 1 is the type of cross
     line1=['data','type','outcross']
     of.write(" ".join(map(str,line1)) + '\n')
