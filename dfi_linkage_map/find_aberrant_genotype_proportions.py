@@ -5,6 +5,7 @@ import sys
 
 if __name__ == "__main__":
     vcf=sys.argv[1]
+    gq_threshold=int(sys.argv[2])
 
 aberrant_counts={}
 total_counts={}
@@ -39,7 +40,7 @@ with open(vcf) as f:
             else:
                 mat_gq=int(mat.split(":")[3])
 
-            if mat_gq >= 20.0:
+            if mat_gq >= gq_threshold:
                 if "|" in mat.split(":")[0]:
                     mat_geno=set(mat.split(":")[0].split("|"))
                 elif "/" in mat.split(":")[0]:
@@ -60,7 +61,7 @@ with open(vcf) as f:
                             gq=int(mg.split(":")[3])
 
                         #if genotype call is good, compare to maternal allele to see if it has an unlikely genotype
-                        if gq >= 20:
+                        if gq >= gq_threshold:
                             total_counts[mgs[i]]+=1
                             allele=int(mg.split(":")[0])
                             if allele != mat_allele:
@@ -73,4 +74,4 @@ ab_df=pd.DataFrame({'sample' : list(aberrant_counts.keys()),
                     'total_count' : list(total_counts.values())})
 
 ab_df['props'] = ab_df['ab_count']/ab_df['total_count']
-ab_df.to_csv("aberrant_genotypes_bymg.tsv",sep="\t", index=False)
+ab_df.to_csv(f"aberrant_genotypes_bymg_gq{gq_threshold}.tsv",sep="\t", index=False)
