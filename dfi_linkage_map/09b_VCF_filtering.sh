@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G
 
-module load GATK/4.5.0.0 vcftools/0.1.16 bcftools/1.23.1 bedtools/2.31.1 tabix/0.2.6
+module load vcftools/0.1.16 bcftools/1.23.1 bedtools/2.31.1 tabix/0.2.6
 
 cd $SLURM_SUBMIT_DIR
 
@@ -28,7 +28,7 @@ gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
 -V $VCF/${DATASET}_gatk_unfiltered.vcf \
 -O $FILTVCF/${DATASET}_gatk_filtered.vcf.gz \
---filter-name "AlleleDepth" --filter-expresion "DP < 10" \
+--filter-name "AlleleDepth" --filter-expression "DP < 10" \
 --filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
 --filter-name "MappingQuality" --filter-expression "MQ < 50.0" \
 --filter-name "StrandOddsRatio" --filter-expression "SOR > 3.0" \
