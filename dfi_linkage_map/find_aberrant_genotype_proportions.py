@@ -6,6 +6,8 @@ import sys
 if __name__ == "__main__":
     vcf=sys.argv[1]
 
+aberrant_counts={}
+total_counts={}
 with open(vcf) as f:
     for line in f:
         if line.startswith("#") == True:
@@ -18,8 +20,9 @@ with open(vcf) as f:
                 pat=[samp for samp in samples if "libP2" in samp][0]
                 pat_i=[i for i,samp in enumerate(samples) if "libP2" in samp][0]
                 mgs=[samp for samp in samples if samp not in [mat,pat]]
-                aberrant_counts=pd.DataFrame({ 'sample' : mgs, 'ab_count' : [0] * len(mgs), 'total_count' : [0] * len(mgs) })
-
+                for mg in mgs:
+                    aberrant_counts[mg]=0
+                    total_counts[mg]=0
                 continue
             else:
                 continue
@@ -58,13 +61,16 @@ with open(vcf) as f:
 
                         #if genotype call is good, compare to maternal allele to see if it has an unlikely genotype
                         if gq >= 20:
-                            aberrant_counts.iloc[i,2]+=1
+                            total_counts[mgs[i]]+=1
                             allele=int(mg.split(":")[0])
                             if allele != mat_allele:
-                                aberrant_counts.iloc[i,1]+=1
+                                aberrant_counts[mgs[i]]+=1
                             else:
                                 continue
 
+ab_df=pd.DataFrame({'sample' : list(aberrant_counts.keys()),
+                    'ab_count' : list(aberrant_counts.values()),
+                    'total_count' : list(total_counts.values())})
 
-aberrant_counts['props'] = aberrant_counts['ab_count']/aberrant_counts['total_count']
-aberrant_counts.to_csv("aberrant_genotypes_bymg.tsv",sep="\t", index=False)
+ab_df['props'] = ab_df['ab_count']/ab_df['total_count']
+ab_df.to_csv("aberrant_genotypes_bymg.tsv",sep="\t", index=False)
