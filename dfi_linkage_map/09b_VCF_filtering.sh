@@ -28,14 +28,14 @@ gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
 -V $VCF/${DATASET}_gatk_unfiltered.vcf \
 -O $FILTVCF/${DATASET}_gatk_filtered.vcf.gz \
+--filter-name "AlleleDepth" --filter-expresion "DP < 10" \
 --filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
---filter-name "MappingQuality" --filter-expression "MQ < 40.0" \
+--filter-name "MappingQuality" --filter-expression "MQ < 50.0" \
 --filter-name "StrandOddsRatio" --filter-expression "SOR > 3.0" \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
---filter-name "Quality" --filter-expression "QUAL < 10.0" \
---filter-name "GenotypeQuality" --filter-expression "GQ < 10.0"
+--filter-name "Quality" --filter-expression "QUAL < 20.0"
 
 #only move forward with variants that pass
 zcat $FILTVCF/${DATASET}_gatk_filtered.vcf.gz | awk -F "\t" -v OFS="\t" '{
