@@ -1,22 +1,10 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[9]:
-
+#!/bin/env python
 
 import pandas as pd
-import sys 
-
-
-# In[5]:
-
+import sys
 
 if __name__ == "__main__":
     vcf=sys.argv[1]
-
-
-# In[15]:
-
 
 with open(vcf) as f:
     for line in f:
@@ -58,7 +46,7 @@ with open(vcf) as f:
                 if len(mat_geno) > 1:
                     continue
                 else:
-                    #if it's homozygous, we can use it to calculate an aberrant score 
+                    #if it's homozygous, we can use it to calculate an aberrant score
                     mat_allele=int(list(mat_geno)[0])
                     mg_genos=[geno for i,geno in enumerate(genotypes) if i not in [mat_i,pat_i]]
 
@@ -80,4 +68,3 @@ with open(vcf) as f:
 
 aberrant_counts['props'] = aberrant_counts['ab_count']/aberrant_counts['total_count']
 aberrant_counts.to_csv("aberrant_genotypes_bymg.tsv",sep="\t", index=False)
-
