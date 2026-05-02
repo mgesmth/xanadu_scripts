@@ -56,7 +56,7 @@ with open(vcf) as f, open(raw_tmp, "w") as of:
             #ANDDDD put it all together
             marker_name="*" + fields[0] + "_" + fields[1]
             segs=",".join(map(str,seg_genos))
-            newline=[marker_name,marker_type] + segs
+            newline=[marker_name,marker_type].append(segs)
             passed_counter+=1
             of.write(" ".join(map(str,newline)) + '\n')
 
