@@ -10,7 +10,7 @@ bins <- find.bins(outcross, exact = FALSE)
 #bin the data to remove redundant markers
 outcross_clean <- create.data.bins(outcross, bins)
 #from onemap, the write_onemap_raw function
-write_onemap_raw <- function(onemap.obj = NULL, file.name = NULL) {
+write_onemap_raw=function(onemap.obj = NULL, file.name = NULL) {
     if (inherits(onemap.obj, "outcross")) {
         cross <- "outcross"
     }
