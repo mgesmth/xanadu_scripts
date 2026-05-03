@@ -7,7 +7,7 @@
 import sys
 
 if __name__ == "__main__":
-    vcf=sys.argv[1]
+    in_vcf=sys.argv[1]
 
 
 # In[9]:
@@ -90,21 +90,17 @@ with open(in_vcf) as f:
                     alt_count=len([geno for geno in mg_genos if geno == '1'])
 
                     if ref_count > alt_count:
-                        if alt_count/ref_count > 0.2:
-                            raise ValueError(f"Unusually high amount of non-maternal alleles: {ref_count,alt_count}")
                         if ref_parent == "p1":
                             p1_count+=1
                         else:
                             p2_count+=1
                     elif ref_count < alt_count:
-                        if ref_count/alt_count > 0.2:
-                            raise ValueError(f"Unusually high amount of non-maternal alleles: {ref_count,alt_count}")
                         if alt_parent == "p1":
                             p1_count+=1
                         else:
                             p2_count+=1
                     else:
-                        raise ValueError(f"Neither allele count was found to be larger: {ref_count},{alt_count}")
+                        continue
                 else:
                     continue
 

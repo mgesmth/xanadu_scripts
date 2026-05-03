@@ -14,8 +14,10 @@ set -e
 module load python/3.13.11-gcc-11.4.0-kifh66l tabix/0.2.6
 source /home/FCAM/msmith/python_venv/bin/activate
 
-vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf
+vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels_missingness.vcf
 raw=DFI_linkagemap_all.raw
+
+bgzip -d "${vcf}.gz"
 
 python3 /home/FCAM/msmith/scripts/dfi_linkage_map/build_batchmap_inputfile.py \
 "$vcf" "$raw"

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J filter
+#SBATCH -J build_rawfile
 #SBATCH -D /core/projects/EBP/smith/linkage_snp_calling/10b_filt_vcfs
 #SBATCH -p general
 #SBATCH -q general
@@ -14,12 +14,14 @@ set -e
 module load python/3.13.11-gcc-11.4.0-kifh66l tabix/0.2.6
 source /home/FCAM/msmith/python_venv/bin/activate
 
-#bgzip -d linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf.gz
-
 in_vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels.vcf
-out_vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels_missingness.vcf
+vcf=linkage_snp_calling_gatk_filtered_pass_biallelic_indels_missingness.vcf
+raw="DFI_linkage_all.raw"
 
-python3 /home/FCAM/msmith/scripts/dfi_linkage_map/filter_GQ_missingness_maternal.py \
-0.3 0.5 30 "$in_vcf" "$out_vcf"
+#bgzip -d ${vcf}.gz
 
-bgzip "$in_vcf"
+python3 /home/FCAM/msmith/scripts/dfi_linkage_map/build_batchmap_inputfile.py "$vcf" "$raw"
+
+bgzip "$vcf"
+tabix -p vcf "${vcf}.gz"
+gzip "$raw"
