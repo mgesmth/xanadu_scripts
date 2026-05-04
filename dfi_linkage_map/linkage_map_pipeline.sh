@@ -44,7 +44,11 @@ cat tmp1.txt >> ${mark2}
 rm tmp.txt tmp1.txt
 
 ###
-#Now create linkage groups in parallel
+#Now create linkage groups
+singularity exec ${batchmap} RScript \
+../01_scripts/batchmap_createLGs.R ${dir} ${mark2}
+
+#Create maps for each LG in parallel
 
 num_LGs=13
 array=$((${num_LGs2}-1))
