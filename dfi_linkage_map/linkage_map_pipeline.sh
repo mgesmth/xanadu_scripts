@@ -25,9 +25,10 @@ binned_raw=DFI_linkage_stringent_maf_binned.raw
 mark2=DFI_linkage_stringent_maf_binned_segpass.txt
 num_samp=100
 
-
+#cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_segdist.R .
 #singularity exec ${batchmap} \
-#Rscript ../01_scripts/batchmap_segdist.R "$mark1" "$binned_raw"
+#Rscript batchmap_segdist.R "$mark1" "$binned_raw"
+#rm batchmap_segdist.R
 #transform onemap raw file to batchmap txt file
 #python ../01_scripts/onemap_raw_to_batchmap_txt.py "$binned_raw" tmp.txt
 
