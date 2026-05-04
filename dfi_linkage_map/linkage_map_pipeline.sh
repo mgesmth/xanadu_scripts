@@ -60,8 +60,8 @@ num_samp=100
 
 ###
 #Now create linkage groups
-LGscript=/core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs.R
-singularity exec ${batchmap} Rscript ${LGscript} ${dir} ${mark2}
+cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs.R .
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2}
 rm batchmap_createLGs.R
 
 #Create maps for each LG in parallel
