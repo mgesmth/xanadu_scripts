@@ -24,7 +24,7 @@ suggest_lod <- function(x) {
   else stop("This is not a onemap object with raw data")
 }
 #LOD=suggest_lod(outcross)
-LOD=12
+LOD=10
 linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
                         LOD = LOD, max.rf = 0.35)
 print(linkage_groups,detailed=F)
