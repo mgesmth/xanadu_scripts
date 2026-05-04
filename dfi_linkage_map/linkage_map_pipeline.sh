@@ -10,6 +10,9 @@
 #SBATCH -o /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.out
 #SBATCH -e /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.err
 
+set -e
+echo `hostname`
+
 module load python/3.13.11-gcc-11.4.0-kifh66l
 
 core=/core/projects/EBP/smith
@@ -57,7 +60,8 @@ num_samp=100
 
 ###
 #Now create linkage groups
-singularity exec ${batchmap} Rscript ../01_scripts/batchmap_createLGs.R ${dir} ${mark2}
+LGscript=/core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs.R
+singularity exec ${batchmap} Rscript ${LGscript} ${dir} ${mark2}
 rm batchmap_createLGs.R
 
 #Create maps for each LG in parallel
