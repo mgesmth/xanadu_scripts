@@ -2,13 +2,13 @@
 #SBATCH -J create_LGs
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -D /core/project/EBP/smith/linkage_snp_calling/11_batchmap
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling/11_batchmap
 #SBATCH -c 24
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/project/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.out
-#SBATCH -e /core/project/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.err
 
 module load python/3.13.11-gcc-11.4.0-kifh66l
 
