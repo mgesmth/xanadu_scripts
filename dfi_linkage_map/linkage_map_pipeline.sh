@@ -57,9 +57,9 @@ num_samp=100
 
 ###
 #Now create linkage groups
-singularity exec ${batchmap} RScript \
-../01_scripts/batchmap_createLGs.R ${dir} ${mark2}
-
+cp ../01_scripts/batchmap_createLGs.R .
+singularity exec ${batchmap} RScript batchmap_createLGs.R ${dir} ${mark2}
+rm batchmap_createLGs.R
 
 #Create maps for each LG in parallel
 
