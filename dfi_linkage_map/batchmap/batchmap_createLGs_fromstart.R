@@ -12,7 +12,6 @@ load("onemap_functions_for_batchmap.RData")
 outcross <- read.outcross2(input_file)
 bins <- find.bins(outcross, exact = FALSE)
 outcross_clean <- create.data.bins(outcross, bins)
-rm(outcross)
 save.image("binned_preseg.RData")
 print("[M]: Saved binned pre-seg dist.")
 
@@ -39,10 +38,10 @@ write_tsv(seg_dist,file="seg_distort_snps_maf.tsv")
 rm(seg_dist)
 
 #estimate two-point r
-LOD=suggest_lod(outcross)
+LOD=suggest_lod(outcross_clean)
 LOD=12
 
-twopt_table <- rf.2pts(outcross,LOD=LOD,max.rf=0.35)
+twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 
 #find linkage groups
 linkage_groups <- group(make.seq(twopt_table,"all"))
