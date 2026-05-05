@@ -25,6 +25,10 @@ binned_raw=DFI_linkage_stringent_maf_binned.raw
 mark2=DFI_linkage_stringent_maf_binned_segpass.txt
 num_samp=100
 
+cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/onemap_functions_for_batchmap.R .
+singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
+rm onemap_functions_for_batchmap.R
+
 #cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_segdist.R .
 #singularity exec ${batchmap} \
 #Rscript batchmap_segdist.R "$mark1" "$binned_raw"
@@ -61,9 +65,9 @@ num_samp=100
 
 ###
 #Now create linkage groups
-cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs_upgma.R .
-singularity exec ${batchmap} Rscript batchmap_createLGs_upgma.R ${dir} ${mark2}
-rm batchmap_createLGs_upgma.R
+cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs.R .
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2}
+rm batchmap_createLGs.R
 
 #Create maps for each LG in parallel
 
