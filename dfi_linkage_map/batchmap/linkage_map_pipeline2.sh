@@ -18,6 +18,10 @@ module load python/3.13.11-gcc-11.4.0-kifh66l
 core=/core/projects/EBP/smith
 batchmap=${core}/bin/batchmap.sif
 dir=${core}/linkage_snp_calling/11_batchmap
+scripts=${dir}/scripts
+if [[ ! -d ${scripts} ]] ; then
+  ln -s /home/FCAM/msmith/scripts/dfi_linkage_map/batchmap ./scripts
+fi
 
 cd ${dir}
 mark1=DFI_linkage_stringent_maf.txt
