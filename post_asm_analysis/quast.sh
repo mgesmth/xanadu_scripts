@@ -4,18 +4,16 @@
 #SBATCH -q general
 #SBATCH -c 12
 #SBATCH --mem=150G
-#SBATCH -o /core/projects/EBP/smith/manual_curation_files/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/manual_curation_files/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/manual_curation_round2/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/manual_curation_round2/log/%x.%j.err
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-outdir=${core}/manual_curation_files
-prim=${outdir}/interior_primary_final_mancur2.fa
+outdir=${core}/final_genome
+prim=${outdir}/interior_primary_final.FINAL.fasta
 baseprim=$(basename ${prim})
-alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
-export PATH="${home}/scripts/post_asm_analysis:$PATH"
-log=${core}/manual_curation_files/log
+#alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
 
 date
 echo "[M]: Beginning QUAST analysis of ${baseprim}"
