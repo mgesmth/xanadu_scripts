@@ -23,7 +23,8 @@ database=$1
 date
 echo "[M]: Beginning BUSCO analysis of ${baseprim} against database ${database}"
 #Module files
-source /home/FCAM/msmith/busco/.venv/bin/activate
+#source /home/FCAM/msmith/busco/.venv/bin/activate
+module load busco/6.0.0 
 module load blast/2.7.1 augustus/3.6.0 hmmer/3.3.2 R/4.2.2 java/17.0.2 bbmap/39.08 prodigal/2.6.3
 export AUGUTUS_CONFIG_PATH="/core/projects/EBP/smith/busco/config"
 threads="$(getconf _NPROCESSORS_ONLN)"
