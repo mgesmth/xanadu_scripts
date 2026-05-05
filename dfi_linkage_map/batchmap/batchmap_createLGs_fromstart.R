@@ -38,6 +38,9 @@ for (i in 1:length(seg_failed)){
 write_tsv(seg_dist,file="seg_distort_snps_maf.tsv")
 rm(seg_dist)
 
+seg_passed=select.segreg(seg_test, distorted = TRUE)
+
+
 #estimate two-point r
 LOD=suggest_lod(outcross_clean)
 LOD=12
@@ -45,7 +48,9 @@ LOD=12
 twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 
 #find linkage groups
-linkage_groups <- group(make.seq(twopt_table,"all"))
+twoopt_table_segpass=make.seq(twopt_table,seg_passed)
+
+linkage_groups <- group(twoopt_table_segpass,"all"))
 
 print(linkage_groups,detailed=F)
 
