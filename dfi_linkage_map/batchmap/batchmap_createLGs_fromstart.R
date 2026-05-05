@@ -3,6 +3,7 @@ library(BatchMap)
 args <- commandArgs(trailingOnly = TRUE)
 wd=args[1]
 input_file=args[2]
+image=args[3]
 
 setwd(wd)
 
@@ -54,4 +55,4 @@ for(i in 1:13){
   LG_list[[paste("LG",i,sep="_")]] <- make.seq(linkage_groups,i)
 }
 
-save.image("LGs_created_fromstart.RData")
+save.image(image)
