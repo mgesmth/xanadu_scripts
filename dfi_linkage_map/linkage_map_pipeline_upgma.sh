@@ -61,7 +61,7 @@ num_samp=100
 
 ###
 #Now create linkage groups
-cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs.R .
+cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs_upgma.R .
 singularity exec ${batchmap} Rscript batchmap_createLGs_upgma.R ${dir} ${mark2}
 rm batchmap_createLGs_upgma.R
 
