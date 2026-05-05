@@ -9,8 +9,7 @@ setwd(wd)
 outcross <- read.outcross2(input_file)
 
 #estimate two-point r
-twopt_table <- rf.2pts(outcross)
-#find linkage groups
+
 #suggest_lod from onemap; batchmap function doesn't work
 suggest_lod <- function(x) {
   if (inherits(x, c("sequence", "onemap","outcross"))) {
@@ -23,8 +22,12 @@ suggest_lod <- function(x) {
   }
   else stop("This is not a onemap object with raw data")
 }
-#LOD=suggest_lod(outcross)
-LOD=10
+LOD=suggest_lod(outcross)
+
+twopt_table <- rf.2pts(outcross,LOD=LOD,max.rf=0.35)
+#find linkage groups
+
+
 linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
                         LOD = LOD, max.rf = 0.35)
 print(linkage_groups,detailed=F)
