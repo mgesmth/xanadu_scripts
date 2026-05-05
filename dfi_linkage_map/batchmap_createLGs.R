@@ -23,6 +23,7 @@ suggest_lod <- function(x) {
   else stop("This is not a onemap object with raw data")
 }
 LOD=suggest_lod(outcross)
+LOD=12
 
 twopt_table <- rf.2pts(outcross,LOD=LOD,max.rf=0.35)
 #find linkage groups
