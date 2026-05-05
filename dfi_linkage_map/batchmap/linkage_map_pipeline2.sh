@@ -25,13 +25,13 @@ binned_raw=DFI_linkage_stringent_maf_binned.raw
 mark2=DFI_linkage_stringent_maf_binned_segpass.txt
 num_samp=100
 
-cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/onemap_functions_for_batchmap.R .
+cp ${scripts}/onemap_functions_for_batchmap.R .
 singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
 rm onemap_functions_for_batchmap.R
 
 cp ${scripts}/batchmap_createLGs_fromstart.R .
 singularity exec ${batchmap} batchmap_createLGs_fromstart.R ${dir} ${mark1} "LGs_createD_fromstart.RData"
-rm batchmap_createLGs_fromstart.R 
+rm batchmap_createLGs_fromstart.R
 
 ###
 
