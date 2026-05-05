@@ -1,4 +1,5 @@
 library(BatchMap)
+library(readr)
 
 args <- commandArgs(trailingOnly = TRUE)
 wd=args[1]
