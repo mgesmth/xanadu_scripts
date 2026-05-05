@@ -34,7 +34,7 @@ singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
 rm onemap_functions_for_batchmap.R
 
 cp ${scripts}/batchmap_createLGs_fromstart.R .
-singularity exec ${batchmap} batchmap_createLGs_fromstart.R ${dir} ${mark1} "LGs_createD_fromstart.RData"
+singularity exec ${batchmap} Rscript batchmap_createLGs_fromstart.R ${dir} ${mark1} "LGs_createD_fromstart.RData"
 rm batchmap_createLGs_fromstart.R
 
 ###
