@@ -128,7 +128,7 @@ group_upgma = function(input.seq, expected.groups = NULL, inter = TRUE, comp.mat
         class = "group.upgma")
 }
 
-lg_upgma=group_upgma(make.seq(input.obj = twopt_table, "all"), expected.groups=13,inter=F,)
+lg_upgma=group_upgma(make.seq(input.obj = twopt_table, "all"), expected.groups=13,inter=F)
 
 print(lg_upgma,detailed=F)
 
