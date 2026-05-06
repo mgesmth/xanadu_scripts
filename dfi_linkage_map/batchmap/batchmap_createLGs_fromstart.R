@@ -43,14 +43,15 @@ seg_passed=select_segreg(seg_test,distorted=F,numbers=T)
 
 #estimate two-point r
 LOD=suggest_lod(outcross_clean)
-LOD=12
 
 twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 
 #find linkage groups
 twoopt_table_segpass=make.seq(twopt_table,seg_passed)
 
-linkage_groups <- group(twoopt_table_segpass,"all")
+print("[M]:Passed seg dist check.")
+
+linkage_groups <- group(twoopt_table_segpass,max.rf=0.35,LOD=LOD)
 
 print(linkage_groups,detailed=F)
 
