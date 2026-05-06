@@ -8,8 +8,12 @@ asm=${asmdir}/interior_primary_final.FINAL.fasta
 nosuf=${asm%.fasta}
 
 cd ${asmdir}
-#fix scaffold names
-awk '$0 ~ /^>/ {
+#fix scaffold names and isolate the major 12
+awk 'BEGIN { scaff_counter=0 } $0 ~ /^>/ {
+  scaffold_counter+=1
+  if (scaffold_counter > 12) {
+    exit
+  }
   gsub("HiC_","",$1)
   $1=$1 "_primary"
   print
@@ -40,6 +44,6 @@ awk '{ if ($0 ~ /^>/) {
     print
   }
 } else {
-  exit
+  print
 }
-}' > ${splitasm} && samtools faidx ${split_asm}
+}' > ${splitasm} && samtools faidx ${splitasm}
