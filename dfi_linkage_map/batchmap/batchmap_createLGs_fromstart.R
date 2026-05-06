@@ -49,6 +49,8 @@ twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 #find linkage groups
 twoopt_table_segpass=make.seq(twopt_table,seg_passed)
 
+save.image("before_error.RData")
+
 print("[M]:Passed seg dist check.")
 
 linkage_groups <- group(twoopt_table_segpass,max.rf=0.35,LOD=LOD)
