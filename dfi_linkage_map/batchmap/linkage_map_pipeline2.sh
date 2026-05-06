@@ -56,7 +56,11 @@ awk 'NR==FNR{
     #if the header line
     print
   }
-}' seg_passed_markers_notbinned.tsv ${mark1} > ${mark2}
+}' seg_passed_markers_notbinned.tsv ${mark1} > marks.tmp
+
+num_marks=$(cat marks.tmp | wc -l)
+echo "100 ${num_marks} 0" > ${mark2}
+cat marks.tmp >> ${mark2} && rm marks.tmp
 
 echo -e "\n[M]: Finding linkage groups..."
 
