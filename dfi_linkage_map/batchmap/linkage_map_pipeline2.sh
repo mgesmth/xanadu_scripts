@@ -37,8 +37,11 @@ echo -e "\n[M]: Removing segregation distorters...\n"
 
 #remove segregation distorters
 awk 'NR==FNR{
-  if ($1 ==)
-  passed_arr[$1]=1
+  if ($1 == "marker") {
+    next
+  } else {
+    passed_arr[$1]=1
+  }
   next
 }{
   #if the line is a marker line and not the header
