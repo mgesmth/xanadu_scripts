@@ -13,7 +13,7 @@ bins <- find.bins(outcross, exact = FALSE)
 outcross_clean <- create.data.bins(outcross, bins)
 
 #estimate two-point r
-LOD=suggest_lod(outcross_clean)
+LOD=12
 twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 
 #find linkage groups

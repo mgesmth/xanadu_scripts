@@ -61,7 +61,7 @@ awk 'NR==FNR{
 echo -e "\n[M]: Finding linkage groups..."
 
 cp ${scripts}/batchmap_createLGs.R .
-singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark1} "LGs_created.RData"
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} "LGs_created.RData"
 rm batchmap_createLGs.R
 
 ###
