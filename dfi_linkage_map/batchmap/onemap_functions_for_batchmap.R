@@ -1,16 +1,35 @@
 library(BatchMap)
 
-#test segregation and allow an outcross object
-test.segregation_outcross <- function(x) {
-  if (is(x, "outcross")) {
-    y <- list(Marker = dimnames(x$geno)[[2]], Results.of.tests = sapply(1:x$n.mar,
-                                                                        function(onemap.object, marker) test.segregation.of.a.marker(onemap.object,
-                                                                                                                                     marker), onemap.object = x))
-    class(y) <- c("onemap.segreg.test")
-    invisible(y)
-  }
-  else stop("This is not a outcross object with raw data")
+#test segregation and select seg type and allow an outcross object
+
+test.segregation_outcross=function(x) {
+    if (is(x, "outcross")) {
+        y <- list(Marker = dimnames(x$geno)[[2]], Results.of.tests = sapply(1:x$n.mar,
+            function(onemap.object, marker) test.segregation.of.a.marker(onemap.object,
+                marker), onemap.object = x))
+        class(y) <- c("onemap.segreg.test")
+        invisible(y)
+    }
+    else stop("This is not a onemap object with raw data")
 }
+
+select_segreg=function(x, distorted = FALSE, numbers = FALSE, threshold = NULL) {
+    if (!inherits(x, "onemap.segreg.test"))
+        stop("This is not an object of class onemap.segreg.test")
+    Z <- data.frame(Marker = x$Marker, p.value = unlist(x$Results.of.tests[3,
+        ]))
+    if (is.null(threshold))
+        thr <- Bonferroni.alpha(x, global.alpha = 0.05)
+    else thr <- Bonferroni.alpha(x, global.alpha = threshold)
+    if (distorted == FALSE) 
+        Z <- subset(Z, p.value >= thr)
+    else Z <- subset(Z, p.value < thr)
+    if (numbers == TRUE)
+        return(which(x$Marker %in% as.vector(Z[, 1])))
+    else return(as.vector(Z[, 1]))
+}
+
+
 
 #the write_onemap_raw function
 write_onemap_raw=function(onemap.obj = NULL, file.name = NULL) {

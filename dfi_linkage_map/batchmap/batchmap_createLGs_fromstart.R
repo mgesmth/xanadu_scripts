@@ -23,7 +23,7 @@ plot(seg_test)
 dev.off()
 
 #get distorted markers
-seg_failed <- select.segreg(seg_test, distorted = TRUE)
+seg_failed <- select_segreg(seg_test, distorted = TRUE)
 seg_dist <- data.frame(chr=c(),pos=c())
 for (i in 1:length(seg_failed)){
   x=strsplit(seg_failed[i],"_")
@@ -38,7 +38,7 @@ for (i in 1:length(seg_failed)){
 write_tsv(seg_dist,file="seg_distort_snps_maf.tsv")
 rm(seg_dist)
 
-seg_passed=select.segreg(seg_test, distorted = TRUE)
+seg_passed=select_segreg(seg_test,distorted=F,numbers=T)
 
 
 #estimate two-point r
@@ -50,7 +50,7 @@ twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 #find linkage groups
 twoopt_table_segpass=make.seq(twopt_table,seg_passed)
 
-linkage_groups <- group(twoopt_table_segpass,"all"))
+linkage_groups <- group(twoopt_table_segpass,"all")
 
 print(linkage_groups,detailed=F)
 
