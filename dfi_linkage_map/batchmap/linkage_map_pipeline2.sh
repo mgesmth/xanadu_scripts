@@ -25,17 +25,41 @@ fi
 
 cd ${dir}
 mark1=DFI_linkage_stringent_maf.txt
-binned_raw=DFI_linkage_stringent_maf_binned.raw
-mark2=DFI_linkage_stringent_maf_binned_segpass.txt
+mark2=DFI_linkage_stringent_maf_segpass.txt
 num_samp=100
 
-cp ${scripts}/onemap_functions_for_batchmap.R .
-singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
+echo -e "\n[M]: Finding segregation distorters...\n"
+cp ${scripts}/batchmap_segdist.R .
+singularity exec ${batchmap} Rscript batchmap_segdist.R ${dir} ${mark1}
 rm onemap_functions_for_batchmap.R
 
-cp ${scripts}/batchmap_createLGs_fromstart.R .
-singularity exec ${batchmap} Rscript batchmap_createLGs_fromstart.R ${dir} ${mark1} "LGs_createD_fromstart.RData"
-rm batchmap_createLGs_fromstart.R
+echo -e "\n[M]: Removing segregation distorters...\n"
+
+#remove segregation distorters
+awk 'NR==FNR{
+  if ($1 ==)
+  passed_arr[$1]=1
+  next
+}{
+  #if the line is a marker line and not the header
+  if ($0 ~ "scaffold") {
+    mark=substr($1,2,length($1))
+    if (mark in passed_arr) {
+      print
+    } else {
+      next
+    }
+  } else {
+    #if the header line
+    print
+  }
+}' seg_passed_markers_notbinned.tsv ${mark1} > ${mark2}
+
+echo -e "\n[M]: Finding linkage groups..."
+
+cp ${scripts}/batchmap_createLGs.R .
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark1} "LGs_created.RData"
+rm batchmap_createLGs.R
 
 ###
 

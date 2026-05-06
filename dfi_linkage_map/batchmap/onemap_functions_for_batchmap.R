@@ -21,15 +21,13 @@ select_segreg=function(x, distorted = FALSE, numbers = FALSE, threshold = NULL) 
     if (is.null(threshold))
         thr <- Bonferroni.alpha(x, global.alpha = 0.05)
     else thr <- Bonferroni.alpha(x, global.alpha = threshold)
-    if (distorted == FALSE) 
+    if (distorted == FALSE)
         Z <- subset(Z, p.value >= thr)
     else Z <- subset(Z, p.value < thr)
     if (numbers == TRUE)
         return(which(x$Marker %in% as.vector(Z[, 1])))
     else return(as.vector(Z[, 1]))
 }
-
-
 
 #the write_onemap_raw function
 write_onemap_raw=function(onemap.obj = NULL, file.name = NULL) {
