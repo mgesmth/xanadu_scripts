@@ -1,4 +1,4 @@
-library(batchmap)
+library(BatchMap)
 library(readr)
 
 '''
