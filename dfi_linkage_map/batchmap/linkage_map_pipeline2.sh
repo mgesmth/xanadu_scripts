@@ -54,7 +54,7 @@ awk 'NR==FNR{
     }
   } else {
     #if the header line
-    print
+    next
   }
 }' seg_passed_markers_notbinned.tsv ${mark1} > marks.tmp
 
