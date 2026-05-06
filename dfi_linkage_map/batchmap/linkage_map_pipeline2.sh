@@ -31,7 +31,7 @@ num_samp=100
 echo -e "\n[M]: Finding segregation distorters...\n"
 cp ${scripts}/batchmap_segdist.R .
 singularity exec ${batchmap} Rscript batchmap_segdist.R ${dir} ${mark1}
-rm onemap_functions_for_batchmap.R
+rm batchmap_segdist.R
 
 echo -e "\n[M]: Removing segregation distorters...\n"
 
