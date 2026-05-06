@@ -1,9 +1,7 @@
 library(BatchMap)
 library(readr)
 
-'''
-find the markers without segregation distortion
-'''
+#find the markers without segregation distortion
 
 args <- commandArgs(trailingOnly = TRUE)
 wd=args[1]
