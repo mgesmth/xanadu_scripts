@@ -46,7 +46,7 @@ zcat $FILTVCF/${DATASET}_gatk_filtered_std.vcf.gz | awk -F "\t" -v OFS="\t" '{
   } else {
     next
   }
-}' > $FILTVCF/${DATASET}_gatk_filtered_std_pass.vcf && bgzip $FILTVCF/${DATASET}_gatk_filtered_std_pass_std.vcf
+}' > $FILTVCF/${DATASET}_gatk_filtered_std_pass.vcf && bgzip $FILTVCF/${DATASET}_gatk_filtered_std_pass.vcf
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_std_pass.vcf.gz
 
