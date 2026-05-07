@@ -18,7 +18,7 @@ if __name__ == "__main__":
 inds_passed_filter=f"inds_passed_filter_gq{gq_threshold}.txt"
 out_mg_missing=f"missingness_per_mg_gq{gq_threshold}.tsv"
 out_snp_missing=f"missingness_per_snp_gq{gq_threshold}.hist"
-out_vcf=f"{out_vcf_prx}{snp_missingness_tolerance}_qg{gq_threshold}.vcf"
+out_vcf=f"{out_vcf_prefix}{snp_missingness_tolerance}_qg{gq_threshold}.vcf"
 
 
 # In[61]:
