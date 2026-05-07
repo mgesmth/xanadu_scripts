@@ -14,7 +14,7 @@ set -e
 module load python/3.13.11-gcc-11.4.0-kifh66l tabix/0.2.6
 source /home/FCAM/msmith/python_venv/bin/activate
 
-#bgzip -d linkage_snp_calling_gatk_filtered_std_pass_biallelic_indels.vcf.gz
+bgzip -d linkage_snp_calling_gatk_filtered_std_pass_biallelic_indels.vcf.gz
 
 in_vcf=linkage_snp_calling_gatk_filtered_std_pass_biallelic_indels.vcf
 out_vcf_prx=linkage_snp_calling_gatk_filtered_std_pass_biallelic_indels_missingness
