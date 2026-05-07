@@ -27,6 +27,8 @@ cd ${dir}
 mark1=DFI_linkage_stringent_maf.txt
 mark2=DFI_linkage_stringent_maf_segpass.txt
 num_samp=100
+max_rf=$1
+LOD=$2
 
 #echo -e "\n[M]: Finding segregation distorters...\n"
 #cp ${scripts}/batchmap_segdist.R .
@@ -65,7 +67,7 @@ num_samp=100
 echo -e "\n[M]: Finding linkage groups..."
 
 cp ${scripts}/batchmap_createLGs.R .
-singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} "LGs_created.RData"
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} ${max_rf} ${LOD} "LGs_created.RData"
 rm batchmap_createLGs.R
 
 ###

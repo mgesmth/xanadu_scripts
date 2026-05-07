@@ -3,6 +3,8 @@ library(BatchMap)
 args <- commandArgs(trailingOnly = TRUE)
 wd=args[1]
 input_file=args[2]
+max_rf=args[3]
+LOD=args[4]
 
 setwd(wd)
 
@@ -13,7 +15,6 @@ bins <- find.bins(outcross, exact = FALSE)
 outcross_clean <- create.data.bins(outcross, bins)
 
 #estimate two-point r
-LOD=10
 twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=0.35)
 
 #find linkage groups
@@ -27,4 +28,6 @@ for(i in 1:13){
   LG_list[[paste("LG",i,sep="_")]] <- make.seq(linkage_groups,i)
 }
 
-save.image("LGs_created.RData")
+image=paste0("LGs_created_maxrf",max_rf,"_LOD",LOD,".RData")
+
+save.image(image)
