@@ -12,14 +12,12 @@ if __name__ == "__main__":
     ind_missingness_tolerance=float(sys.argv[2])
     gq_threshold=float(sys.argv[3])
     in_vcf=sys.argv[4]
-    out_vcf_prefix=sys.argv[5]
+    out_vcf=sys.argv[5]
 
 
 inds_passed_filter=f"inds_passed_filter_gq{gq_threshold}.txt"
 out_mg_missing=f"missingness_per_mg_gq{gq_threshold}.tsv"
 out_snp_missing=f"missingness_per_snp_gq{gq_threshold}.hist"
-out_vcf=f"{out_vcf_prefix}{snp_missingness_tolerance}_qg{gq_threshold}.vcf"
-
 
 # In[61]:
 
