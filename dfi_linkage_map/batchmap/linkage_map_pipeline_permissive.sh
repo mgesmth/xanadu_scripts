@@ -42,7 +42,7 @@ rm batchmap_segdist.R
 
 echo -e "\n[M]: Removing segregation distorters...\n"
 
-remove segregation distorters
+#remove segregation distorters
 awk 'NR==FNR{
   if ($1 == "marker") {
     next
