@@ -31,49 +31,49 @@ num_samp=100
 max_rf=$1
 LOD=$2
 
-cp ${scripts}/onemap_functions_for_batchmap.R .
-singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
-rm onemap_functions_for_batchmap.R
+#cp ${scripts}/onemap_functions_for_batchmap.R .
+#singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
+#rm onemap_functions_for_batchmap.R
 
-echo -e "\n[M]: Finding segregation distorters...\n"
-cp ${scripts}/batchmap_segdist.R .
-singularity exec ${batchmap} Rscript batchmap_segdist.R ${dir} ${mark1}
-rm batchmap_segdist.R
+#echo -e "\n[M]: Finding segregation distorters...\n"
+#cp ${scripts}/batchmap_segdist.R .
+#singularity exec ${batchmap} Rscript batchmap_segdist.R ${dir} ${mark1}
+#rm batchmap_segdist.R
 
-echo -e "\n[M]: Removing segregation distorters...\n"
+#echo -e "\n[M]: Removing segregation distorters...\n"
 
 #remove segregation distorters
-awk 'NR==FNR{
-  if ($1 == "marker") {
-    next
-  } else {
-    passed_arr[$1]=1
-  }
-  next
-}{
+#awk 'NR==FNR{
+#  if ($1 == "marker") {
+#    next
+#  } else {
+#    passed_arr[$1]=1
+#  }
+#  next
+#}{
   #if the line is a marker line and not the header
-  if ($0 ~ "scaffold") {
-    mark=substr($1,2,length($1))
-    if (mark in passed_arr) {
-      print
-    } else {
-      next
-    }
-  } else {
+#  if ($0 ~ "scaffold") {
+#    mark=substr($1,2,length($1))
+#    if (mark in passed_arr) {
+#      print
+#    } else {
+#      next
+#    }
+#  } else {
     #if the header line
-    next
-  }
-}' seg_passed_markers_notbinned.tsv ${mark1} > marks.tmp
+#    next
+#  }
+#}' seg_passed_markers_notbinned.tsv ${mark1} > marks.tmp
 
-num_marks=$(cat marks.tmp | wc -l)
-echo "100 ${num_marks} 0" > ${mark2}
-cat marks.tmp >> ${mark2} && rm marks.tmp
+#num_marks=$(cat marks.tmp | wc -l)
+#echo "100 ${num_marks} 0" > ${mark2}
+#cat marks.tmp >> ${mark2} && rm marks.tmp
 
 echo -e "\n[M]: Finding linkage groups..."
 
-cp ${scripts}/batchmap_createLGs.R .
+#cp ${scripts}/batchmap_createLGs.R .
 singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} ${max_rf} ${LOD} "LGs_created.RData"
-rm batchmap_createLGs.R
+#rm batchmap_createLGs.R
 
 ###
 
