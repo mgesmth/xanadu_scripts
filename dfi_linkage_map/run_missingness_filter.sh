@@ -20,6 +20,6 @@ in_vcf=linkage_snp_calling_gatk_filtered_std_pass_biallelic_indels.vcf
 out_vcf_prx=linkage_snp_calling_gatk_filtered_std_pass_biallelic_indels_missingness
 
 python3 /home/FCAM/msmith/scripts/dfi_linkage_map/filter_GQ_missingness_maternal.py \
-0.3 0.5 30 "$in_vcf" "$out_vcf"
+0.3 0.5 30 "$in_vcf" "$out_vcf_prx"
 
 bgzip "$in_vcf"
