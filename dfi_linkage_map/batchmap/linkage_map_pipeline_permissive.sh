@@ -7,8 +7,8 @@
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling/11_batchmap_permissive/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling/11_batchmap_permissive/log/%x.%j.err
 
 set -e
 echo `hostname`
