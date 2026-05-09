@@ -8,7 +8,7 @@ core=/core/projects/EBP/smith
 # Name of general working directory
 MAIN=${core}
 # Name of directory where snp calling is happening
-DATASET="linkage_snp_calling"
+DATASET="linkage_snp_calling_unsplit"
 SPECIES_DIR=$MAIN/$DATASET
 cd $SPECIES_DIR
 
