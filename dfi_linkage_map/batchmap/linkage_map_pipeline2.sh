@@ -67,7 +67,7 @@ LOD=$2
 echo -e "\n[M]: Finding linkage groups..."
 
 cp ${scripts}/batchmap_createLGs.R .
-singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} ${max_rf} ${LOD} "LGs_created.RData"
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} ${max_rf} ${LOD}
 rm batchmap_createLGs.R
 
 ###
