@@ -34,8 +34,10 @@ fi
 # If this is our first run, make a list of all the trimmed reads for cleaning
 ls -1 $RAWDATAFOLDER/*R1.trimmed.fastq.gz | xargs -n 1 basename | sed 's/.R1.trimmed.fastq.gz//g' > $RAWDATAFOLDER/all_trimmed_ids.txt
 
-array=($(cat $RAWDATAFOLDER/bwa_redo.txt))
-name=${array[$SLURM_ARRAY_TASK_ID]}
+jobid_array=($(cat failed_taskids.txt))
+ori_jobid=${jobid_array[$SLURM_ARRAY_TASK_ID]}
+array=($(cat $RAWDATAFOLDER/all_trimmed_ids.txt))
+name=${array[$ori_jobid]}
 
     # Name of uncompressed file
     file1=${name}.R1.trimmed.fastq.gz
