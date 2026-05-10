@@ -32,8 +32,9 @@ then
 fi
 
 # If this is our first run, make a list of all the trimmed reads for cleaning
+ls -1 $RAWDATAFOLDER/*R1.trimmed.fastq.gz | xargs -n 1 basename | sed 's/.R1.trimmed.fastq.gz//g' > $RAWDATAFOLDER/all_trimmed_ids.txt
 
-array=($(cat $RAWDATAFOLDER/redo_files.txt))
+array=($(cat $RAWDATAFOLDER/bwa_redo.txt))
 name=${array[$SLURM_ARRAY_TASK_ID]}
 
     # Name of uncompressed file
@@ -73,7 +74,7 @@ name=${array[$SLURM_ARRAY_TASK_ID]}
     samtools sort --threads $NCPU $ALIGNEDFOLDER/${name}.bam > $ALIGNEDFOLDER/${name}.sorted.bam && rm $ALIGNEDFOLDER/${name}.bam
 
     # Index
-    samtools index $ALIGNEDFOLDER/${name}.sorted.bam
+    samtools index -c $ALIGNEDFOLDER/${name}.sorted.bam
 
     &> $LOG_FOLDER/02_mapping_${name}_${TIMESTAMP}.log
 #done
