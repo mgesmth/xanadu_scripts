@@ -45,7 +45,7 @@ $PIPE_DIR/00a_prep_genome.sh)
 '''
 
 arrlen=$(($(cat 02_info_files/datatable.txt | wc -l)-1))
-arrlen=$(($(cat failed2.names | wc -l)-1))
+arrlen=$(($(cat failed_taskids.txt | wc -l)-1))
 
 # Trim
 job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
@@ -60,17 +60,19 @@ job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Index reference & Align reads to reference
 # Note - If fastq files include .1 and .2 suffixes, bwa will fail. Lines in script 02 can be commented out to handle this
 job02=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---array=[0-${arrlen}] \
-   --dependency=afterok:$job01 \
+--array=[0-${arrlen}]\
+   --dependency=afterok:${job01} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/02_bwa_alignments.sh)
+   $PIPE_DIR/02_bwa_alignments_redo.sh)
+
+
 
 # Collect sample data metrics
 job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---array=[0-${arrlen}] \
+--array=[0-${arrlen}]%20 \
    --dependency=afterok:$job02 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -86,7 +88,7 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Remove duplicates
 job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---array=[0-${arrlen}] \
+--array=[0-${arrlen}]%20 \
 --dependency=afterok:${job03} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -97,7 +99,7 @@ job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Change bam files RG
 job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---array=[0-${arrlen}] \
+--array=[0-${arrlen}]%20 \
    --dependency=afterok:$job04 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
@@ -117,20 +119,12 @@ job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Haplotype Caller
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job05} \
---array=[0-${arrlen}] \
+--array=[0-${arrlen}]%20 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
    $PIPE_DIR/06b_haplotypecaller.sh)
-
-   job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --array=[0] \
-      -D $SPECIES_DIR \
-      --mail-type=ALL \
-      --mail-user=$EMAIL \
-      --parsable \
-      $PIPE_DIR/06b_haplotypecaller_redo2.sh)
 
 '''
 ##########################
@@ -182,7 +176,7 @@ job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Concatenate VCFs
 export DATASET=$DATASET
 job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --dependency=afterany:$job07 \
+   --dependency=afterok:$job07 \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
@@ -192,6 +186,7 @@ job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # FILTER
 export DATASET=$DATASET
 sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job08} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
