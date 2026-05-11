@@ -41,8 +41,10 @@ echo " >>> Calling Haplotypes..."
 
 
 # Fetch filename from the array
-array_name=($(cut -f1 failed.names))
-name=${array_name[$SLURM_ARRAY_TASK_ID]}
+task_array=($(cat haplotypecaller_fail1.txt))
+task=${task_array[$SLURM_ARRAY_TASK_ID]}
+array_name=($(cut -f1 02_info_files/datatable.txt))
+name=${array_name[$task]}
 ploidy=($(grep -w ${name} 02_info_files/datatable.txt | cut -f2))
 file=${name}_RG.bam
 
