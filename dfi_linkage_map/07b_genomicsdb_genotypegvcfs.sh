@@ -34,7 +34,7 @@ VCF="09b_raw_vcfs"
 # POP="02_info_files/popmap.txt"
 
 ARRAY=($(cat 02_info_files/pos.txt))
-REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
+REGION_FILE=02_info_files/${ARRAY[0]}
 
     for scaf in $(cut -f1 $REGION_FILE)
     do
@@ -46,7 +46,7 @@ REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
     --batch-size 10 \
     -L $scaf \
     --sample-name-map 02_info_files/gvcfs_map \
-    --reader-threads 12
+    --reader-threads 8
 
     gatk GenotypeGVCFs \
     -R $GENOMEFOLDER/$GENOME \

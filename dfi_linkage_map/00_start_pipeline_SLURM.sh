@@ -45,7 +45,7 @@ $PIPE_DIR/00a_prep_genome.sh)
 '''
 
 arrlen=$(($(cat 02_info_files/datatable.txt | wc -l)-1))
-arrlen=$(($(cat failed_taskids.txt | wc -l)-1))
+
 
 # Trim
 job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
@@ -89,7 +89,7 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Remove duplicates
 job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --array=[0-${arrlen}]%20 \
---dependency=afterok:${job03} \
+   --dependency=afterok:$job03 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
@@ -161,6 +161,10 @@ cut -f1 02_info_files/datatable.txt | awk -v OFS="\t" '{
 # Ploidy information is built from gvcf list
 cut -f1,2 02_info_files/datatable.txt > 02_info_files/ploidymap.txt
 
+cd 02_info_files
+ls -1 *.pos > pos.txt
+cd ..
+
 ##########################
 # Call SNPs
 export DATASET=$DATASET
@@ -190,6 +194,6 @@ sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
-   $PIPE_DIR/09b_VCF_filtering.sh
+   $PIPE_DIR/09b_VCF_filtering_stringent.sh
 
 ##########################
