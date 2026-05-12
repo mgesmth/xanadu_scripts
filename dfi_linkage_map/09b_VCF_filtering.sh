@@ -35,7 +35,10 @@ gatk VariantFiltration \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
---filter-name "Quality" --filter-expression "QUAL < 10.0"
+--filter-name "Quality" --filter-expression "QUAL < 10.0" \
+--create-output-variant-index false
+
+tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_std.vcf.gz
 
 #only move forward with variants that pass
 zcat $FILTVCF/${DATASET}_gatk_filtered_std.vcf.gz | awk -F "\t" -v OFS="\t" '{
@@ -54,7 +57,10 @@ tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_std_pass.vcf.gz
 gatk SelectVariants \
 -V $FILTVCF/${DATASET}_gatk_filtered_std_pass.vcf.gz \
 -O $FILTVCF/${DATASET}_gatk_filtered_std_pass_biallelic.vcf.gz \
---exclude-filtered TRUE --restrict-alleles-to BIALLELIC
+--exclude-filtered TRUE --restrict-alleles-to BIALLELIC \
+--create-output-variant-index false
+
+tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_std_pass_biallelic.vcf.gz
 
 #FILTER SNPS AROUND INDELS
 #isolate SNPs
