@@ -12,6 +12,7 @@
 
 set -e
 
+module load singularity/3.9.2
 #cd $SLURM_SUBMIT_DIR
 
 # Copy script to log folder
