@@ -34,7 +34,7 @@ VCF="09b_raw_vcfs"
 # POP="02_info_files/popmap.txt"
 
 ARRAY=($(cat 02_info_files/pos.txt))
-REGION_FILE=02_info_files/${ARRAY[0]}
+REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
 
     for scaf in $(cut -f1 $REGION_FILE)
     do
