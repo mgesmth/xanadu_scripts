@@ -119,12 +119,13 @@ job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Haplotype Caller
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --array=[0-${arrlen}] \
+--dependency=afterok:${job05} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
    $PIPE_DIR/06b_haplotypecaller_redo.sh)
---dependency=afterok:${job05} \
+
 '''
 ##########################
 # Part 4 of the pipeline #
@@ -179,8 +180,8 @@ job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 # Concatenate VCFs
 export DATASET=$DATASET
 job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --dependency=afterok:$job07 \
    --mail-type=ALL \
+   --dependency=afterok:$job07 \
    --mail-user=$EMAIL \
    --export DATASET \
    --parsable \
