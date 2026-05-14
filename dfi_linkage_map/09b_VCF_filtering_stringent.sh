@@ -36,6 +36,7 @@ gatk VariantFiltration \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 20.0" \
+--filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
 --create-output-variant-index false
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz
@@ -91,6 +92,8 @@ bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic_indels.vcf
 rm $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic_indels.vcf.gz
+
+
 
 echo "
 DONE! Check you files"

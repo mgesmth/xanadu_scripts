@@ -36,6 +36,7 @@ gatk VariantFiltration \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 10.0" \
+--filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
 --create-output-variant-index false
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_std.vcf.gz
