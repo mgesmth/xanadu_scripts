@@ -53,7 +53,9 @@ REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
     -V gendb://$DB/$scaf \
     -O $VCF/${scaf}.vcf.gz \
     -G StandardAnnotation \
-    -G AS_StandardAnnotation
+    -G AS_StandardAnnotation \
+    --create-output-variant-index false
+
 
 
     done

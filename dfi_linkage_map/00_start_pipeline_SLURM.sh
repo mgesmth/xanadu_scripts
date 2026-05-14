@@ -118,14 +118,13 @@ job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # Haplotype Caller
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---dependency=afterok:${job05} \
---array=[0-${arrlen}]%20 \
+--array=[0-${arrlen}] \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/06b_haplotypecaller.sh)
-
+   $PIPE_DIR/06b_haplotypecaller_redo.sh)
+--dependency=afterok:${job05} \
 '''
 ##########################
 # Part 4 of the pipeline #
@@ -195,5 +194,14 @@ sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-user=$EMAIL \
    --export DATASET \
    $PIPE_DIR/09b_VCF_filtering_stringent.sh
+
+# FILTER
+export DATASET=$DATASET
+sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job08} \
+  --mail-type=ALL \
+  --mail-user=$EMAIL \
+  --export DATASET \
+  $PIPE_DIR/09b_VCF_filtering.sh
 
 ##########################
