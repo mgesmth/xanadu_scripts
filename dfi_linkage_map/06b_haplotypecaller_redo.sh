@@ -34,18 +34,17 @@ GVCF="07b_gvcfs"
 GENOMEFOLDER="03_genome"
 GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 INDGENOME=${GENOME}.fai
-DATATABLE=02_info_files/datatable.txt
+DATATABLE=02_info_files/datatable_redo.txt
 
 # Build Bam Index
 echo " >>> Calling Haplotypes..."
 
 
 # Fetch filename from the array
-task_array=($(cat haplotypecaller_fail1.txt))
-task=${task_array[$SLURM_ARRAY_TASK_ID]}
-array_name=($(cut -f1 02_info_files/datatable.txt))
-name=${array_name[$task]}
-ploidy=($(grep -w ${name} 02_info_files/datatable.txt | cut -f2))
+array=($(cut -f1 ${DATATABLE}))
+name=${array[$SLURM_ARRAY_TASK_ID]}
+ploidy=($(cut -f2 ${DATATABLE}))
+ploid=${ploidy[$SLURM_ARRAY_TASK_ID]}
 file=${name}_RG.bam
 
     echo "
@@ -58,7 +57,7 @@ file=${name}_RG.bam
     gatk HaplotypeCaller \
         -R $GENOMEFOLDER/$GENOME \
         -I $BAM/$file \
-        --sample-ploidy ${ploidy} \
+        --sample-ploidy ${ploid} \
         -ERC GVCF \
         -O $GVCF/${name}.g.vcf
 
