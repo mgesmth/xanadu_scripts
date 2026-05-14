@@ -189,20 +189,33 @@ job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 
 # FILTER
 export DATASET=$DATASET
-sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+job09_1=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job08} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --export DATASET \
-   $PIPE_DIR/09b_VCF_filtering_stringent.sh
+   --parsable \
+   $PIPE_DIR/09b_VCF_filtering_stringent.sh)
 
 # FILTER
 export DATASET=$DATASET
-sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+job09_2=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job08} \
   --mail-type=ALL \
   --mail-user=$EMAIL \
   --export DATASET \
-  $PIPE_DIR/09b_VCF_filtering.sh
+  --parsable \
+  $PIPE_DIR/09b_VCF_filtering.sh)
 
+
+#Final filtering
+export DATASET=$DATASET
+sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+  --mail-type=ALL \
+  --mail-user=$EMAIL \
+  --export DATASET \
+  $PIPE_DIR/10b_batchmapfile.sh
 ##########################
+
+
+--dependency=afterok:${job09_1},afterok:${job09_2} \
