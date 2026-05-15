@@ -54,7 +54,10 @@ REGION_FILE=02_info_files/${ARRAY[11]}
     -O $VCF/${scaf}.vcf.gz \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
-    --create-output-variant-index false
+    --create-output-variant-index false \
+    --max-genotype-count 200 \
+    --genomicsdb-max-alternate-alleles 1201 \
+    --max-alternate-alleles 1200
 
 
 
