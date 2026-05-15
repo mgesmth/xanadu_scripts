@@ -2,13 +2,13 @@
 #SBATCH -J create_LGs
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling/11_batchmap
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_unsplit/11b_batchmap
 #SBATCH -c 24
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling/11_batchmap/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_unsplit/11b_batchmap/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_unsplit/11b_batchmap/log/%x.%j.err
 
 set -e
 echo `hostname`
