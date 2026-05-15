@@ -18,25 +18,26 @@ module load python/3.13.11-gcc-11.4.0-kifh66l
 core=/core/projects/EBP/smith
 batchmap=${core}/bin/batchmap.sif
 dir=${core}/linkage_snp_calling/11_batchmap
+scripts=${dir}/scripts
+if [[ ! -d ${scripts} ]] ; then
+  ln -s /home/FCAM/msmith/scripts/dfi_linkage_map/batchmap ./scripts
+fi
 
 cd ${dir}
 mark1=DFI_linkage_stringent_maf.txt
-binned_raw=DFI_linkage_stringent_maf_binned.raw
-mark2=DFI_linkage_stringent_maf_binned_segpass.txt
+mark2=DFI_linkage_stringent_maf_segpass.txt
 num_samp=100
+max_rf=$1
+LOD=$2
 
-cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/onemap_functions_for_batchmap.R .
-singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
-rm onemap_functions_for_batchmap.R
-
-#cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_segdist.R .
-#singularity exec ${batchmap} \
-#Rscript batchmap_segdist.R "$mark1" "$binned_raw"
+#echo -e "\n[M]: Finding segregation distorters...\n"
+#cp ${scripts}/batchmap_segdist.R .
+#singularity exec ${batchmap} Rscript batchmap_segdist.R ${dir} ${mark1}
 #rm batchmap_segdist.R
-#transform onemap raw file to batchmap txt file
-#python ../01_scripts/onemap_raw_to_batchmap_txt.py "$binned_raw" tmp.txt
 
-#remove segregation distorters from map
+#echo -e "\n[M]: Removing segregation distorters...\n"
+
+#remove segregation distorters
 #awk 'NR==FNR{
 #  if ($1 == "marker") {
 #    next
@@ -45,29 +46,31 @@ rm onemap_functions_for_batchmap.R
 #  }
 #  next
 #}{
+  #if the line is a marker line and not the header
 #  if ($0 ~ "scaffold") {
-#    marker=substr($1,2,length($1))
-#    if (marker in passed_arr) {
+#    mark=substr($1,2,length($1))
+#    if (mark in passed_arr) {
 #      print
 #    } else {
 #      next
 #    }
 #  } else {
+    #if the header line
 #    next
 #  }
-#}' seg_passed_markers.tsv tmp.txt > tmp1.txt
+#}' seg_passed_markers_notbinned.tsv ${mark1} > marks.tmp
 
-#num_marks=$(cat tmp1.txt | wc -l)
-#echo "${num_samp} ${num_marks} 0" > ${mark2}
-#cat tmp1.txt >> ${mark2}
-#rm tmp.txt tmp1.txt
+#num_marks=$(cat marks.tmp | wc -l)
+#echo "100 ${num_marks} 0" > ${mark2}
+#cat marks.tmp >> ${mark2} && rm marks.tmp
 
+echo -e "\n[M]: Finding linkage groups..."
+
+cp ${scripts}/batchmap_createLGs.R .
+singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2} ${max_rf} ${LOD}
+rm batchmap_createLGs.R
 
 ###
-#Now create linkage groups
-cp /core/projects/EBP/smith/linkage_snp_calling/01_scripts/batchmap_createLGs.R .
-singularity exec ${batchmap} Rscript batchmap_createLGs.R ${dir} ${mark2}
-rm batchmap_createLGs.R
 
 #Create maps for each LG in parallel
 

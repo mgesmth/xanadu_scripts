@@ -55,10 +55,10 @@ bm_std=$filt_vcf/${DATASET}_batchmap_standard.txt
 bm_str=$filt_vcf/${DATASET}_batchmap_stringent.txt
 
 echo -e "\n[M]:Building standard batchmap input file.\n"
-python3 ${scripts}/build_batchmap_inputfile.py \
+python3 ${scripts}/build_batchmap_inputfile_batchmap.py \
 "$out_vcf_std" "$bm_std"
 echo "[M]: Done."
 echo -e "\n[M]:Building stringent batchmap input file.\n"
-python3 ${scripts}/build_batchmap_inputfile.py \
+python3 ${scripts}/build_batchmap_inputfile_batchmap.py \
 "$out_vcf_str" "$bm_str"
 echo "[M]: Done! Check your files."
