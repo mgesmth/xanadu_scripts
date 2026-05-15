@@ -32,6 +32,10 @@ num_samp=100
 max_rf=$3
 LOD=$4
 
+cp ${scripts} onemap_functions_for_batchmap.R .
+singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
+rm onemap_functions_for_batchmap.R
+
 echo -e "\n[M]: Finding segregation distorters...\n"
 cp ${scripts}/batchmap_segdist.R .
 singularity exec ${batchmap} Rscript batchmap_segdist.R ${dir} ${mark1}
