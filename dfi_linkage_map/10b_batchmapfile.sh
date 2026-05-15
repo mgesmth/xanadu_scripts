@@ -15,6 +15,7 @@ source /home/FCAM/msmith/python_venv/bin/activate
 
 filt_vcf="10b_filt_vcfs"
 scripts="01_scripts"
+batchmap="11_batchmap"
 in_vcf_std=$filt_vcf/${DATASET}_gatk_filtered_std_pass_biallelic_indels.vcf
 if [[ ! -f ${in_vcf_std} && -f ${in_vcf_std}.gz ]] ; then
   bgzip -d ${in_vcf_std}.gz
@@ -51,8 +52,8 @@ ${snp_missingness} ${ind_missingness} ${gq_str} "$in_vcf_str" "$out_vcf_str"
 #####
 #create batchmap input file
 
-bm_std=$filt_vcf/${DATASET}_batchmap_standard.txt
-bm_str=$filt_vcf/${DATASET}_batchmap_stringent.txt
+bm_std=$batchmap/${DATASET}_batchmap_standard.txt
+bm_str=$batchmap/${DATASET}_batchmap_stringent.txt
 
 echo -e "\n[M]:Building standard batchmap input file.\n"
 python3 ${scripts}/build_batchmap_inputfile_batchmap.py \
@@ -61,4 +62,8 @@ echo "[M]: Done."
 echo -e "\n[M]:Building stringent batchmap input file.\n"
 python3 ${scripts}/build_batchmap_inputfile_batchmap.py \
 "$out_vcf_str" "$bm_str"
+
+mv missingness_per* ${filt_vcf}
+mv inds_passed* ${filt_vcf}
+
 echo "[M]: Done! Check your files."
