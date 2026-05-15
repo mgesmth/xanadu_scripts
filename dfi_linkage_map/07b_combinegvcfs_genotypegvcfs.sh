@@ -56,9 +56,6 @@ sample_gvcfs=$(ls -1 07b_gvcfs/*.vcf | paste -sd " ")
     --create-output-variant-index false
 
 
-
-    done
-
 end=`date +%s`
 elapsed=`expr $end - $begin`
 echo Time taken: $elapsed
