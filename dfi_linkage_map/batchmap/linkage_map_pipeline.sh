@@ -32,7 +32,7 @@ num_samp=100
 max_rf=$3
 LOD=$4
 
-cp ${scripts} onemap_functions_for_batchmap.R .
+cp ${scripts}/onemap_functions_for_batchmap.R .
 singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R
 rm onemap_functions_for_batchmap.R
 
