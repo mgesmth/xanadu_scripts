@@ -211,11 +211,9 @@ job09_2=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 #Final filtering
 export DATASET=$DATASET
 sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+--dependency=afterok:${job09_1},afterok:${job09_2} \
   --mail-type=ALL \
   --mail-user=$EMAIL \
   --export DATASET \
   $PIPE_DIR/10b_batchmapfile.sh
 ##########################
-
-
---dependency=afterok:${job09_1},afterok:${job09_2} \
