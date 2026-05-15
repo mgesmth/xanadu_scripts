@@ -36,7 +36,7 @@ VCF="09b_raw_vcfs"
 ARRAY=($(cat 02_info_files/pos.txt))
 REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
 scaf=$(cut -f1 $REGION_FILE)
-sample_gvcfs=$(ls -1 $GVCF/*.g.vcf | awk -v ORS=" " '{print}')
+sample_gvcfs=$(ls -1 07b_gvcfs/*.vcf | paste -sd " ")
 
     echo ">>> Genotyping scaffold $scaf"
 
@@ -45,7 +45,7 @@ sample_gvcfs=$(ls -1 $GVCF/*.g.vcf | awk -v ORS=" " '{print}')
     -V ${sample_gvcfs} \
     -O $GVCF/${DATASET}.g.vcf \
     -G StandardAnnotation \
-    -G AS_StandardAnnotation 
+    -G AS_StandardAnnotation
 
     gatk GenotypeGVCFs \
     -R $GENOMEFOLDER/$GENOME \
