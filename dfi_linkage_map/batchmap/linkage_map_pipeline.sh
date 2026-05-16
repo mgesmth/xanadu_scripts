@@ -26,11 +26,10 @@ fi
 cd ${dir}
 mark1=$1
 #linkage_snp_calling_unsplit_batchmap_standard.txt
-mark2=$2
-#linkage_snp_calling_unsplit_batchmap_standard_segpass.txt
+mark2=${mark1%.txt}_segpass.txt
 num_samp=100
-max_rf=$3
-LOD=$4
+max_rf=$2
+LOD=$3
 
 cp ${scripts}/onemap_functions_for_batchmap.R .
 singularity exec ${batchmap} Rscript onemap_functions_for_batchmap.R

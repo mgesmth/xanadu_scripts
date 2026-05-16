@@ -53,7 +53,7 @@ ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
     gatk GenotypeGVCFs \
     -R $GENOMEFOLDER/$GENOME \
     -V $GVCF/${DATASET}.g.vcf \
-    -O $VCF/${DATASET}_unfiltered.vcf.gz \
+    -O $VCF/${DATASET}_gatk_unfiltered.vcf \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --create-output-variant-index false
