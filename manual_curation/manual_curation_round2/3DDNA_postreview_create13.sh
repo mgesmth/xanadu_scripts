@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J 3DDNA_postreview
-#SBATCH -p himem
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -c 36
 #SBATCH --mem=500G
 #SBATCH -o %x.%j.out
