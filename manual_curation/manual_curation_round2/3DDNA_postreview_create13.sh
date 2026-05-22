@@ -14,11 +14,11 @@ echo "[M]: Host Name: `hostname`"
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-outdir=${core}/3ddna_2
+outdir=${core}/3ddna_true13
 jd=${scratch}/juicer_formanualcur
 merge_nodups=${jd}/work/intdf137/aligned/merged_nodups.txt
 prim=${core}/CBP_assemblyfiles/interior_primary_final.fa
-asm=${outdir}/interior_primary_final_scaff1mancur_nominor.1.review.assembly
+asm=${outdir}/interior_primary_final_TRUE13.final.review.assembly
 
 export PATH="${core}/bin/3d-dna:$PATH"
 module load gnu-parallel/20160622
@@ -27,7 +27,8 @@ export TMPDIR=${core}
 
 cd ${outdir}
 
-${core}/bin/3d-dna/run-asm-pipeline-post-review.sh -g 200 --sort-output -r ${asm} ${prim} ${merge_nodups}
+#this is just the post-review script with the hic map commands commented out
+${core}/bin/3d-dna/run-asm-pipeline-post-review-nohic.sh -g 200 --sort-output -r ${asm} ${prim} ${merge_nodups}
 
 if [[ $? -eq 0 ]] ; then
   echo "[M]: Post review pipeline complete. Bye!"
