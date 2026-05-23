@@ -20,7 +20,7 @@ module load singularity/3.9.1 seqtk/1.3
 
 seqtk seq -a ${longreads_fq} | gzip -c > ${longreads}
 
-findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
+#findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
 relative="PQ593531.1"
 
