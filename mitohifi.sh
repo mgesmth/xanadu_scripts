@@ -1,19 +1,19 @@
 #!/bin/bash
 #SBATCH -J mitohifi
-#SBATCH -p himem
-#SBATCH -q himem
-#SBATCH -c 36
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 24
 #SBATCH --mem=500G
 #SBATCH -o %x.%j.out
 #SBATCH -e %x.%j.err
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-asm=${core}/manual_curation_files/minor_scaffolds.fa
+asm=${core}/final_genome/psme_glauca_primary_minorscaffolds.fasta
 #just running on the minor scaffolds - was running out of memory and just going to assume no mtDNA made it into major scaffs
 outdir=${home}/mitohifi/contigs
 
-module load singularity/3.9.2
+module load singularity/3.9.1
 
 #findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
