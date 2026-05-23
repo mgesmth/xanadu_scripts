@@ -16,7 +16,7 @@ outdir=${home}/mitohifi/reads
 longreads_fq=/seqdata/EBP/plant/Pseudotsuga_menziesii/allhifi_merged_trimmed.fastq.gz
 longreads=${scratch}/allhifi_merged_trimmed.fasta.gz
 
-module load singularity/3.9.1 seqtk/1.3
+module load singularity/3.9.2 seqtk/1.3
 
 seqtk seq -a ${longreads_fq} | gzip -c > ${longreads}
 
