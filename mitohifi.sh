@@ -12,7 +12,7 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 asm=${core}/final_genome/psme_glauca_primary_minorscaffolds.fasta
 #just running on the minor scaffolds - was running out of memory and just going to assume no mtDNA made it into major scaffs
-outdir=${home}/mitohifi/contigs
+outdir=${home}/mitohifi/reads
 longreads_fq=/seqdata/EBP/plant/Pseudotsuga_menziesii/allhifi_merged_trimmed.fastq.gz
 longreads=${scratch}/allhifi_merged_trimmed.fasta.gz
 
@@ -20,7 +20,7 @@ module load singularity/3.9.1 seqtk/1.3
 
 seqtk seq -a ${longreads_fq} | gzip -c > ${longreads}
 
-#findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
+findMitoReference.py --species "Pseudotsuga menziesii" --outfolder ${outdir}
 #Downloaded Lacebark pine mitogenome
 relative="PQ593531.1"
 
