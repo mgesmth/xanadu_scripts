@@ -135,7 +135,7 @@ elif file_type=="vcf":
                     elif pos >= chr12[0]:
                         #if pos is greater the start of chr12, SNP is on 12 and pos needs to be changed
                         fields[0]="chr12"
-                        fields[1]=pos-chr13_len+200 # +200 for the gap that was between the two contigs connecting 12/13
+                        fields[1]=pos-chr13_len-200 # +200 for the gap that was between the two contigs connecting 12/13
                         of.write("\t".join(map(str,fields)) + '\n')
                     else:
                         raise ValueError(f"[E]: Record {counter} appears to be between chrs 12 and 13. Check it out.")
@@ -198,8 +198,8 @@ elif file_type=="gff":
                     elif start >= chr12[0]: #handle chr12 records
                         #change the chr name and start/end coordinates
                         fields[0]="chr12"
-                        fields[3]=start-chr13_len+200
-                        fields[4]=start-chr13_len+200
+                        fields[3]=start-chr13_len-200
+                        fields[4]=end-chr13_len-200
                         of.write("\t".join(map(str,fields)) + '\n')
                         continue
                     else:
