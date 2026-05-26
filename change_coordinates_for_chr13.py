@@ -127,7 +127,7 @@ elif file_type=="vcf":
                     fields[0]=map_dict_1to1[ori_scaffold]
                     of.write("\t".join(map(str,fields)) + '\n')
                 elif ori_scaffold == "scaffold_3_primary": # if scaffold 3 (now 12 and 13)
-                    pos=fields[1]
+                    pos=int(fields[1])
                     if pos <= chr13[1]:
                         #if pos is less than the end of chr13, the SNP is on 13 and the pos doesn't need to be changed
                         fields[0]="chr13"
