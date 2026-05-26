@@ -7,8 +7,7 @@ if __name__ == "__main__":
 	vcf=sys.argv[1]
 	primbedfile=sys.argv[2]
 	altbedfile=sys.argv[3]
-	coastbedfile=sys.argv[4]
-	bubblebedfile=sys.argv[5]
+	bubblebedfile=sys.argv[4]
 
 #functions
 def paste_files(file1, file2, file3, output_file, delimiter='\t'):
