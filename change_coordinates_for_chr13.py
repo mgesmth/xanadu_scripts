@@ -4,7 +4,7 @@ import sys
 import re
 
 if __name__ == "__main__":
-    file_type=sys.argv[1] #one of "bed", "vcf_snp", "vcf"
+    file_type=sys.argv[1] #one of "bed", "gff", "vcf"
     input_file=sys.argv[2]
     output_file=sys.argv[3]
 
@@ -189,8 +189,8 @@ elif file_type=="gff":
                     fields[0]=map_dict_1to1[ori_scaffold]
                     of.write("\t".join(map(str,fields)) + '\n')
                 elif ori_scaffold == "HiC_scaffold_3": #scaffold 3 (now 12 and 13)
-                    start=fields[3]
-                    end=fields[4]
+                    start=int(fields[3])
+                    end=int(fields[4])
                     if start >= chr13[0] and end <= chr13[1]: #handle chr13 records
                         fields[0]="chr13"
                         of.write("\t".join(map(str,fields)) + '\n')
