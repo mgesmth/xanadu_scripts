@@ -35,7 +35,7 @@ OPTSTRING="g:"
 while getopts ${OPTSTRING} opt
 do
 case ${opt} in
-  t) genome_query=${OPTARG};;
+  g) genome_query=${OPTARG};;
   s) simil=${OPTARG};;
   ?)
     echo "invalid option: -${opt}"
