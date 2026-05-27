@@ -50,6 +50,7 @@ if [[ -z ${genome_query} ]] ; then
   exit 1
 elif [[ "${genome_query}" != "mitochondrion" || "${genome_query}" != "chloroplast" ]] ; then
   echo "`date`: [E]: Option -g must be one of <mitochondrion/chloroplast>. Exiting."
+  echo "$genome_query"
   echo "`date`: [E]: Run ./06.mitohifi.sh -h or --help to see detailed usage."
   exit 1
 fi
