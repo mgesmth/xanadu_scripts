@@ -19,13 +19,13 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 minidir=${home}/minigraph
-prim=${core}/final_genome/interior_primary_bigscaffoldsplit.fa
+prim=${core}/final_genome/psme_glauca_primary_bigscaffoldsplit.fa
 alt=${scratch}/interior_alternate_1Mb.fa
 out_prefix="lastpangenome"
 threads="36"
 gfa="${minidir}/${out_prefix}.gfa"
 k8_dir=${core}/bin/minigraph-0.21/mg-cookbook-v1_x64-linux
-misc_dir=$(core}/bin/minigraph-0.21/misc
+misc_dir=${core}/bin/minigraph-0.21/misc
 
 prim_prefix=$(basename "$prim" | sed 's/.fa//')
 alt_prefix=$(basename "$alt" | sed 's/.fa//')
@@ -58,9 +58,9 @@ paste *.bed | ${k8_dir}/k8 ${misc_dir}/mgutils.js merge -s samples.txt - | gzip 
 
 ${k8_dir}/k8 ${misc_dir}/mgutils-es6.js merge2vcf -r0 "${out_prefix}.sv.bed.gz" > "${minidir}/${out_prefix}.sv.vcf"
 
-#Filtering for missing data then for where all three alleles are the reference allele
-awk '/^#/ {print} !/^#/ && $10 != "." && $11 != "." {print}' "${minidir}/${out_prefix}.sv.vcf" | \
-awk '/^#/ {print} !/^#/ && $11 ~ /1:1/ {print}' > "${minidir}/${out_prefix}_filtered1.sv.vcf"
+#Filtering for missing data then for where there's an alt allele are the reference allele
+awk '/^#/ {print ; next} $10 != "." {print}' "${minidir}/${out_prefix}.sv.vcf" | \
+awk '/^#/ {print ; next} $11 ~ /1:1/ {print}' > "${minidir}/${out_prefix}_filtered1.sv.vcf"
 
 cd ..
 rm -r minigraph_tmp
