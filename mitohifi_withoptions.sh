@@ -43,8 +43,12 @@ case ${opt} in
   esac
 done
 
-if [[ -z ${genome_query} || ${genome_query} != "mitochondrion" || ${genome_query} != "chloroplast" ]] ; then
+if [[ -z ${genome_query} ]] ; then
   echo "`date`: [E]: Option -g requires an argument, one of <mitochondrion/chloroplast>. Exiting."
+  echo "`date`: [E]: Run ./06.mitohifi.sh -h or --help to see detailed usage."
+  exit 1
+elif [[ ${genome_query} != "mitochondrion" || ${genome_query} != "chloroplast" ]] ; then
+  echo "`date`: [E]: Option -g must be one of <mitochondrion/chloroplast>. Exiting."
   echo "`date`: [E]: Run ./06.mitohifi.sh -h or --help to see detailed usage."
   exit 1
 fi
