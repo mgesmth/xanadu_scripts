@@ -58,7 +58,7 @@ echo "`date`: [M]: Downloading most closely related ${genome_query} genome..."
 
 if [[ ${genome_query} == "mitochondrion" ]] ; then
 
-  outdir=${home}/mitohifi/mitogenome
+  outdir=${home}/mitohifi/mitogenome_alt
   if [[ ! -d ${outdir} ]] ; then
     mkdir ${outdir}
   fi
@@ -76,7 +76,7 @@ if [[ ${genome_query} == "mitochondrion" ]] ; then
 
 else
 
-  outdir=${home}/mitohifi/chloroplast
+  outdir=${home}/mitohifi/chloroplast_alt
   if [[ ! -d ${outdir} ]] ; then
     mkdir ${outdir}
   fi
