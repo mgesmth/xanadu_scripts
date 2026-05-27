@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J mitohifi
+#SBATCH -J mitohifi_alt
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
