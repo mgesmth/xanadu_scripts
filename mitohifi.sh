@@ -30,4 +30,4 @@ echo -e "`date`:[M]: Beginning mitogenome assembly from scaffolded assembly.\n"
 cd ${outdir}
 
 singularity exec ${core}/bin/MitoHiFi.sif \
-mitohifi.py -c ${asm} -f "${relative}.fasta" -g "${relative}.gb" -t 24 -a "plant"
+mitohifi.py -p 60 -c ${asm} -f "${relative}.fasta" -g "${relative}.gb" -t 24 -a "plant"

@@ -31,4 +31,4 @@ cd ${outdir}
 
 #setting to 75 since relative is so close
 singularity exec ${core}/bin/MitoHiFi.sif \
-mitohifi.py -c ${asm} -p 75 -f "${relative}.fasta" -g "${relative}.gb" -t 24 -a "plant"
+mitohifi.py -c ${asm} -p 75 -f "${relative}.fasta" -g "${relative}.gb" -t 24 -a "plant" -o 10
