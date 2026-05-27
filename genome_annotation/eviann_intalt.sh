@@ -15,7 +15,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 genome=${core}/CBP_assemblyfiles/interior_alternate_masked.fa
 transcript_file=${home}/genome_annotation/03_eviann_annotation/evidence_allv.txt
-protein_db=${home}/transcriptome/02_braker_annotation/conifer_geneSet_protein_v2_150.faa
+protein_db=${home}/transcriptome/03_eviann_annotation/conifer_geneSet_protein_v2_150.faa
 workdir=${core}/eviann/eviann_alt_allvdata
 if [[ ! -d ${workdir} ]] ; then
   mkdir ${workdir}
