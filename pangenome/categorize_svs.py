@@ -93,13 +93,18 @@ paste_files("prt1.tmp","prt2.tmp", "prt3.tmp", output_file="sv_allele_summary.ts
 # os.remove("prt2.tmp")
 # os.remove("prt3.tmp")
 
+counter=0
+bad_counter=0
 with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", "a") as ef:
 	with open("svs_categorized.tsv", "w") as fw:
-		#skip header
-		f.readline()
 		for line in f:
 			#define variables
 			columns=line.strip().split()
+			if columns[0] == "scaffold" and columns[1] == "start":
+				#this is the header
+				fw.write("\t".join(map(str,columns)) + '\n')
+				continue
+
 			prim_allele=int(0)
 			prim_len=int(columns[4])
 			alt_allele=int(columns[3])
@@ -112,11 +117,18 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 			if inversion is False:
 				if not handle_twoallele_indel(prim_len, alt_len, line, ef):
 					continue
+					bad_counter+=1
+				else:
+					counter+=1
 			elif inversion is True:
 				handle_twoallele_inversion(prim_len, coast_len)
+				counter+=1
 			else:
 				raise ValueError("[E]: Inversion Boolean not recognized.")
 
 
 			newline=(columns[0],columns[1],columns[2],first_category,second_category,genotype,len_string)
 			fw.write('\t'.join(map(str, newline)) + '\n')
+
+print(f"[M]: Done!")
+print(f"[M]: Passed {counter-bad_counter} variants, failed {bad_counter}.")
