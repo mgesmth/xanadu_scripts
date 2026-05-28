@@ -1,6 +1,7 @@
 #!/bin/bash
 
-module load seqkit/2.10.0 samtools/1.
+#samtools version 1.21
+module load seqkit/2.10.0 samtools
 
 dir=/core/projects/EBP/smith/final_genome
 asm=${dir}/psme_glauca_primary.fasta
