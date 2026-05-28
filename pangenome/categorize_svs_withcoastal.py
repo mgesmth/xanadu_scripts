@@ -10,13 +10,14 @@ if __name__ == "__main__":
 	bubblebedfile=sys.argv[4]
 
 #functions
-def paste_files(file1, file2, output_file, delimiter='\t'):
+def paste_files(file1, file2, file3, output_file, delimiter='\t'):
 	with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
 		lines1 = f1.readlines()
 		lines2 = f2.readlines()
+		lines3 = f3.readlines()
 		combined = [
-			line1.rstrip('\n') + delimiter + line2.rstrip('\n')
-			for line1, line2 in zip(lines1, lines2)
+			line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3
+			for line1, line2, line3 in zip(lines1, lines2, lines3)
 		]
 		with open(output_file, 'w') as out:
 			out.writelines(combined)
@@ -36,7 +37,6 @@ def handle_twoallele_indel(ref_allele_length, query_allele_length, line, ef):
 		ef.write(line)
 		return False
 
-#will handle the case where an inversion variant is also an indel
 def handle_twoallele_inversion(ref_allele_length, query_allele_length):
 	global first_category, second_category
 	first_category="INV"
@@ -49,7 +49,7 @@ def handle_twoallele_inversion(ref_allele_length, query_allele_length):
 
 #parse the vcf, extract relevant info from info fields
 with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
-	header=["scaffold","start","end","alt_allele"]
+	header=["scaffold","start","end","alt_allele","coast_allele"]
 	of.write('\t'.join(header) + '\n')
 	for line in f:
 		if "#" in line:
@@ -61,19 +61,21 @@ with open(vcf, "r") as f, open("prt1.tmp", "w") as of:
 			info_fields=fields[7].split(';')
 			end=info_fields[0].split('=')[1]
 			alt_allele=fields[10].split(':')[0]
-			newline=[scaffold,start,end,alt_allele]
+			coast_allele=fields[11].split(':')[0]
+			newline=[scaffold,start,end,alt_allele,coast_allele]
 			of.write('\t'.join(map(str, newline)) + '\n')
 
 #parse the bed files to get allele specific info for each assembly (i.e., lengths)
-paste_files(primbedfile, altbedfile, output_file="bed_paste.tmp")
+paste_files(primbedfile, altbedfile, coastbedfile, output_file="bed_paste.tmp")
 with open("bed_paste.tmp") as f, open("prt2.tmp", "w") as of:
-	header=["prim_length","alt_length"]
+	header=["prim_length","alt_length","coast_length"]
 	of.write('\t'.join(header) + '\n')
 	for line in f:
 		fields=line.strip().split()
 		prim_len=fields[5].split(':')[1]
 		alt_len=fields[11].split(':')[1]
-		newline=[prim_len,alt_len]
+		coast_len=fields[17].split(':')[1]
+		newline=[prim_len,alt_len,coast_len]
 		of.write('\t'.join(map(str, newline)) + '\n')
 
 # os.remove("bed_paste.tmp")
@@ -101,22 +103,72 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 			#define variables
 			columns=line.strip().split()
 			prim_allele=int(0)
-			prim_len=int(columns[4])
+			prim_len=int(columns[5])
 			alt_allele=int(columns[3])
-			alt_len=int(columns[5])
-			inversion = bool(int(columns[6]))
-			len_string=str(prim_len) + ":" + str(alt_len)
-			genotype=str(prim_allele) + ":" + str(alt_allele)
-
-			#categorize variants
-			if inversion is False:
-				if not handle_twoallele_indel(prim_len, alt_len, line, ef):
-					continue
-			elif inversion is True:
-				handle_twoallele_inversion(prim_len, coast_len)
+			alt_len=int(columns[6])
+			coast_allele=int(columns[4])
+			coast_len=int(columns[7])
+			inversion = bool(int(columns[8]))
+			len_string=str(prim_len) + ":" + str(alt_len) + ":" + str(coast_len)
+			#There's definitely a more efficient way to do this, but here we are - pseudo-genotype for convenience
+			if alt_allele == 0 and coast_allele == 1:
+				genotype="0:0:1"
+			elif alt_allele == 1 and coast_allele == 0:
+				genotype="0:1:0"
+			elif alt_allele == 1 and coast_allele == 1:
+				genotype="0:1:1"
 			else:
-				raise ValueError("[E]: Inversion Boolean not recognized.")
+				genotype="0:1:2"
 
+			#Categorize variants based on variant genotype
+			if genotype == "0:0:1":
+				if inversion is False:
+					if not handle_twoallele_indel(prim_len, coast_len, line, ef):
+						continue
+				elif inversion is True:
+					handle_twoallele_inversion(prim_len, coast_len)
+				else:
+					raise Exception("[E]: Inversion Boolean not recognized.")
+			elif genotype == "0:1:0":
+				if inversion is False:
+					if not handle_twoallele_indel(prim_len, alt_len, line, ef):
+						continue
+				elif inversion is True:
+					handle_twoallele_inversion(prim_len, alt_len)
+				else:
+					raise Exception("[E]: Inversion Boolean not recognized.")
+			elif genotype == "0:1:1":
+				if inversion is False:
+					if not handle_twoallele_indel(prim_len, alt_len, line, ef):
+						continue
+				elif inversion is True:
+					handle_twoallele_inversion(prim_len, alt_len)
+				else:
+					raise Exception("[E]: Inversion Boolean not recognized.")
+			elif genotype == "0:1:2":
+				#Implicit in there being three alleles is that there is some indel activity
+				longest_allele=max(prim_len, alt_len, coast_len)
+				shortest_allele=min(prim_len, alt_len, coast_len)
+				if inversion is False:
+					if longest_allele == prim_len:
+						first_category="DEL"
+						second_category="DEL"
+					elif shortest_allele == prim_len:
+						first_category="INS"
+						second_category="INS"
+					else: #else prim is the mid-length allele
+						first_category="INS"
+						second_category="DEL"
+				elif inversion is True:
+					first_category="INV"
+					if longest_allele == prim_len:
+						second_category="DEL"
+					elif shortest_allele == prim_len:
+						second_category="INS"
+					else: #else prim is the mid-length allele
+						second_category="INDEL"
+				else:
+					raise Exception("[E]: Genotype not recognized.")
 
 			newline=(columns[0],columns[1],columns[2],first_category,second_category,genotype,len_string)
 			fw.write('\t'.join(map(str, newline)) + '\n')
