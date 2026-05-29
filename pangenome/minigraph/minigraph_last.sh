@@ -3,7 +3,7 @@
 #SBATCH -p himem
 #SBATCH -q himem
 #SBATCH -c 36
-#SBATCH --mem=1000G
+#SBATCH --mem=1300G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH -o %x.%j.out
