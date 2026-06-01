@@ -2,13 +2,13 @@
 #SBATCH -J create_LGs
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_unsplit/11b_batchmap
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap
 #SBATCH -c 24
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_unsplit/11b_batchmap/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_unsplit/11b_batchmap/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.err
 
 set -e
 echo `hostname`
@@ -17,7 +17,7 @@ module load python/3.13.11-gcc-11.4.0-kifh66l
 
 core=/core/projects/EBP/smith
 batchmap=${core}/bin/batchmap.sif
-dir=${core}/linkage_snp_calling_unsplit/11b_batchmap
+dir=${core}/linkage_snp_calling_final/11b_batchmap
 scripts=${dir}/scripts
 if [[ ! -d ${scripts} ]] ; then
   ln -s /home/FCAM/msmith/scripts/dfi_linkage_map/batchmap ./scripts
@@ -25,7 +25,7 @@ fi
 
 cd ${dir}
 mark1=$1
-#linkage_snp_calling_unsplit_batchmap_standard.txt
+#linkage_snp_calling_final_batchmap_stringent.txt
 mark2=${mark1%.txt}_segpass.txt
 num_samp=100
 max_rf=$2
