@@ -52,8 +52,8 @@ awk 'NR==FNR{
   next
 }{
   #if the line is a marker line and not the header
-  if ($0 ~ "scaffold") {
-    mark=substr($1,2,length($1))
+  if ($0 ~ "chr") {
+    mark=substr($1,2)
     if (mark in passed_arr) {
       print
     } else {
