@@ -21,5 +21,5 @@ ncore=$SLURM_CPUS_PER_TASK
 scripts=${dir}/scripts
 
 cp scripts/create_batchmap_perLG.R .
-singlarity exec ${batchmap} Rscript create_batchmap_perLG.R \
+singularity exec ${batchmap} Rscript create_batchmap_perLG.R \
 ${dir} ${LG_num} ${ncore}
