@@ -2,9 +2,9 @@
 #SBATCH -J build_batchmap_test
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 10
+#SBATCH -c 24
 #SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap
-#SBATCH --mem=36G
+#SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
 #SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.out
@@ -13,7 +13,7 @@
 set -e
 echo `hostname`
 
-LG_num=789
+LG_num=176
 core=/core/projects/EBP/smith
 dir=${core}/linkage_snp_calling_final/11_batchmap
 batchmap=${core}/bin/batchmap.sif

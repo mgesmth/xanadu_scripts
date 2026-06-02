@@ -12,15 +12,18 @@ load("LGs_created_maxrf0.25_LOD12.RData")
 
 LG_cur<-LG_list[[LG]]
 
+print("[M]: Ordering markers...")
 ##order markers
 LG_rec<-record.parallel(LG_cur,times=10,cores=cores)
 
+print("[M]: Done ordering markers. Getting a batch size...")
 #get a batch size
 batch_size <- pick.batch.sizes(LG_rec, 
                  size = 50, 
                  overlap = 30, 
                  around = 10)
 
+print("[M]: Now making the map!")
 #now make the map!
 rip.cores <- cores/2
 map <- map.overlapping.batches(input.seq=LG_cur,
