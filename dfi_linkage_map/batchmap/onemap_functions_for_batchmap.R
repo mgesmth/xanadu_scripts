@@ -229,8 +229,8 @@ get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
 
 
 #plot rfs after map creation
-function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE, 
-  html.file = NULL, mrk.axis = "numbers", lab.xy = NULL, n.colors = 4, 
+rf_graph_table=function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE, 
+  html.file = NULL, mrk.axis = "numbers", base.size = NULL, lab.xy = NULL, n.colors = 4, 
   display = TRUE) 
 {
   if (!any(inherits(input.seq, "sequence"))) 
@@ -405,6 +405,9 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
   }
   if (!is.null(main)) {
     p <- p + ggtitle(main)
+  }
+  if (!is.null(base.size)){
+    p = p + theme(text = element_text(size = base.size))
   }
   if (inter) {
     if (is.null(html.file)) {
