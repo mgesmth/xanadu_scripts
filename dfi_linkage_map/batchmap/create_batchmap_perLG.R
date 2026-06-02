@@ -9,6 +9,7 @@ setwd(wd)
 
 #load up linkage group data
 load("LGs_created_maxrf0.25_LOD12.RData")
+load("onemap_functions_for_batchmap_withgraph.RData")
 
 LG_cur<-LG_list[[LG]]
 
@@ -35,13 +36,20 @@ map <- map.overlapping.batches(input.seq=LG_cur,
                                ws=10,
                                max.dist = 25,
                                min.tries = 1,
-                               method="one",
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
 #add twopt and outcross objects to map
 map$Map$data.name=outcross_clean
 map$Map$twopt=twopt_table
+
+#create a heatmap
+png(paste0(LG,"_rfheatmap.png"),width=960,height=960)
+rf_graph_table(input.seq=map$Map, display=FALSE, 
+    lab.xy=c(paste0("Marker (n=",length(map$Map$seq.num),")"),
+        paste0("Marker (n=",length(map$Map$seq.num),")")),
+    mrk.axis="none",base.size=22)
+dev.off()
 
 #save results
 save(map,file=paste(LG,"DFI_Rippled_Map.RData",sep="_"))
