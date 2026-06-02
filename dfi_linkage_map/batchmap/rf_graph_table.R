@@ -1,7 +1,7 @@
 #!/bin/env/R
 
 function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE, 
-  html.file = NULL, mrk.axis = "numbers", lab.xy = NULL, n.colors = 4, 
+  html.file = NULL, mrk.axis = "numbers", base.size=NULL, lab.xy = NULL, n.colors = 4, 
   display = TRUE) 
 {
   if (!any(inherits(input.seq, "sequence"))) 
@@ -9,16 +9,28 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
   if (!(mrk.axis == "names" | mrk.axis == "numbers" | mrk.axis == 
     "none")) 
     stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
-  if (inherits(input.seq$data.name, c("outcross", "f2"))) {
+  if (!any(inherits(input.seq$data.name, "outcross"))) {
+  	stop(deparse(substitute(input.seq$data.name)), " is not an object of class 'outcross'")
+  } else {
+  	#number of markers in the map
     n.mrk <- length(input.seq$seq.num)
     if (inter) {
+    	#input.seq$twopt$analysis is a matrix describing the pwrfs between each pair of markers
+    	#x here is the rf matrix, w is the vector of the marker numbers
+    	#LOD is a matrix with four elements (the four PCPs) containing the LOD scores between each pair of markers
       LOD <- lapply(input.seq$twopt$analysis, function(x, 
         w) {
+      	#initialize a matrix of length and width w full of zeros
+      	#the length(w) is the number of markers
         m <- matrix(0, nrow = length(w), ncol = length(w))
+        #create another matrix representing all the possible pairings of all markers
         k <- matrix(c(rep(w[1:(length(w))], each = length(w)), 
           rep(w[1:(length(w))], length(w))), ncol = 2)
+        #remove cells where the comparison is between the same marker
         k <- k[-which(k[, 1] == k[, 2]), ]
+        #transpose the matrix, and sort the matrix by row (arg2=1)
         k <- t(apply(k, 1, sort))
+        #find duplicate cells and remove them
         k <- k[-which(duplicated(k)), ]
         LOD.temp <- x[k[, c(1, 2)]]
         m[lower.tri((m))] <- LOD.temp
@@ -27,23 +39,6 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
       }, input.seq$seq.num)
     }
     mat <- t(get_mat_rf_out(input.seq, LOD = TRUE, max.rf = 0.501, 
-      min.LOD = -0.1))
-  }
-  else {
-    n.mrk <- length(input.seq$seq.num)
-    if (inter) {
-      LOD <- matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
-      k <- matrix(c(rep(input.seq$seq.num[1:(length(input.seq$seq.num))], 
-        each = length(input.seq$seq.num)), rep(input.seq$seq.num[1:(length(input.seq$seq.num))], 
-        length(input.seq$seq.num))), ncol = 2)
-      k <- k[-which(k[, 1] == k[, 2]), ]
-      k <- t(apply(k, 1, sort))
-      k <- k[-which(duplicated(k)), ]
-      LOD.temp <- input.seq$twopt$analysis[k[, c(1, 2)]]
-      LOD[lower.tri((LOD))] <- LOD.temp
-      LOD[upper.tri(LOD)] <- t(LOD)[upper.tri(LOD)]
-    }
-    mat <- t(get_mat_rf_in(input.seq, LOD = TRUE, max.rf = 0.501, 
       min.LOD = -0.1))
   }
   mat[row(mat) > col(mat) & mat > 0.5] <- 0.5
@@ -78,24 +73,24 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
       colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
       colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
       df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
-        list(melt(round(mat.rf, 2), value.name = "rf"), 
-          melt(round(mat.LOD, 2), value.name = "LOD"), 
-          melt(round(LOD$CC, 2), value.name = "CC"), 
-          melt(round(LOD$CR, 2), value.name = "CR"), 
-          melt(round(LOD$RC, 2), value.name = "RC"), 
-          melt(round(LOD$RR, 2), value.name = "RR")))
+        list(reshape2::melt(round(mat.rf, 2), value.name = "rf"), 
+          reshape2::melt(round(mat.LOD, 2), value.name = "LOD"), 
+          reshape2::melt(round(LOD$CC, 2), value.name = "CC"), 
+          reshape2::melt(round(LOD$CR, 2), value.name = "CR"), 
+          reshape2::melt(round(LOD$RC, 2), value.name = "RC"), 
+          reshape2::melt(round(LOD$RR, 2), value.name = "RR")))
       colnames(df.graph)[5:8] <- paste0("LOD.", c("CC", 
         "CR", "RC", "RR"))
     }
     else {
       df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
-        list(melt(round(mat.rf, 2), value.name = "rf"), 
-          melt(round(mat.LOD, 2), value.name = "LOD")))
+        list(reshape2::melt(round(mat.rf, 2), value.name = "rf"), 
+          reshape2::melt(round(mat.LOD, 2), value.name = "LOD")))
     }
   }
   else {
-    df.graph <- merge(melt(round(mat.rf, 2), value.name = "rf"), 
-      melt(round(mat.LOD, 2), value.name = "LOD"))
+    df.graph <- merge(reshape2::melt(round(mat.rf, 2), value.name = "rf"), 
+      reshape2::melt(round(mat.LOD, 2), value.name = "LOD"))
   }
   colnames(df.graph)[c(1, 2)] <- c("x", "y")
   if (mrk.axis == "numbers") {
@@ -116,7 +111,7 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
           x.missing = x.missing, y.missing = y.missing, 
           fill = rf, LOD.CC = LOD.CC, LOD.CR = LOD.CR, 
           LOD.RC = LOD.RC, LOD.RR = LOD.RR), data = df.graph) + 
-          geom_tile() + scale_fill_gradientn(colours = rainbow(n.colors), 
+          geom_tile() + scale_fill_gradientn(colours = grDevices::rainbow(n.colors), 
           na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
           hjust = 1))
       }
@@ -124,7 +119,7 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
         p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
           x.missing = x.missing, y.missing = y.missing, 
           fill = rf), data = df.graph) + geom_tile() + 
-          scale_fill_gradientn(colours = rainbow(n.colors), 
+          scale_fill_gradientn(colours = grDevices::rainbow(n.colors), 
             na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
           hjust = 1))
       }
@@ -135,7 +130,7 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
           x.missing = x.missing, y.missing = y.missing, 
           rf = rf, fill = LOD, LOD.CC = LOD.CC, LOD.CR = LOD.CR, 
           LOD.RC = LOD.RC, LOD.RR = LOD.RR), data = df.graph) + 
-          geom_tile() + scale_fill_gradientn(colours = rev(rainbow(n.colors)), 
+          geom_tile() + scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), 
           na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
           hjust = 1))
       }
@@ -143,7 +138,7 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
         p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
           x.missing = x.missing, y.missing = y.missing, 
           rf = rf, fill = LOD), data = df.graph) + geom_tile() + 
-          scale_fill_gradientn(colours = rev(rainbow(n.colors)), 
+          scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), 
             na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
           hjust = 1))
       }
@@ -153,14 +148,14 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
     if (graph.LOD != TRUE) {
       p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, 
         fill = rf, LOD = LOD), data = df.graph) + geom_tile() + 
-        scale_fill_gradientn(colours = rainbow(n.colors), 
+        scale_fill_gradientn(colours = grDevices::rainbow(n.colors), 
           na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
         hjust = 1))
     }
     else {
       p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, 
         rf = rf, fill = LOD), data = df.graph) + geom_tile() + 
-        scale_fill_gradientn(colours = rev(rainbow(n.colors)), 
+        scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), 
           na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
         hjust = 1))
     }
@@ -176,6 +171,9 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
       p <- p + labs(x = lab.xy[1], y = lab.xy[2])
     }
   }
+  if (!is.null(base.size)){
+  	p = p + theme(text = element_text(size = base.size))
+  }
   if (mrk.axis == "none") {
     p <- p + theme(axis.text.x = element_blank(), axis.text.y = element_blank())
   }
@@ -187,9 +185,9 @@ function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
       stop("For interactive mode you must define a name for the outputted html file in 'html.file' argument.")
     }
     else {
-      p <- ggplotly(p)
+      p <- plotly::ggplotly(p)
       if (display) {
-        saveWidget(p, file = html.file)
+        htmlwidgets::saveWidget(p, file = html.file)
         browseURL(html.file)
       }
       else {
