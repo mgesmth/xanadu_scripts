@@ -34,10 +34,14 @@ map <- map.overlapping.batches(input.seq=LG_cur,
                                ripple.cores=rip.cores,
                                ws=10,
                                max.dist = 25,
-                               max.tries = 3,
                                min.tries = 1,
                                method="one",
                                optimize="likelihood",
                                verbosity=c("order","batch"))
+
+#add twopt and outcross objects to map
+map$Map$data.name=outcross_clean
+map$Map$twopt=twopt_table
+
 #save results
 save(map,file=paste(LG,"DFI_Rippled_Map.RData",sep="_"))

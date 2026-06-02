@@ -166,206 +166,264 @@ suggest_lod <- function(x) {
 }
 
 
+#Plotting maps functions
+#get RF/LOD scores -- from script "get_info_2pt.R" on the onemap Github page
+#this, I believe, is an internal function required for the rf_graph_table() function
+#was hard to find!
+get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
+    if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
+    n.mrk<-length(input.seq$seq.num)
+    mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
+    ## create reconmbination fraction matrix 
+    r <- matrix(NA,n.mrk,n.mrk)
+    dimnames(r)<-list(mrk.names, mrk.names)
+    if(LOD)
+    {
+        for(i in 1:(n.mrk-1)) {
+            for(j in (i+1):n.mrk) {
+                k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
+                rfs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
+                LODs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
+                ## check if any assignment meets the criteria
+                phases <- which((LODs >= min.LOD) & rfs <= max.rf)
+                if(length(phases) == 0)
+                {
+                    r[i,j] <- NA
+                    r[j,i] <- NA
+                }
+                else
+                {
+                    r.temp<-rfs[phases[which.max(LODs[phases])]]
+                    if(r.temp > 0.5) r.temp<-0.5
+                    r[i,j]<-r.temp
+                    r[j,i]<-max(LODs[phases])
+                }
+            }
+        }
+    }
+    else
+    {
+        for(i in 1:(n.mrk-1)) {
+            for(j in (i+1):n.mrk) {
+                k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
+                rfs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
+                LODs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
+                ## check if any assignment meets the criteria
+                phases <- which((LODs >= min.LOD) & rfs <= max.rf)
+                if(length(phases) == 0)
+                {
+                    r[j,i] <-  r[i,j] <- NA
+                }
+                else
+                {
+                    r.temp<-rfs[phases[which.max(LODs[phases])]]
+                    if(r.temp > 0.5) r.temp<-0.5
+                    r[j,i]<-r[i,j]<-r.temp
+                }
+            }
+        } 
+    }
+    return(r)
+}
+
+
 #plot rfs after map creation
-rf_graph_table=function(input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE, 
-    html.file = NULL, mrk.axis = "numbers", lab.xy = NULL, n.colors = 4, 
-    display = TRUE) {
-    if (!any(inherits(input.seq, "sequence"))) 
-        stop(deparse(substitute(input.seq)), " is not an object of class 'sequence'")
-    if (!(mrk.axis == "names" | mrk.axis == "numbers" | mrk.axis == 
-        "none")) 
-        stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
-    if (inherits(input.seq$data.name, c("outcross", "f2"))) {
-        n.mrk <- length(input.seq$seq.num)
-        if (inter) {
-            LOD <- lapply(input.seq$twopt$analysis, function(x, 
-                w) {
-                m <- matrix(0, nrow = length(w), ncol = length(w))
-                k <- matrix(c(rep(w[1:(length(w))], each = length(w)), 
-                  rep(w[1:(length(w))], length(w))), ncol = 2)
-                k <- k[-which(k[, 1] == k[, 2]), ]
-                k <- t(apply(k, 1, sort))
-                k <- k[-which(duplicated(k)), ]
-                LOD.temp <- x[k[, c(1, 2)]]
-                m[lower.tri((m))] <- LOD.temp
-                m[upper.tri(m)] <- t(m)[upper.tri(m)]
-                return(m)
-            }, input.seq$seq.num)
-        }
-        mat <- t(get_mat_rf_out(input.seq, LOD = TRUE, max.rf = 0.501, 
-            min.LOD = -0.1))
-    }
-    else {
-        n.mrk <- length(input.seq$seq.num)
-        if (inter) {
-            LOD <- matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
-            k <- matrix(c(rep(input.seq$seq.num[1:(length(input.seq$seq.num))], 
-                each = length(input.seq$seq.num)), rep(input.seq$seq.num[1:(length(input.seq$seq.num))], 
-                length(input.seq$seq.num))), ncol = 2)
-            k <- k[-which(k[, 1] == k[, 2]), ]
-            k <- t(apply(k, 1, sort))
-            k <- k[-which(duplicated(k)), ]
-            LOD.temp <- input.seq$twopt$analysis[k[, c(1, 2)]]
-            LOD[lower.tri((LOD))] <- LOD.temp
-            LOD[upper.tri(LOD)] <- t(LOD)[upper.tri(LOD)]
-        }
-        mat <- t(get_mat_rf_in(input.seq, LOD = TRUE, max.rf = 0.501, 
-            min.LOD = -0.1))
-    }
-    mat[row(mat) > col(mat) & mat > 0.5] <- 0.5
-    mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 0.1] <- 0.1
-    diag(mat) <- NA
-    colnames(mat) <- rownames(mat) <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
-    if (mrk.axis == "numbers") 
-        colnames(mat) <- rownames(mat) <- input.seq$seq.num
-    if (inherits(input.seq$data.name, c("outcross"))) {
-        types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
-        for (i in 1:length(types)) for (j in 1:(length(types) - 
-            1)) if ((types[i] == 7 & types[j] == 6) | (types[i] == 
-            6 & types[j] == 7)) {
-            mat[i, j] <- mat[j, i] <- NA
-        }
-    }
-    types <- input.seq$data.name$segr.type[input.seq$seq.num]
-    if (length(input.seq$seq.rf) > 1) {
-        for (i in 1:(n.mrk - 1)) {
-            mat[i + 1, i] <- input.seq$seq.rf[i]
-        }
-    }
-    missing <- 100 * apply(input.seq$data.name$geno[, input.seq$seq.num], 
-        2, function(x) sum(x == 0))/input.seq$data.name$n.ind
-    mat.LOD <- mat.rf <- mat
-    mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
-    mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
-    if (inherits(input.seq$data.name, c("outcross", "f2"))) {
-        if (inter) {
-            colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
-            colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
-            colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
-            colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
-            df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
-                list(melt(round(mat.rf, 2), value.name = "rf"), 
-                  melt(round(mat.LOD, 2), value.name = "LOD"), 
-                  melt(round(LOD$CC, 2), value.name = "CC"), 
-                  melt(round(LOD$CR, 2), value.name = "CR"), 
-                  melt(round(LOD$RC, 2), value.name = "RC"), 
-                  melt(round(LOD$RR, 2), value.name = "RR")))
-            colnames(df.graph)[5:8] <- paste0("LOD.", c("CC", 
-                "CR", "RC", "RR"))
-        }
-        else {
-            df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
-                list(melt(round(mat.rf, 2), value.name = "rf"), 
-                  melt(round(mat.LOD, 2), value.name = "LOD")))
-        }
-    }
-    else {
-        df.graph <- merge(melt(round(mat.rf, 2), value.name = "rf"), 
-            melt(round(mat.LOD, 2), value.name = "LOD"))
-    }
-    colnames(df.graph)[c(1, 2)] <- c("x", "y")
-    if (mrk.axis == "numbers") {
-        df.graph$x <- factor(df.graph$x, levels = as.character(input.seq$seq.num))
-        df.graph$y <- factor(df.graph$y, levels = as.character(input.seq$seq.num))
-    }
-    missing <- paste0(round(missing, 2), "%")
-    mrk.type.x <- data.frame(x = colnames(mat.rf), x.type = types)
-    mrk.type.y <- data.frame(y = colnames(mat.rf), y.type = types)
-    missing.x <- data.frame(x = colnames(mat.rf), x.missing = missing)
-    missing.y <- data.frame(y = colnames(mat.rf), y.missing = missing)
-    df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
-        list(df.graph, mrk.type.x, mrk.type.y, missing.x, missing.y))
-    if (inherits(input.seq$data.name, c("outcross", "f2"))) {
-        if (graph.LOD != TRUE) {
-            if (inter) {
-                p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
-                  x.missing = x.missing, y.missing = y.missing, 
-                  fill = rf, LOD.CC = LOD.CC, LOD.CR = LOD.CR, 
-                  LOD.RC = LOD.RC, LOD.RR = LOD.RR), data = df.graph) + 
-                  geom_tile() + scale_fill_gradientn(colours = rainbow(n.colors), 
-                  na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
-                  hjust = 1))
-            }
-            else {
-                p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
-                  x.missing = x.missing, y.missing = y.missing, 
-                  fill = rf), data = df.graph) + geom_tile() + 
-                  scale_fill_gradientn(colours = rainbow(n.colors), 
-                    na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
-                  hjust = 1))
-            }
-        }
-        else {
-            if (inter) {
-                p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
-                  x.missing = x.missing, y.missing = y.missing, 
-                  rf = rf, fill = LOD, LOD.CC = LOD.CC, LOD.CR = LOD.CR, 
-                  LOD.RC = LOD.RC, LOD.RR = LOD.RR), data = df.graph) + 
-                  geom_tile() + scale_fill_gradientn(colours = rev(rainbow(n.colors)), 
-                  na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
-                  hjust = 1))
-            }
-            else {
-                p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
-                  x.missing = x.missing, y.missing = y.missing, 
-                  rf = rf, fill = LOD), data = df.graph) + geom_tile() + 
-                  scale_fill_gradientn(colours = rev(rainbow(n.colors)), 
-                    na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
-                  hjust = 1))
-            }
-        }
-    }
-    else {
-        if (graph.LOD != TRUE) {
-            p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, 
-                fill = rf, LOD = LOD), data = df.graph) + geom_tile() + 
-                scale_fill_gradientn(colours = rainbow(n.colors), 
-                  na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
-                hjust = 1))
-        }
-        else {
-            p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, 
-                rf = rf, fill = LOD), data = df.graph) + geom_tile() + 
-                scale_fill_gradientn(colours = rev(rainbow(n.colors)), 
-                  na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
-                hjust = 1))
-        }
-    }
-    if (is.null(lab.xy)) {
-        p <- p + labs(x = " ", y = " ")
-    }
-    else {
-        if (length(lab.xy) != 2) {
-            warning("You should give a character vector with two components to axis labels")
-        }
-        else {
-            p <- p + labs(x = lab.xy[1], y = lab.xy[2])
-        }
-    }
-    if (mrk.axis == "none") {
-        p <- p + theme(axis.text.x = element_blank(), axis.text.y = element_blank())
-    }
-    if (!is.null(main)) {
-        p <- p + ggtitle(main)
-    }
+function (input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE, 
+  html.file = NULL, mrk.axis = "numbers", lab.xy = NULL, n.colors = 4, 
+  display = TRUE) 
+{
+  if (!any(inherits(input.seq, "sequence"))) 
+    stop(deparse(substitute(input.seq)), " is not an object of class 'sequence'")
+  if (!(mrk.axis == "names" | mrk.axis == "numbers" | mrk.axis == 
+    "none")) 
+    stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
+  if (!any(inherits(input.seq$data.name, "outcross"))) {
+    stop(deparse(substitute(input.seq$data.name)), " is not an object of class 'outcross'")
+  } else {
+    #number of markers in the map
+    n.mrk <- length(input.seq$seq.num)
     if (inter) {
-        if (is.null(html.file)) {
-            stop("For interactive mode you must define a name for the outputted html file in 'html.file' argument.")
-        }
-        else {
-            p <- ggplotly(p)
-            if (display) {
-                saveWidget(p, file = html.file)
-                browseURL(html.file)
-            }
-            else {
-                p
-            }
-        }
+      #input.seq$twopt$analysis is a matrix describing the pwrfs between each pair of markers
+      #x here is the rf matrix, w is the vector of the marker numbers
+      #LOD is a matrix with four elements (the four PCPs) containing the LOD scores between each pair of markers
+      LOD <- lapply(input.seq$twopt$analysis, function(x, 
+        w) {
+        #initialize a matrix of length and width w full of zeros
+        #the length(w) is the number of markers
+        m <- matrix(0, nrow = length(w), ncol = length(w))
+        #create another matrix representing all the possible pairings of all markers
+        k <- matrix(c(rep(w[1:(length(w))], each = length(w)), 
+          rep(w[1:(length(w))], length(w))), ncol = 2)
+        #remove cells where the comparison is between the same marker
+        k <- k[-which(k[, 1] == k[, 2]), ]
+        #transpose the matrix, and sort the matrix by row (arg2=1)
+        k <- t(apply(k, 1, sort))
+        #find duplicate cells and remove them
+        k <- k[-which(duplicated(k)), ]
+        LOD.temp <- x[k[, c(1, 2)]]
+        m[lower.tri((m))] <- LOD.temp
+        m[upper.tri(m)] <- t(m)[upper.tri(m)]
+        return(m)
+      }, input.seq$seq.num)
+    }
+    mat <- t(get_mat_rf_out(input.seq, LOD = TRUE, max.rf = 0.501, 
+      min.LOD = -0.1))
+  }
+  mat[row(mat) > col(mat) & mat > 0.5] <- 0.5
+  mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 0.1] <- 0.1
+  diag(mat) <- NA
+  colnames(mat) <- rownames(mat) <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
+  if (mrk.axis == "numbers") 
+    colnames(mat) <- rownames(mat) <- input.seq$seq.num
+  if (inherits(input.seq$data.name, c("outcross"))) {
+    types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
+    for (i in 1:length(types)) for (j in 1:(length(types) - 
+      1)) if ((types[i] == 7 & types[j] == 6) | (types[i] == 
+      6 & types[j] == 7)) {
+      mat[i, j] <- mat[j, i] <- NA
+    }
+  }
+  types <- input.seq$data.name$segr.type[input.seq$seq.num]
+  if (length(input.seq$seq.rf) > 1) {
+    for (i in 1:(n.mrk - 1)) {
+      mat[i + 1, i] <- input.seq$seq.rf[i]
+    }
+  }
+  missing <- 100 * apply(input.seq$data.name$geno[, input.seq$seq.num], 
+    2, function(x) sum(x == 0))/input.seq$data.name$n.ind
+  mat.LOD <- mat.rf <- mat
+  mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
+  mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
+  if (inherits(input.seq$data.name, c("outcross", "f2"))) {
+    if (inter) {
+      colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
+      colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
+      colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
+      colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
+      df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
+        list(reshape2::melt(round(mat.rf, 2), value.name = "rf"), 
+          reshape2::melt(round(mat.LOD, 2), value.name = "LOD"), 
+          reshape2::melt(round(LOD$CC, 2), value.name = "CC"), 
+          reshape2::melt(round(LOD$CR, 2), value.name = "CR"), 
+          reshape2::melt(round(LOD$RC, 2), value.name = "RC"), 
+          reshape2::melt(round(LOD$RR, 2), value.name = "RR")))
+      colnames(df.graph)[5:8] <- paste0("LOD.", c("CC", 
+        "CR", "RC", "RR"))
     }
     else {
-        p
+      df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
+        list(reshape2::melt(round(mat.rf, 2), value.name = "rf"), 
+          reshape2::melt(round(mat.LOD, 2), value.name = "LOD")))
     }
+  }
+  else {
+    df.graph <- merge(reshape2::melt(round(mat.rf, 2), value.name = "rf"), 
+      reshape2::melt(round(mat.LOD, 2), value.name = "LOD"))
+  }
+  colnames(df.graph)[c(1, 2)] <- c("x", "y")
+  if (mrk.axis == "numbers") {
+    df.graph$x <- factor(df.graph$x, levels = as.character(input.seq$seq.num))
+    df.graph$y <- factor(df.graph$y, levels = as.character(input.seq$seq.num))
+  }
+  missing <- paste0(round(missing, 2), "%")
+  mrk.type.x <- data.frame(x = colnames(mat.rf), x.type = types)
+  mrk.type.y <- data.frame(y = colnames(mat.rf), y.type = types)
+  missing.x <- data.frame(x = colnames(mat.rf), x.missing = missing)
+  missing.y <- data.frame(y = colnames(mat.rf), y.missing = missing)
+  df.graph <- Reduce(function(x, y) merge(x, y, all = TRUE), 
+    list(df.graph, mrk.type.x, mrk.type.y, missing.x, missing.y))
+  if (inherits(input.seq$data.name, c("outcross", "f2"))) {
+    if (graph.LOD != TRUE) {
+      if (inter) {
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
+          x.missing = x.missing, y.missing = y.missing, 
+          fill = rf, LOD.CC = LOD.CC, LOD.CR = LOD.CR, 
+          LOD.RC = LOD.RC, LOD.RR = LOD.RR), data = df.graph) + 
+          geom_tile() + scale_fill_gradientn(colours = grDevices::rainbow(n.colors), 
+          na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
+          hjust = 1))
+      }
+      else {
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
+          x.missing = x.missing, y.missing = y.missing, 
+          fill = rf), data = df.graph) + geom_tile() + 
+          scale_fill_gradientn(colours = grDevices::rainbow(n.colors), 
+            na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
+          hjust = 1))
+      }
+    }
+    else {
+      if (inter) {
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
+          x.missing = x.missing, y.missing = y.missing, 
+          rf = rf, fill = LOD, LOD.CC = LOD.CC, LOD.CR = LOD.CR, 
+          LOD.RC = LOD.RC, LOD.RR = LOD.RR), data = df.graph) + 
+          geom_tile() + scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), 
+          na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
+          hjust = 1))
+      }
+      else {
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, 
+          x.missing = x.missing, y.missing = y.missing, 
+          rf = rf, fill = LOD), data = df.graph) + geom_tile() + 
+          scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), 
+            na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
+          hjust = 1))
+      }
+    }
+  }
+  else {
+    if (graph.LOD != TRUE) {
+      p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, 
+        fill = rf, LOD = LOD), data = df.graph) + geom_tile() + 
+        scale_fill_gradientn(colours = grDevices::rainbow(n.colors), 
+          na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
+        hjust = 1))
+    }
+    else {
+      p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, 
+        rf = rf, fill = LOD), data = df.graph) + geom_tile() + 
+        scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), 
+          na.value = "white") + theme(axis.text.x = element_text(angle = 90, 
+        hjust = 1))
+    }
+  }
+  if (is.null(lab.xy)) {
+    p <- p + labs(x = " ", y = " ")
+  }
+  else {
+    if (length(lab.xy) != 2) {
+      warning("You should give a character vector with two components to axis labels")
+    }
+    else {
+      p <- p + labs(x = lab.xy[1], y = lab.xy[2])
+    }
+  }
+  if (mrk.axis == "none") {
+    p <- p + theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+  }
+  if (!is.null(main)) {
+    p <- p + ggtitle(main)
+  }
+  if (inter) {
+    if (is.null(html.file)) {
+      stop("For interactive mode you must define a name for the outputted html file in 'html.file' argument.")
+    }
+    else {
+      p <- plotly::ggplotly(p)
+      if (display) {
+        htmlwidgets::saveWidget(p, file = html.file)
+        browseURL(html.file)
+      }
+      else {
+        p
+      }
+    }
+  }
+  else {
+    p
+  }
 }
 
 
