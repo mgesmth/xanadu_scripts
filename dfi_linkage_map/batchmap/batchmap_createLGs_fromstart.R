@@ -58,9 +58,10 @@ linkage_groups <- group(twoopt_table_segpass,max.rf=0.35,LOD=LOD)
 print(linkage_groups,detailed=F)
 
 LG_list <- list()
-for(i in 1:13){
-  print(i)
+for(i in 1:linkage_groups$n.groups){
   LG_list[[paste("LG",i,sep="_")]] <- make.seq(linkage_groups,i)
 }
+
+image=paste0("LGs_created_maxrf",max_rf,"_LOD",LOD,".RData")
 
 save.image(image)

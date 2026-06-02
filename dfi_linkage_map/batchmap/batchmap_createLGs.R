@@ -23,7 +23,7 @@ linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
 print(linkage_groups,detailed=F)
 
 LG_list <- list()
-for(i in 1:13){
+for(i in 1:linkage_groups$n.groups){
   print(i)
   LG_list[[paste("LG",i,sep="_")]] <- make.seq(linkage_groups,i)
 }

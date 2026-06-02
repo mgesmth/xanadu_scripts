@@ -13,7 +13,7 @@
 set -e
 echo `hostname`
 
-LG_num=176
+LG_num=LG_176
 core=/core/projects/EBP/smith
 dir=${core}/linkage_snp_calling_final/11_batchmap
 batchmap=${core}/bin/batchmap.sif
