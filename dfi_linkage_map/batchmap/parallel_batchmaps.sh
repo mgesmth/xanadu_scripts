@@ -1,11 +1,13 @@
 #!/bin/bash
 
-LG_num=${SLURM_ARRAY_TASK_ID}
+array=($(cat linkage_groups.txt))
+LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 core=/core/projects/EBP/smith
-dir=${core}/linkage_snp_calling/11_batchmap
+dir=${core}/linkage_snp_calling_final/11_batchmap
 batchmap=${core}/bin/batchmap.sif
 ncore=$SLURM_CPUS_PER_TASK
+scripts=${dir}/scripts
 
-singlarity exec ${batchmap} Rscript \
-../01_scripts/create_batchmap_perLG.R \
+cp scripts/create_batchmap_perLG.R .
+singlarity exec ${batchmap} Rscript create_batchmap_perLG.R \
 ${dir} ${LG_num} ${ncore}

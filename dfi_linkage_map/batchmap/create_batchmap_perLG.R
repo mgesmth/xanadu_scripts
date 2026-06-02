@@ -8,7 +8,7 @@ cores <- args[3]
 setwd(wd)
 
 #load up linkage group data
-load("LGs_created.RData")
+load("LGs_created_maxrf0.25_LOD12.RData")
 
 LG_cur<-LG_list[[LG]]
 
