@@ -1,7 +1,8 @@
 #!/bin/bash
 
-array=($(cat linkage_groups.txt))
-LG_num=${array[$SLURM_ARRAY_TASK_ID]}
+#array=($(cat linkage_groups.txt))
+#LG_num=${array[$SLURM_ARRAY_TASK_ID]}
+LG=$1
 core=/core/projects/EBP/smith
 dir=${core}/linkage_snp_calling_final/11_batchmap
 batchmap=${core}/bin/batchmap.sif

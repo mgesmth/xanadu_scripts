@@ -36,6 +36,7 @@ map <- map.overlapping.batches(input.seq=LG_cur,
                                ws=10,
                                max.dist = 25,
                                min.tries = 1,
+                               max.tries = 5,
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
@@ -44,12 +45,12 @@ map$Map$data.name=outcross_clean
 map$Map$twopt=twopt_table
 
 #create a heatmap
-#png(paste0(LG,"_rfheatmap.png"),width=960,height=960)
-#rf_graph_table(input.seq=map$Map, display=FALSE, 
-#    lab.xy=c(paste0("Marker (n=",length(map$Map$seq.num),")"),
-#        paste0("Marker (n=",length(map$Map$seq.num),")")),
-#    mrk.axis="none",base.size=22)
-#dev.off()
+png(paste0(LG,"_rfheatmap.png"),width=960,height=960)
+rf_graph_table(input.seq=map$Map, display=FALSE, 
+    lab.xy=c(paste0("Marker (n=",length(map$Map$seq.num),")"),
+        paste0("Marker (n=",length(map$Map$seq.num),")")),
+    mrk.axis="none",base.size=22)
+dev.off()
 
 #save results
 save(map,file=paste(LG,"DFI_Rippled_Map.RData",sep="_"))
