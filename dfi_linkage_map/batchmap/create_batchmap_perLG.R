@@ -3,7 +3,7 @@ library(BatchMap)
 args <- commandArgs(trailingOnly = TRUE)
 wd <- args[1]
 LG <- args[2]
-cores <- args[3]
+cores <- as.numeric(args[3])
 
 setwd(wd)
 
@@ -25,7 +25,7 @@ batch_size <- pick.batch.sizes(LG_rec,
 
 print("[M]: Now making the map!")
 #now make the map!
-rip.cores <- cores/2
+rip.cores <- round(cores/2)
 map <- map.overlapping.batches(input.seq=LG_cur,
                                size=batch_size,
                                overlap=30,
