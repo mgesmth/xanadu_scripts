@@ -52,4 +52,4 @@ rf_graph_table(input.seq=map$Map, display=FALSE,
 dev.off()
 
 #save results
-save(map,file=paste(LG,"DFI_Rippled_Map.RData",sep="_"))
+save(map,file=paste(LG,"withgraph_DFI_Rippled_Map.RData",sep="_"))
