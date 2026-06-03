@@ -11,7 +11,9 @@ setwd(wd)
 load("LGs_created_maxrf0.25_LOD12.RData")
 load("onemap_functions_for_batchmap_withgraph.RData")
 
-LG_cur<-LG_list[[LG]]
+LG_cur<-LG_list[[as.character(LG)]]
+
+print(class(LG_cur))
 
 print("[M]: Ordering markers...")
 ##order markers
