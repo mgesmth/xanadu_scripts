@@ -15,7 +15,7 @@ echo `hostname`
 
 #array=($(cat linkage_groups.txt))
 #LG_num=${array[$SLURM_ARRAY_TASK_ID]}
-LG=$1
+LG="LG_50"
 core=/core/projects/EBP/smith
 dir=${core}/linkage_snp_calling_final/11_batchmap
 batchmap=${core}/bin/batchmap.sif
