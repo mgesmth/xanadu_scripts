@@ -16,7 +16,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 outdir=${core}/final_genome
-prim=${outdir}/interior_primary_final.FINAL.fasta
+prim=${outdir}/psme_glauca_primary_nosuspect.fa
 baseprim=$(basename ${prim})
 
 database=$1
@@ -33,10 +33,4 @@ export PATH="/core/projects/EBP/smith/bin/miniprot:$PATH"
 db_base=$(basename ${database})
 outbusco=${outdir}/busco
 
-busco -c ${threads} -i ${prim} -m "genome" -f -l ${database} -o "prim_mancur2_${db_base}" --out_path ${outbusco}
-if [[ $? -eq 0 ]] ; then
-echo "[M]: Done."
-exit 0
-else
-echo "[E]: BUSCO run failed. Exit code $?"
-fi
+busco -c ${threads} -i ${prim} -m "genome" -f -l ${database} -o "prim_nosuspect_${db_base}" --out_path ${outbusco}
