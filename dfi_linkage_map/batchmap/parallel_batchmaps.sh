@@ -1,4 +1,17 @@
 #!/bin/bash
+#SBATCH -J build_batchmap_test
+#SBATCH -p general
+#SBATCH -q general
+#SBATCH -c 24
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap
+#SBATCH --mem=128G
+#SBATCH --mail-user=meg8130@student.ubc.ca
+#SBATCH --mail-type=ALL
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.err
+
+set -e
+echo `hostname`
 
 #array=($(cat linkage_groups.txt))
 #LG_num=${array[$SLURM_ARRAY_TASK_ID]}
