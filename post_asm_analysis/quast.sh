@@ -11,7 +11,7 @@ home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 outdir=${core}/final_genome
-prim=${outdir}/interior_primary_final.FINAL.fasta
+prim=${outdir}/psme_glauca_primary.fasta
 baseprim=$(basename ${prim})
 #alt=${core}/CBP_assemblyfiles/interior_alternate_final.fa
 
@@ -23,9 +23,3 @@ threads="$(getconf _NPROCESSORS_ONLN)"
 outquast=${outdir}/quast
 
 python3 $quast -t ${threads} --split-scaffolds --large -o ${outquast} ${prim}
-if [[ $? -eq 0 ]] ; then
-echo "[M]: Done."
-exit 0
-else
-echo "[E]: QUAST run failed. Exit code $?"
-fi
