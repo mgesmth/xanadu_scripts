@@ -3,12 +3,14 @@
 #get marker info, save to a tmp file (need passed marker count for first couple lines)
 
 import sys
+import os
 
 if __name__ == "__main__":
     vcf=sys.argv[1]
     raw=sys.argv[2]
 
-raw_tmp=raw.removesuffix(".raw") + ".tmp"
+raw_tmp=raw.removesuffix(".txt") + ".tmp"
+outdir=os.path.dirname(raw)
 
 heterozygote={1,0}
 marker_counter=0
@@ -83,7 +85,7 @@ with open(raw_tmp) as f, open(raw,"w") as of:
     for line in f:
         of.write(line.strip() + '\n')
 
-
+os.remove(raw_tmp)
 print(f"[M]: Done! Passed {passed_counter} markers.")
 
 ##DONE!

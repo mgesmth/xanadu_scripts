@@ -6,6 +6,7 @@
 
 import pandas as pd
 import sys
+import os
 
 if __name__ == "__main__":
     snp_missingness_tolerance=float(sys.argv[1])
@@ -14,10 +15,10 @@ if __name__ == "__main__":
     in_vcf=sys.argv[4]
     out_vcf=sys.argv[5]
 
-
-inds_passed_filter=f"inds_passed_filter_gq{gq_threshold}.txt"
-out_mg_missing=f"missingness_per_mg_gq{gq_threshold}.tsv"
-out_snp_missing=f"missingness_per_snp_gq{gq_threshold}.hist"
+outdir=os.path.dirname(out_vcf)
+inds_passed_filter=os.path.join(outdir,f"inds_passed_filter_gq{gq_threshold}.txt")
+out_mg_missing=os.path.join(outdir,f"missingness_per_mg_gq{gq_threshold}.tsv")
+out_snp_missing=os.path.join(f"missingness_per_snp_gq{gq_threshold}.hist")
 
 # In[61]:
 
