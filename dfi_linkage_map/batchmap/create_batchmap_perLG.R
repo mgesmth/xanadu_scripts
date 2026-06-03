@@ -11,9 +11,7 @@ setwd(wd)
 load("LGs_created_maxrf0.25_LOD12.RData")
 load("onemap_functions_for_batchmap_withgraph.RData")
 
-LG_cur<-LG_list[[as.character(LG)]]
-
-print(class(LG_cur))
+LG_cur<-LG_list[[LG]]
 
 print("[M]: Ordering markers...")
 ##order markers
@@ -38,7 +36,7 @@ map <- map.overlapping.batches(input.seq=LG_cur,
                                ws=10,
                                max.dist = 25,
                                min.tries = 1,
-                               max.tries = 5,
+                               max.tries=5,
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
@@ -55,4 +53,4 @@ rf_graph_table(input.seq=map$Map, display=FALSE,
 dev.off()
 
 #save results
-save(map,file=paste(LG,"DFI_Rippled_Map.RData",sep="_"))
+save(map,file=paste(LG,"withgraph_DFI_Rippled_Map.RData",sep="_"))
