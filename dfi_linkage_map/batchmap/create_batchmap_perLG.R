@@ -27,7 +27,7 @@ batch_size <- pick.batch.sizes(LG_rec,
 print("[M]: Now making the map!")
 #now make the map!
 rip.cores <- round(cores/2)
-map <- map.overlapping.batches(input.seq=LG_cur,
+map <- map.overlapping.batches(input.seq=LG_rec,
                                size=batch_size,
                                overlap=30,
                                fun.order=ripple.ord,
