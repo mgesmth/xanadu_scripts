@@ -4,7 +4,7 @@ import sys
 import re
 
 if __name__ == "__main__":
-    file_type=sys.argv[1] #one of "bed", "gff", "vcf"
+    file_type=sys.argv[1] #one of "bed", "gff", "vcf", "out" (out is RepeatMasker annotation file)
     input_file=sys.argv[2]
     output_file=sys.argv[3]
 
@@ -207,6 +207,64 @@ elif file_type=="gff":
                 else: #else minor scaffolds
                     new_scaffnum=int(ori_scaffold.split("_")[2])+1
                     fields[0]="_".join(map(str,["scaffold",new_scaffnum]))
+                    of.write("\t".join(map(str,fields)) + '\n')
+                    continue
+
+###
+
+elif file_type == "out":
+    counter=0
+    error_counter=0
+
+    chr13=[1,622561269]
+    chr12=[622561270+200,1437716149]
+    chr13_len=622561269
+    chr12_len=815154680
+
+    map_dict_1to1={"HiC_scaffold_1" : "chr1",
+    "HiC_scaffold_2" : "chr2",
+    "HiC_scaffold_4" : "chr3",
+    "HiC_scaffold_5" : "chr4",
+    "HiC_scaffold_6" : "chr5",
+    "HiC_scaffold_7" : "chr6",
+    "HiC_scaffold_8" : "chr7",
+    "HiC_scaffold_9" : "chr8",
+    "HiC_scaffold_10" : "chr9",
+    "HiC_scaffold_11" : "chr10",
+    "HiC_scaffold_12" : "chr11",
+    }
+    with open(input_file) as f, open(output_file, "w") as of:
+        for line in f:
+            counter+=1
+            if counter == 1: # handle header
+                of.write(line.strip() + '\n')
+                continue
+            else:
+                fields=line.strip().split("\t")
+                ori_scaffold=fields[4]
+
+                if ori_scaffold in list(map_dict_1to1.keys()): #major scaffold not 3 (now 12 and 13)
+                    fields[0]=map_dict_1to1[ori_scaffold]
+                    of.write("\t".join(map(str,fields)) + '\n')
+                elif ori_scaffold == "HiC_scaffold_3": #scaffold 3 (now 12 and 13)
+                    start=int(fields[5])
+                    end=int(fields[6])
+                    if start >= chr13[0] and end <= chr13[1]: #handle chr13 records
+                        fields[4]="chr13"
+                        of.write("\t".join(map(str,fields)) + '\n')
+                        continue
+                    elif start >= chr12[0]: #handle chr12 records
+                        #change the chr name and start/end coordinates
+                        fields[4]="chr12"
+                        fields[5]=start-chr13_len-200
+                        fields[6]=end-chr13_len-200
+                        of.write("\t".join(map(str,fields)) + '\n')
+                        continue
+                    else:
+                        raise ValueError(f"[E]: Coordinate at record {counter} appears to span break between chrs 12 and 13. Check it out.")
+                else: #else minor scaffolds
+                    new_scaffnum=int(ori_scaffold.split("_")[2])+1
+                    fields[4]="_".join(map(str,["scaffold",new_scaffnum]))
                     of.write("\t".join(map(str,fields)) + '\n')
                     continue
 
