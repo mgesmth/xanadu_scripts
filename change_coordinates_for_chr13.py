@@ -244,7 +244,7 @@ elif file_type == "out":
                 ori_scaffold=fields[4]
 
                 if ori_scaffold in list(map_dict_1to1.keys()): #major scaffold not 3 (now 12 and 13)
-                    fields[0]=map_dict_1to1[ori_scaffold]
+                    fields[4]=map_dict_1to1[ori_scaffold]
                     of.write("\t".join(map(str,fields)) + '\n')
                 elif ori_scaffold == "HiC_scaffold_3": #scaffold 3 (now 12 and 13)
                     start=int(fields[5])
