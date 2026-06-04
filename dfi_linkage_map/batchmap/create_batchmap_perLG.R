@@ -7,7 +7,8 @@ cores <- as.numeric(args[3])
 
 setwd(wd)
 
-tries=10
+tries=3
+descrip="tried3_around20_increase3"
 
 #load up linkage group data
 load("LGs_created_maxrf0.25_LOD12.RData")
@@ -24,7 +25,7 @@ print("[M]: Done ordering markers. Getting a batch size...")
 batch_size <- pick.batch.sizes(LG_rec, 
                  size = 50, 
                  overlap = 30, 
-                 around = 10)
+                 around = 20)
 
 print("[M]: Now making the map!")
 #now make the map!
@@ -42,13 +43,18 @@ map <- map.overlapping.batches(input.seq=LG_rec,
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
+
 #add twopt and outcross objects to map
 map2=map
 map2$Map$data.name=outcross_clean
 map2$Map$twopt=twopt_table
 
+outdir=paste0(LG,"_",descrip)
+dir.create(outdir)
+
 #create a heatmap
-png(paste0(LG,"_rfheatmap.png"),width=960,height=960)
+png(file.path(outdir,paste0(LG,"_rfheatmap.png")),
+    width=960,height=960)
 rf_graph_table(input.seq=map2$Map, display=FALSE, 
     lab.xy=c(paste0("Marker (n=",length(map2$Map$seq.num),")"),
         paste0("Marker (n=",length(map2$Map$seq.num),")")),
@@ -56,4 +62,6 @@ rf_graph_table(input.seq=map2$Map, display=FALSE,
 dev.off()
 
 #save results
-save(map,file=paste(LG,tries,"withgraph_DFI_Rippled_Map.RData",sep="_"))
+
+save(map,file=file.path(outdir,
+    paste("withgraph_DFI_Rippled_Map.RData",sep="_")))
