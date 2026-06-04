@@ -50,8 +50,8 @@ map2$Map$twopt=twopt_table
 #create a heatmap
 png(paste0(LG,"_rfheatmap.png"),width=960,height=960)
 rf_graph_table(input.seq=map2$Map, display=FALSE, 
-    lab.xy=c(paste0("Marker (n=",length(map$Map$seq.num),")"),
-        paste0("Marker (n=",length(map$Map$seq.num),")")),
+    lab.xy=c(paste0("Marker (n=",length(map2$Map$seq.num),")"),
+        paste0("Marker (n=",length(map2$Map$seq.num),")")),
     mrk.axis="none",base.size=22)
 dev.off()
 
