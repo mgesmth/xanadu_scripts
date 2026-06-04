@@ -23,7 +23,7 @@ db_name=$(basename ${database})
 echo -e "`date`:[M]: Beginning BUSCO analysis of primary annotation against database ${database}.\n"
 #Module files
 #source /home/FCAM/msmith/busco/.venv/bin/activate
-module load blast/2.15.0 augustus/3.6.0 hmmer/3.4 R/4.2.2 java/22 bbmap/39.34 prodigal/2.6.3 busco/6.0.0
+module load singularity/3.9.2 blast/2.15.0 augustus/3.6.0 hmmer/3.4 R/4.2.2 java/22 bbmap/39.34 prodigal/2.6.3 busco/6.0.0
 export AUGUTUS_CONFIG_PATH="/core/projects/EBP/smith/busco/config"
 threads="$(getconf _NPROCESSORS_ONLN)"
 export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
