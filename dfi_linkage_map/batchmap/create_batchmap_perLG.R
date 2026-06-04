@@ -7,6 +7,8 @@ cores <- as.numeric(args[3])
 
 setwd(wd)
 
+tries=10
+
 #load up linkage group data
 load("LGs_created_maxrf0.25_LOD12.RData")
 load("onemap_functions_for_batchmap_withgraph.RData")
@@ -36,7 +38,7 @@ map <- map.overlapping.batches(input.seq=LG_rec,
                                ws=10,
                                max.dist = 25,
                                min.tries = 1,
-                               max.tries=5,
+                               max.tries=tries,
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
@@ -53,4 +55,4 @@ rf_graph_table(input.seq=map$Map, display=FALSE,
 dev.off()
 
 #save results
-save(map,file=paste(LG,"withgraph_DFI_Rippled_Map.RData",sep="_"))
+save(map,file=paste(LG,tries,"withgraph_DFI_Rippled_Map.RData",sep="_"))
