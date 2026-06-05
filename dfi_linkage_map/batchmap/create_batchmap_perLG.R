@@ -62,7 +62,7 @@ rf_graph_table(input.seq=map2$Map, display=FALSE,
 dev.off()
 
 #print save results
-print(paste0("Map likelihood : ",map$Map$seq.like)
+print(paste0("Map likelihood : ",map$Map$seq.like))
 
 save(map,file=file.path(outdir,
     paste("withgraph_DFI_Rippled_Map.RData",sep="_")))
