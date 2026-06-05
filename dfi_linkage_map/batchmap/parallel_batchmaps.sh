@@ -3,12 +3,12 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 24
-#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap_physbin
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap_physbin/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap_physbin/log/%x.%j.err
 
 set -e
 echo `hostname`
@@ -17,7 +17,7 @@ echo `hostname`
 #LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 LG_num=$1
 core=/core/projects/EBP/smith
-dir=${core}/linkage_snp_calling_final/11_batchmap
+dir=${core}/linkage_snp_calling_final/11_batchmap_physbin
 batchmap=${core}/bin/batchmap.sif
 ncore=$SLURM_CPUS_PER_TASK
 scripts=${dir}/scripts
