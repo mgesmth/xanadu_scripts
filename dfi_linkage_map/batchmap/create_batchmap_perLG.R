@@ -8,7 +8,7 @@ cores <- as.numeric(args[3])
 setwd(wd)
 
 tries=3
-descrip="tried3_around20_increase3"
+descrip="tries3_around20_increase3"
 
 #load up linkage group data
 load("LGs_created_maxrf0.25_LOD12.RData")
@@ -53,7 +53,7 @@ outdir=paste0(LG,"_",descrip)
 dir.create(outdir)
 
 #create a heatmap
-png(file.path(outdir,paste0(LG,"_rfheatmap.png")),
+png(file.path(outdir,paste0(LG,"_rfheatmap_",descrip,".png")),
     width=960,height=960)
 rf_graph_table(input.seq=map2$Map, display=FALSE, 
     lab.xy=c(paste0("Marker (n=",length(map2$Map$seq.num),")"),
@@ -61,7 +61,8 @@ rf_graph_table(input.seq=map2$Map, display=FALSE,
     mrk.axis="none",base.size=22)
 dev.off()
 
-#save results
+#print save results
+print(paste0("Map likelihood : ",map$Map$seq.like)
 
 save(map,file=file.path(outdir,
     paste("withgraph_DFI_Rippled_Map.RData",sep="_")))
