@@ -11,7 +11,7 @@ tries=3
 descrip="tries3_around20_increase3"
 
 #load up linkage group data
-load("LGs_created_maxrf0.25_LOD12.RData")
+load("LGs_created_maxrf0.35_LOD12.RData")
 load("onemap_functions_for_batchmap_withgraph.RData")
 
 LG_cur<-LG_list[[LG]]
