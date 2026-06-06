@@ -16,6 +16,8 @@ echo `hostname`
 #array=($(cat linkage_groups.txt))
 #LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 LG_num=$1
+tries=$2
+around=$3
 core=/core/projects/EBP/smith
 dir=${core}/linkage_snp_calling_final/11_batchmap_physbin
 batchmap=${core}/bin/batchmap.sif
@@ -24,4 +26,4 @@ scripts=${dir}/scripts
 
 cp scripts/create_batchmap_perLG.R .
 singularity exec ${batchmap} Rscript create_batchmap_perLG.R \
-${dir} ${LG_num} ${ncore}
+${dir} ${LG_num} ${ncore} ${tries} ${around}
