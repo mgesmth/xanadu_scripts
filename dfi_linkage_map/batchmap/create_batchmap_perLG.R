@@ -4,14 +4,14 @@ args <- commandArgs(trailingOnly = TRUE)
 wd <- args[1]
 LG <- args[2]
 cores <- as.numeric(args[3])
+tries=as.numeric(arg[4])
+around=as.numeric(arg[5])
 
 setwd(wd)
-
-tries=3
-descrip="tries3_around20_increase3"
+descrip=paste0("tries",tries,"_around",around)
 
 #load up linkage group data
-load("LGs_created_maxrf0.35_LOD12.RData")
+load("LGs_created_maxrf0.25_LOD10.RData")
 load("onemap_functions_for_batchmap_withgraph.RData")
 
 LG_cur<-LG_list[[LG]]
@@ -25,20 +25,20 @@ print("[M]: Done ordering markers. Getting a batch size...")
 batch_size <- pick.batch.sizes(LG_rec, 
                  size = 50, 
                  overlap = 30, 
-                 around = 20)
+                 around = around)
 
 print("[M]: Now making the map!")
 #now make the map!
 rip.cores <- round(cores/2)
 map <- map.overlapping.batches(input.seq=LG_rec,
-                               size=batch_size,
+                               size=50,
                                overlap=30,
                                fun.order=ripple.ord,
                                phase.cores=2,
                                ripple.cores=rip.cores,
-                               ws=10,
+                               ws=5,
                                max.dist = 25,
-                               min.tries = 1,
+                               min.tries = 3,
                                max.tries=tries,
                                optimize="likelihood",
                                verbosity=c("order","batch"))
@@ -65,4 +65,4 @@ dev.off()
 print(paste0("Map likelihood : ",map$Map$seq.like))
 
 save(map,file=file.path(outdir,
-    paste("withgraph_DFI_Rippled_Map.RData",sep="_")))
+    paste(descrip,"DFI_Rippled_Map.RData",sep="_")))
