@@ -18,7 +18,11 @@ LG_cur<-LG_list[[LG]]
 
 print("[M]: Ordering markers...")
 ##order markers
-LG_rec<-record.parallel(LG_cur,times=10,cores=cores)
+LG_rec<-record.parallel(LG_cur,
+    times=10,
+    cores=cores,
+    LOD=10,
+    max.rf=0.25)
 
 print("[M]: Done ordering markers. Getting a batch size...")
 #get a batch size
