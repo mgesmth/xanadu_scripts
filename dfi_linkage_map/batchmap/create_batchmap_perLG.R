@@ -4,8 +4,8 @@ args <- commandArgs(trailingOnly = TRUE)
 wd <- args[1]
 LG <- args[2]
 cores <- as.numeric(args[3])
-tries=as.numeric(arg[4])
-around=as.numeric(arg[5])
+tries=as.numeric(args[4])
+around=as.numeric(args[5])
 
 setwd(wd)
 descrip=paste0("tries",tries,"_around",around)
