@@ -43,7 +43,7 @@ map <- map.overlapping.batches(input.seq=LG_rec,
                                ws=5,
                                max.dist = 15,
                                max.tries=tries,
-                               min.tries=3
+                               min.tries=3,
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
