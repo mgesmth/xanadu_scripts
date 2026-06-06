@@ -28,7 +28,7 @@ print("[M]: Done ordering markers. Getting a batch size...")
 #get a batch size
 batch_size <- pick.batch.sizes(LG_rec, 
                  size = 50, 
-                 overlap = 15, 
+                 overlap = 30, 
                  around = around)
 
 print("[M]: Now making the map!")
@@ -40,9 +40,10 @@ map <- map.overlapping.batches(input.seq=LG_rec,
                                fun.order=ripple.ord,
                                phase.cores=2,
                                ripple.cores=rip.cores,
-                               ws=10,
-                               max.dist = 25,
+                               ws=5,
+                               max.dist = 15,
                                max.tries=tries,
+                               min.tries=3
                                optimize="likelihood",
                                verbosity=c("order","batch"))
 
