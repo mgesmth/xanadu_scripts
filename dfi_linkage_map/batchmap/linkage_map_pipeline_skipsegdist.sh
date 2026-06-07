@@ -13,7 +13,7 @@
 set -e
 echo `hostname`
 
-module load python/3.13.11-gcc-11.4.0-kifh66l
+module load python/3.13.11-gcc-11.4.0-kifh66l singularity/3.9.2
 
 core=/core/projects/EBP/smith
 batchmap=${core}/bin/batchmap.sif
