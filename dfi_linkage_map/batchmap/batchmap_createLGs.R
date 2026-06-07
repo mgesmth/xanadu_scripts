@@ -11,8 +11,9 @@ setwd(wd)
 load("onemap_functions_for_batchmap.RData")
 
 outcross <- read.outcross2(input_file)
-bins <- find.bins(outcross, exact = FALSE)
-outcross_clean <- create.data.bins(outcross, bins)
+#bins <- find.bins(outcross, exact = FALSE)
+#outcross_clean <- create.data.bins(outcross, bins)
+outcross_clean=outcross
 
 #estimate two-point r
 twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=max_rf)
