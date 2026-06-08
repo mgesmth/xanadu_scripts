@@ -11,7 +11,7 @@ setwd(wd)
 descrip=paste0("tries",tries,"_around",around)
 
 #load up linkage group data
-load("LGs_created_maxrf0.25_LOD10.RData")
+load("LGs_created_maxrf0.25_LOD12.RData")
 load("onemap_functions_for_batchmap_withgraph.RData")
 
 LG_cur<-LG_list[[LG]]
@@ -21,7 +21,7 @@ print("[M]: Ordering markers...")
 LG_rec<-record.parallel(LG_cur,
     times=10,
     cores=cores,
-    LOD=10,
+    LOD=12,
     max.rf=0.25)
 
 print("[M]: Done ordering markers. Getting a batch size...")
