@@ -133,7 +133,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 				else:
 					counter+=1
 			elif inversion is True:
-				handle_twoallele_inversion(prim_len, coast_len)
+				handle_twoallele_inversion(prim_len, alt_len)
 				counter+=1
 			else:
 				raise ValueError("[E]: Inversion Boolean not recognized.")
