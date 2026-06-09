@@ -10,16 +10,28 @@ if __name__ == "__main__":
 	bubblebedfile=sys.argv[4]
 
 #functions
-def paste_files(file1, file2, output_file, delimiter='\t'):
-	with open(file1, 'r') as f1, open(file2, 'r') as f2:
-		lines1 = f1.readlines()
-		lines2 = f2.readlines()
-		combined = [
-			line1.rstrip('\n') + delimiter + line2.rstrip('\n')
-			for line1, line2 in zip(lines1, lines2)
-		]
-		with open(output_file, 'w') as out:
-			out.writelines(combined)
+def paste_files(file1, file2, output_file, file3=None, delimiter='\t'):
+	if file3 == None:
+		with open(file1, 'r') as f1, open(file2, 'r') as f2:
+			lines1 = f1.readlines()
+			lines2 = f2.readlines()
+			combined = [
+				line1.rstrip('\n') + delimiter + line2.rstrip('\n')
+				for line1, line2 in zip(lines1, lines2)
+			]
+			with open(output_file, 'w') as out:
+				out.writelines(combined)
+	else:	
+		with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
+			lines1 = f1.readlines()
+			lines2 = f2.readlines()
+			lines3 = f3.readlines()
+			combined = [
+				line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3.rstrip('\n')
+				for line1, line2, line3 in zip(lines1, lines2, lines3)
+			]
+			with open(output_file, 'w') as out:
+				out.writelines(combined)
 
 #this function handles the rare case where all alleles are the same length but aren't inversions (i.e., not insertion, deletion, or inversion)
 def handle_twoallele_indel(ref_allele_length, query_allele_length, line, ef):
