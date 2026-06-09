@@ -114,7 +114,6 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 			columns=line.strip().split()
 			if columns[0] == "scaffold" and columns[1] == "start":
 				#this is the header
-				fw.write("\t".join(map(str,columns)) + '\n')
 				continue
 
 			prim_allele=int(0)
@@ -138,7 +137,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 				raise ValueError("[E]: Inversion Boolean not recognized.")
 
 
-			newline=(columns[0],columns[1],columns[2],1,first_category,second_category,genotype,len_string)
+			newline=(columns[0],columns[1],columns[2],first_category,second_category,len_string)
 			fw.write('\t'.join(map(str, newline)) + '\n')
 
 print(f"[M]: Done!")
