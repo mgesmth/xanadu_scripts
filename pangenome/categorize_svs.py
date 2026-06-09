@@ -123,7 +123,6 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 			alt_len=int(columns[5])
 			inversion = bool(int(columns[6]))
 			len_string=str(prim_len) + ":" + str(alt_len)
-			genotype=str(prim_allele) + ":" + str(alt_allele)
 
 			#categorize variants
 			if inversion is False:
@@ -139,7 +138,7 @@ with open("sv_allele_summary.tsv") as f, open("non_inverted_equal_lengths.tsv", 
 				raise ValueError("[E]: Inversion Boolean not recognized.")
 
 
-			newline=(columns[0],columns[1],columns[2],first_category,second_category,genotype,len_string)
+			newline=(columns[0],columns[1],columns[2],1,first_category,second_category,genotype,len_string)
 			fw.write('\t'.join(map(str, newline)) + '\n')
 
 print(f"[M]: Done!")
