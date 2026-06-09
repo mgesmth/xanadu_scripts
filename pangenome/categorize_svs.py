@@ -100,7 +100,7 @@ with open(bubblebedfile) as f, open("prt3.tmp", "w") as of:
 		of.write(inversion + '\n')
 
 #Combine to create allele summary information, doesn't categorize the SVs
-paste_files("prt1.tmp","prt2.tmp", "prt3.tmp", output_file="sv_allele_summary.tsv")
+paste_files("prt1.tmp","prt2.tmp", file3="prt3.tmp", output_file="sv_allele_summary.tsv")
 # os.remove("prt1.tmp")
 # os.remove("prt2.tmp")
 # os.remove("prt3.tmp")
