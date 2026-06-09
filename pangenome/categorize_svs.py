@@ -16,7 +16,7 @@ def paste_files(file1, file2, output_file, file3=None, delimiter='\t'):
 			lines1 = f1.readlines()
 			lines2 = f2.readlines()
 			combined = [
-				line1.rstrip('\n') + delimiter + line2.rstrip('\n')
+				line1.rstrip('\n') + delimiter + line2.rstrip('\n') + '\n'
 				for line1, line2 in zip(lines1, lines2)
 			]
 			with open(output_file, 'w') as out:
@@ -27,7 +27,7 @@ def paste_files(file1, file2, output_file, file3=None, delimiter='\t'):
 			lines2 = f2.readlines()
 			lines3 = f3.readlines()
 			combined = [
-				line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3.rstrip('\n')
+				line1.rstrip('\n') + delimiter + line2.rstrip('\n') + delimiter + line3.rstrip('\n') + '\n'
 				for line1, line2, line3 in zip(lines1, lines2, lines3)
 			]
 			with open(output_file, 'w') as out:
