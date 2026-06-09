@@ -207,7 +207,7 @@ windows$count_sv <- count_sv
 
 #Repeat Density----
 
-repeats <- read_tsv("repeats_shifted_coordinates_chr.tsv", col_names = F)
+repeats <- read_tsv("repeats_shifted_coordinates_chr.tsv", col_names = T)
 repeats$len <- repeats$end-repeats$start
 
 ##note: this takes a while. Repeat list is long.
