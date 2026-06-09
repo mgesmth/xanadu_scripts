@@ -207,7 +207,7 @@ windows$count_sv <- count_sv
 
 #Repeat Density----
 
-repeats <- read_tsv("repeats_shifted_coordinates_chr.tsv", col_names = T)
+repeats <- read_tsv("repeats_shifted_coordinates_chr.tsv", col_names =T)
 repeats$len <- repeats$end-repeats$start
 
 ##note: this takes a while. Repeat list is long.
@@ -225,9 +225,8 @@ rm(i,chr,win_start,win_end,sum)
 windows$repeat_prop <- sum_repeats
 windows$win_start <- windows$win_start/1e6
 windows$win_end <- windows$win_end/1e6
-windows$gene_scaled <- scale(windows$prop_gene)
-windows$sv_scaled <- scale(windows$count_sv)
-windows$repeat_scaled <- scale(windows$repeat_prop)
-windows$chr <- factor(windows$chr, levels=chrs)
+#windows$gene_scaled <- scale(windows$prop_gene)
+#windows$sv_scaled <- scale(windows$count_sv)
+#windows$repeat_scaled <- scale(windows$repeat_prop)
 
 write_tsv(windows,file="windows.tsv")
