@@ -35,7 +35,7 @@ print("[M]: Now making the map!")
 #now make the map!
 rip.cores <- round(cores/2)
 map <- map.overlapping.batches(input.seq=LG_rec,
-                               size=50,
+                               size=batch_size,
                                overlap=30,
                                fun.order=ripple.ord,
                                phase.cores=2,
@@ -45,7 +45,9 @@ map <- map.overlapping.batches(input.seq=LG_rec,
                                max.tries=tries,
                                min.tries=3,
                                optimize="likelihood",
-                               verbosity=c("order","batch"))
+                               verbosity=c("order","batch"),
+                               method="one",
+                               no_reverse=FALSE)
 
 
 #add twopt and outcross objects to map
