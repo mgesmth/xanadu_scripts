@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
 #functions
 def paste_files(file1, file2, output_file, delimiter='\t'):
-	with open(file1, 'r') as f1, open(file2, 'r') as f2, open(file3, 'r') as f3:
+	with open(file1, 'r') as f1, open(file2, 'r') as f2:
 		lines1 = f1.readlines()
 		lines2 = f2.readlines()
 		combined = [
