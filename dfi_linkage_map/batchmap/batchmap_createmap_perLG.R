@@ -6,7 +6,7 @@ LG <- args[2]
 cores <- as.numeric(args[3])
 ripple_tries <- as.numeric(args[4])
 ws <- as.numeric(args[5])
-methods <- args[6]
+method <- args[6] #'one' or 'all'
 
 setwd(wd)
 descrip=paste0(LG,"_justRippledMap_ripple",ripple_tries,"_ws",ws,"_method",method)

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J build_batchmap_test
+#SBATCH -J build_batchmap
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 24
@@ -16,14 +16,15 @@ echo `hostname`
 #array=($(cat linkage_groups.txt))
 #LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 LG_num=$1
-tries=$2
-around=$3
+ripple_tries=$2
+ws=$3
+method=$4
 core=/core/projects/EBP/smith
 dir=${core}/linkage_last/11_batchmap_forreal
 batchmap=${core}/bin/batchmap.sif
 ncore=$SLURM_CPUS_PER_TASK
 scripts=${dir}/scripts
 
-cp scripts/create_batchmap_perLG.R .
-singularity exec ${batchmap} Rscript create_batchmap_perLG.R \
-${dir} ${LG_num} ${ncore} ${tries} ${around}
+cp scripts/batchmap_createmap_perLG.R .
+singularity exec ${batchmap} Rscript batchmap_createmap_perLG.R \
+${dir} ${LG_num} ${ncore} ${ripple_tries} ${ws} ${method}
