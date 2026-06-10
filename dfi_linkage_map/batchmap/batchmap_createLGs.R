@@ -13,7 +13,8 @@ load("onemap_functions_for_batchmap.RData")
 outcross <- read.outcross2(input_file)
 #bins <- find.bins(outcross, exact = FALSE)
 #outcross_clean <- create.data.bins(outcross, bins)
-outcross_clean=outcross
+outcross_clean <- outcross
+#input file is already binned
 
 #estimate two-point r
 twopt_table <- rf.2pts(outcross_clean,LOD=LOD,max.rf=max_rf)

@@ -2,13 +2,13 @@
 #SBATCH -J create_LGs
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -D /core/projects/EBP/smith/linkage_last/11_batchmap_500kbbin
+#SBATCH -D /core/projects/EBP/smith/linkage_last/11_batchmap_forreal
 #SBATCH -c 24
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_last/11_batchmap_500kbbin/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_last/11_batchmap_500kbbinlog/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_last/11_batchmap_forreal/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_last/11_batchmap_forreal/log/%x.%j.err
 
 set -e
 echo `hostname`
@@ -17,7 +17,7 @@ module load python/3.13.11-gcc-11.4.0-kifh66l
 
 core=/core/projects/EBP/smith
 batchmap=${core}/bin/batchmap.sif
-dir=${core}/linkage_last/11_batchmap_500kbbin
+dir=${core}/linkage_last/11_batchmap_forreal
 scripts=${dir}/scripts
 if [[ ! -d ${scripts} ]] ; then
   ln -s /home/FCAM/msmith/scripts/dfi_linkage_map/batchmap ./scripts
