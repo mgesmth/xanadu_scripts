@@ -2,13 +2,13 @@
 #SBATCH -J create_LGs
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap
+#SBATCH -D /core/projects/EBP/smith/linkage_last/11_batchmap_500kbbin
 #SBATCH -c 24
 #SBATCH --mem=128G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_final/11_batchmap/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_last/11_batchmap_500kbbin/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_last/11_batchmap_500kbbinlog/%x.%j.err
 
 set -e
 echo `hostname`
@@ -17,7 +17,7 @@ module load python/3.13.11-gcc-11.4.0-kifh66l
 
 core=/core/projects/EBP/smith
 batchmap=${core}/bin/batchmap.sif
-dir=${core}/linkage_snp_calling_final/11_batchmap
+dir=${core}/linkage_last/11_batchmap_500kbbin
 scripts=${dir}/scripts
 if [[ ! -d ${scripts} ]] ; then
   ln -s /home/FCAM/msmith/scripts/dfi_linkage_map/batchmap ./scripts
@@ -42,6 +42,12 @@ rm batchmap_segdist.R
 
 echo -e "\n[M]: Removing segregation distorters...\n"
 
+head -n1 seg_passed_markers_binned.tsv > seg_passed_markers_binned.s.tsv
+for chr in $(awk 'NR==1 { next } { print }' seg_passed_markers_binned.tsv | cut -f1 -d "_" | sort | uniq) ; do
+  grep "${chr}_" seg_passed_markers_binned.tsv | sort -g -t "_" -k2,2 >> seg_passed_markers_binned.s.tsv
+done
+
+
 #remove segregation distorters
 awk 'NR==FNR{
   if ($1 == "marker") {
@@ -63,7 +69,7 @@ awk 'NR==FNR{
     #if the header line
     next
   }
-}' seg_passed_markers_notbinned.tsv ${mark1} > marks.tmp
+}' seg_passed_markers_binned.s.tsv ${mark1} > marks.tmp
 
 num_marks=$(cat marks.tmp | wc -l)
 echo "100 ${num_marks} 0" > ${mark2}

@@ -1,5 +1,4 @@
 library(BatchMap)
-library(readr)
 
 #find the markers without segregation distortion
 
@@ -12,8 +11,10 @@ setwd(wd)
 load("onemap_functions_for_batchmap.RData")
 
 outcross <- read.outcross2(input_file)
+bins <- find.bins(outcross, exact = FALSE)
+outcross_clean <- create.data.bins(outcross, bins)
 
-seg_test <- test.segregation_outcross(outcross)
+seg_test <- test.segregation_outcross(outcross_clean)
 png("seg_test_maf.png")
 plot(seg_test)
 dev.off()
@@ -32,11 +33,11 @@ for (i in 1:length(seg_failed)){
   ))
 }
 
-write_tsv(seg_dist,file="seg_distort_snps_maf.tsv")
+readr::write_tsv(seg_dist,file="seg_distort_snps_maf.tsv")
 rm(seg_dist)
 
 #find good markers
 seg_passed <- select.segreg(seg_test, distorted = FALSE)
-write_tsv(data.frame(marker=seg_passed),file="seg_passed_markers_notbinned.tsv")
+readr::write_tsv(data.frame(marker=seg_passed),file="seg_passed_markers_binned.tsv")
 
 print("[M]: Done!")
