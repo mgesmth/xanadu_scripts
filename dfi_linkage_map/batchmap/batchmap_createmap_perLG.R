@@ -14,8 +14,8 @@ dir.create(descrip)
 outdir=descrip
 
 #load up linkage group data
-load("LGs_created_maxrf0.25_LOD12.RData")
-load("onemap_functions_for_batchmap_withgraph.RData")
+load("LGs_created_maxrf0.25_LOD10_cleaned.RData")
+load("onemap_functions_for_batchmap.RData")
 
 LG_cur<-LG_list_clean[[LG]]
 
