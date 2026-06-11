@@ -28,7 +28,7 @@ batch_size <- pick.batch.sizes(LG_cur,
 
 print("[M]: Now making the maps!")
 print("[M]: Unrippled map...")
-map1 <- map.overlapping.batches(input.seq=LG_rec,
+map1 <- map.overlapping.batches(input.seq=LG_cur,
     size=batch_size,
     phase.cores=4,
     overlap=30)
