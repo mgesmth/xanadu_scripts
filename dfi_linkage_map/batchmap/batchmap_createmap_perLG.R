@@ -75,13 +75,9 @@ rf_graph_table(input.seq=map2$Map, display=FALSE,
         paste0("Marker (n=",length(map2$Map$seq.num),")")),
     mrk.axis="none",base.size=22)
 dev.off()
+
 map2$Map$data.name <- "outcross_clean"
 map2$Map$twopt <- "twopt_table"
-
-#add twopt and outcross objects to map
-map2=map
-map2$Map$data.name=outcross_clean
-map2$Map$twopt=twopt_table
 
 save.image(file=file.path(outdir,
     paste(descrip,"DFI_Rippled_Map.RData",sep="_")))
