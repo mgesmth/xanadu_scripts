@@ -4,7 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 24
 #SBATCH -D /core/projects/EBP/smith/linkage_last/11_batchmap_forreal
-#SBATCH --mem=128G
+#SBATCH --mem=84G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
 #SBATCH -o /core/projects/EBP/smith/linkage_last/11_batchmap_forreal/log/%x.%j.out
