@@ -24,7 +24,7 @@ print("[M]: Getting a batch size...")
 batch_size <- pick.batch.sizes(LG_cur, 
                  size = 50, 
                  overlap = 30, 
-                 around = around)
+                 around = 10)
 
 print("[M]: Now making the maps!")
 print("[M]: Unrippled map...")
