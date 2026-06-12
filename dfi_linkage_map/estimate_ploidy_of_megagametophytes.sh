@@ -18,7 +18,7 @@ topdir=${core}/linkage_snp_calling_unsplit
 dir=${topdir}/ploidy_estimation
 trimdir=${topdir}/05_trimmed_data
 
-module load meryl/1.4.1 module load R/4.2.2
+module load meryl/1.4.1 R/4.2.2
 export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
 export PATH="/core/projects/EBP/smith/bin/genomescope2.0:$PATH"
 
