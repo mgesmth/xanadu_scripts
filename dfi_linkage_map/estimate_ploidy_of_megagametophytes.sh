@@ -36,9 +36,12 @@ for file in $(cat R1s.txt); do
 	meryl count threads=12 k=21 ${trimdir}/${file_r2} output ${name}.R2.meryl
 	meryl union-sum ${name}.R1.meryl ${name}.R2.meryl output ${name}.meryl
     meryl histogram threads=12 k=21 ${name}.meryl > ${name}.meryl.hist 
-    genomescope.R -i ${name}.meryl.hist -o . -k 21
-    ploid_est=$(cat summary.txt | grep "p = ")
-    echo "[M]: Ploidy ${name} : ${ploid_est}"
+    if [[ "$name" == *"libP"* ]] ; then
+    	genomescope.R -i ${name}.meryl.hist -o . -k 21 -p 2
+    else
+    	genomescope.R -i ${name}.meryl.hist -o . -k 21 -p 1
+    fi
+    echo "[M]: Done."
 done
 
 	
