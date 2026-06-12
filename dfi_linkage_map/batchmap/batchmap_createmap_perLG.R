@@ -14,10 +14,11 @@ dir.create(descrip)
 outdir=descrip
 
 #load up linkage group data
-load("LGs_created_maxrf0.25_LOD10_cleaned.RData")
+load("LGs_created_maxrf0.15_LOD14_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
 
-LG_cur<-LG_list_clean[[LG]]
+LG_cur<-LG_list[[LG]]
+LG_rec=record.parallel(LG_cur,times=20,cores=20)
 
 print("[M]: Getting a batch size...")
 #get a batch size
@@ -46,6 +47,25 @@ dev.off()
 map1$Map$data.name <- "outcross_clean"
 map1$Map$twopt <- "twopt_table"
 
+print("[M]: Record ordered map...")
+map3 <- map.overlapping.batches(input.seq=LG_rec,
+    size=batch_size,
+    phase.cores=4,
+    overlap=30)
+print(paste0("[M]: Map log-likelihood: ",map3$Map$seq.like))
+write.map(map3$Map,file=file.path(descrip,"record_map.txt"))
+map3$Map$data.name <- outcross_clean
+map3$Map$twopt <- twopt_table
+png(file.path(outdir,paste0(LG,"_record_rfheatmap",".png")),
+    width=960,height=960)
+rf_graph_table(input.seq=map3$Map, display=FALSE, 
+    lab.xy=c(paste0("Marker (n=",length(map3$Map$seq.num),")"),
+        paste0("Marker (n=",length(map3$Map$seq.num),")")),
+    mrk.axis="none",base.size=22)
+dev.off()
+map3$Map$data.name <- "outcross_clean"
+map3$Map$twopt <- "twopt_table"
+
 print("[M]: Rippled map...")
 #now make the map!
 rip.cores <- round(cores/2)
@@ -56,7 +76,7 @@ map2 <- map.overlapping.batches(input.seq=LG_cur,
                                phase.cores=2,
                                ripple.cores=rip.cores,
                                ws=ws,
-                               max.dist = 15,
+                               max.dist = 25,
                                max.tries=ripple_tries,
                                min.tries=3,
                                optimize="likelihood",
@@ -78,6 +98,38 @@ dev.off()
 
 map2$Map$data.name <- "outcross_clean"
 map2$Map$twopt <- "twopt_table"
+
+print("[M]: Building record and rippled map...")
+rip.cores <- round(cores/2)
+map4 <- map.overlapping.batches(input.seq=LG_rec,
+                               size=batch_size,
+                               overlap=30,
+                               fun.order=ripple.ord,
+                               phase.cores=2,
+                               ripple.cores=rip.cores,
+                               ws=ws,
+                               max.dist = 25,
+                               max.tries=ripple_tries,
+                               min.tries=3,
+                               optimize="likelihood",
+                               verbosity=c("batch"),
+                               method=method,
+                               no_reverse=FALSE)
+
+print(paste0("[M]: Map log-likelihood: ",map4$Map$seq.like))
+write.map(map4$Map,file=file.path(descrip,"rippled_map.txt"))
+map4$Map$data.name <- outcross_clean
+map4$Map$twopt <- twopt_table
+png(file.path(outdir,paste0(LG,"_record_rippled_rfheatmap",".png")),
+    width=960,height=960)
+rf_graph_table(input.seq=map4$Map, display=FALSE, 
+    lab.xy=c(paste0("Marker (n=",length(map4$Map$seq.num),")"),
+        paste0("Marker (n=",length(map4$Map$seq.num),")")),
+    mrk.axis="none",base.size=22)
+dev.off()
+
+map4$Map$data.name <- "outcross_clean"
+map4$Map$twopt <- "twopt_table"
 
 save.image(file=file.path(outdir,
     paste(descrip,"DFI_Rippled_Map.RData",sep="_")))

@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH -J build_batchmap
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -c 24
-#SBATCH -D /core/projects/EBP/smith/linkage_last/11_batchmap_forreal
-#SBATCH --mem=84G
+#SBATCH -D /core/projects/EBP/smith/linkage_last/11_batchmap_forreal3
+#SBATCH --mem=500G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_last/11_batchmap_forreal/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_last/11_batchmap_forreal/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_last/11_batchmap_forreal3/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_last/11_batchmap_forreal3/log/%x.%j.err
 
 set -e
 echo `hostname`
@@ -20,7 +20,7 @@ ripple_tries=$2
 ws=$3
 method=$4
 core=/core/projects/EBP/smith
-dir=${core}/linkage_last/11_batchmap_forreal
+dir=${core}/linkage_last/11_batchmap_forreal3
 batchmap=${core}/bin/batchmap.sif
 ncore=$SLURM_CPUS_PER_TASK
 scripts=${dir}/scripts
