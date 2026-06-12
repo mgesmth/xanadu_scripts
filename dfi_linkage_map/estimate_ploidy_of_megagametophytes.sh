@@ -35,11 +35,10 @@ for file in $(cat R1s.txt); do
 	meryl count threads=12 k=21 ${trimdir}/${file} output ${name}.R1.meryl
 	meryl count threads=12 k=21 ${trimdir}/${file_r2} output ${name}.R2.meryl
 	meryl union-sum ${name}.R1.meryl ${name}.R2.meryl output ${name}.meryl
-    echo "[M]: Done counting kmers. Getting histogram..."
     meryl histogram threads=12 k=21 ${name}.meryl > ${name}.meryl.hist 
-    echo "[M]: Running GenomeScope2..."
     genomescope.R -i ${name}.meryl.hist -o . -k 21
-    echo "[M]: Done with ${name}."
+    ploid_est=$(cat summary.txt | grep "p = ")
+    echo "[M]: Ploidy ${name} : ${ploid_est}"
 fi
 
 	
