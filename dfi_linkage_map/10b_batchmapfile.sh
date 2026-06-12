@@ -13,6 +13,8 @@ set -e
 module load python/3.13.11-gcc-11.4.0-kifh66l tabix/0.2.6
 source /home/FCAM/msmith/python_venv/bin/activate
 
+DATASET=$1
+
 filt_vcf="10b_filt_vcfs"
 scripts="01_scripts"
 batchmap="11_batchmap"
