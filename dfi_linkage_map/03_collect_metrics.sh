@@ -14,7 +14,7 @@
 set -e
 
 # Load modules
-module load picard/3.1.1
+module load picard/3.1.1 singularity/3.9.2
 
 # Global variables
 GENOMEFOLDER="03_genome"

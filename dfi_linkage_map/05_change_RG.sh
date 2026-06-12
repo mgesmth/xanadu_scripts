@@ -21,7 +21,7 @@ LOG_FOLDER="98_log_files"
 # Load needed modules - ComputeCanada clusters
 module load picard/3.1.1
 module load java/22
-module load samtools/1.19
+module load samtools/1.19 singularity/3.9.2
 
 export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "
 export _JAVA_OPTIONS="-Xms2g -Xmx50g "

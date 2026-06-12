@@ -21,7 +21,7 @@ LOG_FOLDER="98_log_files"
 begin=`date +%s`
 
 # Load needed modules
-module load GATK/4.5.0.0
+module load GATK/4.5.0.0 singularity/3.9.2
 
 # Global variables
 INFO="02_info_files"
