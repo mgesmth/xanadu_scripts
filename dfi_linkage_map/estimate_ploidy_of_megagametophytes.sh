@@ -39,7 +39,7 @@ for file in $(cat R1s.txt); do
     genomescope.R -i ${name}.meryl.hist -o . -k 21
     ploid_est=$(cat summary.txt | grep "p = ")
     echo "[M]: Ploidy ${name} : ${ploid_est}"
-fi
+done
 
 	
 
