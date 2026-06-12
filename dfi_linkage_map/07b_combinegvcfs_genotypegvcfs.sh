@@ -12,6 +12,8 @@
 
 cd $SLURM_SUBMIT_DIR
 
+DATASET=$1
+
 # Copy script to log folder
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0

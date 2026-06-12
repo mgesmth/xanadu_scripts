@@ -11,6 +11,7 @@
 module load vcftools/0.1.16 bcftools/1.23.1 bedtools/2.31.1 tabix/0.2.6 GATK/4.5.0.0 singularity/3.9.2
 
 cd $SLURM_SUBMIT_DIR
+DATASET=$1
 
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
