@@ -45,6 +45,7 @@ array_name=($(cut -f1 02_info_files/datatable.txt))
 array_ploidy=($(cut -f2 02_info_files/datatable.txt))
 name=${array_name[$SLURM_ARRAY_TASK_ID]}
 ploidy=${array_ploidy[$SLURM_ARRAY_TASK_ID]}
+ploidy=2
 file=${name}_RG.bam
 
     echo "
