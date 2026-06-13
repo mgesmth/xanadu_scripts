@@ -14,7 +14,7 @@ dir.create(descrip)
 outdir=descrip
 
 #load up linkage group data
-load("LGs_created_maxrf0.1_LOD15_cleaned.RData")
+load("LGs_created_maxrf0.15_LOD14_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
 
 LG_cur<-LG_list_clean[[LG]]
@@ -85,7 +85,7 @@ map2 <- map.overlapping.batches(input.seq=LG_cur,
                                no_reverse=FALSE)
 
 print(paste0("[M]: Map log-likelihood: ",map2$Map$seq.like))
-write.map(map2$Map,file=file.path(descrip,"rippled_map.txt"))
+write.map(map2$Map,file=file.path(descrip,"record_rippled_map.txt"))
 map2$Map$data.name <- outcross_clean
 map2$Map$twopt <- twopt_table
 png(file.path(outdir,paste0(LG,"_rippled_rfheatmap",".png")),
