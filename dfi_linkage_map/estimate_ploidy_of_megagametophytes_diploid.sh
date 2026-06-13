@@ -25,6 +25,7 @@ export PATH="/core/projects/EBP/smith/bin/genomescope2.0:$PATH"
 #R1s.txt is a list of the trimmed R1 fastqs (no dir structure)
 
 for file in $(cat R1s.txt); do
+	cd $dir
 	name=${file%.R1.trimmed.fastq.gz}
 	file_r2=$(echo "$file" | sed 's/.R1/.R2/')
 	if [[ ! -d "$name" ]] ; then
