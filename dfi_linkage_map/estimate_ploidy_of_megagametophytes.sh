@@ -3,12 +3,13 @@
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_unsplit/ploidy_estimation
-#SBATCH -c 12
-#SBATCH --mem=36G
+#SBATCH -c 4
+#SBATCH --mem=10G
 #SBATCH --mail-type=ALL
+#SBATCH --array=[0-101]
 #SBATCH --mail-user=meg8130@student.ubc.ca
-#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_unsplit/ploidy_estimation/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_unsplit/ploidy_estimation/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_unsplit/ploidy_estimation/log/%x.%A.%a.out
+#SBATCH -e /core/projects/EBP/smith/linkage_snp_calling_unsplit/ploidy_estimation/log/%x.%A.%a.err
 
 echo "[M]: Host Name: `hostname`"
 set -e
@@ -23,26 +24,26 @@ export PATH="/home/FCAM/msmith/R/x86_64-pc-linux-gnu-library/4.2:$PATH"
 export PATH="/core/projects/EBP/smith/bin/genomescope2.0:$PATH"
 
 #R1s.txt is a list of the trimmed R1 fastqs (no dir structure)
-
-for file in $(cat R1s.txt); do
-	name=${file%.R1.trimmed.fastq.gz}
-	file_r2=$(echo "$file" | sed 's/.R1/.R2/')
-	if [[ ! -d "$name" ]] ; then
-		mkdir $name
-	fi
-	cd $name 
-	echo "[M]: Counting ${name} kmers..."
-	meryl count threads=12 k=21 ${trimdir}/${file} output ${name}.R1.meryl
-	meryl count threads=12 k=21 ${trimdir}/${file_r2} output ${name}.R2.meryl
-	meryl union-sum ${name}.R1.meryl ${name}.R2.meryl output ${name}.meryl
-    meryl histogram threads=12 k=21 ${name}.meryl > ${name}.meryl.hist 
-    if [[ "$name" == *"libP"* ]] ; then
-    	genomescope.R -i ${name}.meryl.hist -o . -k 21 -p 2
-    else
-    	genomescope.R -i ${name}.meryl.hist -o . -k 21 -p 1
-    fi
-    echo "[M]: Done."
-done
+array=($(cat R1s.txt))
+file=${array[$SLURM_ARRAY_TASK_ID]}
+cd $dir
+name=${file%.R1.trimmed.fastq.gz}
+file_r2=$(echo "$file" | sed 's/.R1/.R2/')
+if [[ ! -d "$name" ]] ; then
+	mkdir $name
+fi
+cd $name 
+echo "[M]: Counting ${name} kmers..."
+meryl count threads=4 k=21 ${trimdir}/${file} output ${name}.R1.meryl
+meryl count threads=4 k=21 ${trimdir}/${file_r2} output ${name}.R2.meryl
+meryl union-sum ${name}.R1.meryl ${name}.R2.meryl output ${name}.meryl
+meryl histogram threads=12 k=21 ${name}.meryl > ${name}.meryl.hist 
+if [[ "$name" == *"libP"* ]] ; then
+    genomescope.R -i ${name}.meryl.hist -o . -k 21 -p 2
+else
+    genomescope.R -i ${name}.meryl.hist -o . -k 21 -p 1
+fi
+echo "[M]: Done."
 
 	
 
