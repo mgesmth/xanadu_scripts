@@ -17,7 +17,7 @@ outdir=descrip
 load("LGs_created_maxrf0.1_LOD15_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
 
-LG_cur<-LG_list[[LG]]
+LG_cur<-LG_list_clean[[LG]]
 LG_rec=record.parallel(LG_cur,times=20,cores=20)
 
 print("[M]: Getting a batch size...")
