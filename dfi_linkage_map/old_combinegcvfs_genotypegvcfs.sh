@@ -35,12 +35,17 @@ DB="08b_db"
 VCF="09b_raw_vcfs"
 # POP="02_info_files/popmap.txt"
 
+ARRAY=($(cat 02_info_files/pos.txt))
+REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
+scaf=$(cut -f1 $REGION_FILE)
 sample_gvcfs=$(ls -1 07b_gvcfs/*.vcf | paste -sd " ")
 ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
 
+    echo ">>> Genotyping scaffold $scaf"
+
     gatk CombineGVCFs \
     -R $GENOMEFOLDER/$GENOME \
-    -O $GVCF/${DATASET}.g.vcf \
+    -O $GVCF/${scaf}.g.vcf \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --arguments_file argument_file.tmp
@@ -50,13 +55,12 @@ ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
     gatk GenotypeGVCFs \
     -R $GENOMEFOLDER/$GENOME \
     -V $GVCF/${DATASET}.g.vcf \
-    -O $VCF/${DATASET}.vcf.gz \
+    -O $VCF/${scaf}.vcf.gz \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --create-output-variant-index false
 
 tabix -p vcf $VCF/${scaf}.vcf.gz
-bgzip $GVCF/${DATASET}.g.vcf
 
 end=`date +%s`
 elapsed=`expr $end - $begin`
