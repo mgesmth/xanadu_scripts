@@ -30,7 +30,7 @@ gatk VariantFiltration \
 -V $VCF/${DATASET}_gatk_unfiltered.vcf \
 -O $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz \
 --filter-name "AlleleDepth" --filter-expression "DP < 10" \
---filter-name "QualitybyDepth" --filter-expression "QD < 20.0" \
+--filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
 --filter-name "MappingQuality" --filter-expression "MQ < 50.0" \
 --filter-name "StrandOddsRatio" --filter-expression "SOR > 3.0" \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
