@@ -30,7 +30,7 @@ gatk VariantFiltration \
 -V $VCF/${DATASET}_gatk_unfiltered.vcf \
 -O $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz \
 --filter-name "AlleleDepth" --filter-expression "DP < 10" \
---filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
+--filter-name "QualitybyDepth" --filter-expression "QD < 20.0" \
 --filter-name "MappingQuality" --filter-expression "MQ < 50.0" \
 --filter-name "StrandOddsRatio" --filter-expression "SOR > 3.0" \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
@@ -38,7 +38,7 @@ gatk VariantFiltration \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 20.0" \
 --filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
---create-output-variant-index false
+--create-output-variant-index false && bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz
 
