@@ -23,7 +23,7 @@ LOG_FOLDER="98_log_files"
 begin=`date +%s`
 
 # Load needed modules
-module load GATK/4.5.0.0 singularity/3.9.2
+module load GATK/4.5.0.0 singularity/3.9.2 tabix/0.2.6
 
 # Global variables
 INFO="02_info_files"
@@ -45,7 +45,7 @@ ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
 
     gatk CombineGVCFs \
     -R $GENOMEFOLDER/$GENOME \
-    -O $GVCF/${DATASET}.g.vcf \
+    -O $GVCF/${scaf}.g.vcf \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --arguments_file argument_file.tmp
@@ -55,11 +55,12 @@ ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
     gatk GenotypeGVCFs \
     -R $GENOMEFOLDER/$GENOME \
     -V $GVCF/${DATASET}.g.vcf \
-    -O $VCF/${DATASET}_gatk_unfiltered.vcf \
+    -O $VCF/${scaf}.vcf.gz \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --create-output-variant-index false
 
+tabix -p vcf $VCF/${scaf}.vcf.gz
 
 end=`date +%s`
 elapsed=`expr $end - $begin`

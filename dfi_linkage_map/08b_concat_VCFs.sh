@@ -9,7 +9,7 @@
 #SBATCH --mem=8G
 
 module load vcftools/0.1.16 bcftools/1.19
-module load tabix/0.2.6
+module load tabix/0.2.6 
 
 cd $SLURM_SUBMIT_DIR
 
@@ -26,6 +26,7 @@ begin=`date +%s`
 
 # Concatenate all the scaffold-VCF files into one global VCF file
 bcftools concat $(ls -1 $VCF/*.vcf.gz | perl -pe 's/\n/ /g') > ${VCF}/${DATASET}_gatk_unfiltered.vcf && bgzip ${FILTVCF}/${DATASET}_gatk_unfiltered.vcf
+tabix -p vcf ${VCF}/${DATASET}_gatk_unfiltered.vcf.gz
 
 echo "
 DONE! Check you files"
