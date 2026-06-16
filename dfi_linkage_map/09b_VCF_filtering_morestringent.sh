@@ -18,7 +18,7 @@ SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 VCF="09b_raw_vcfs_reg"
-FILTVCF="10b_filt_vcfs_QD"
+FILTVCF="10b_filt_vcfs_highstring"
 GENOMEDIR="03_genome"
 GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 echo "STARTING AT $TIMESTAMP"
@@ -30,13 +30,13 @@ gatk VariantFiltration \
 -V $VCF/${DATASET}_gatk_unfiltered.vcf \
 -O $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz \
 --filter-name "AlleleDepth" --filter-expression "DP < 10" \
---filter-name "QualitybyDepth" --filter-expression "QD < 20.0" \
+--filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
 --filter-name "MappingQuality" --filter-expression "MQ < 50.0" \
 --filter-name "StrandOddsRatio" --filter-expression "SOR > 3.0" \
 --filter-name "FisherStrand" --filter-expression "FS > 60.0" \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
---filter-name "Quality" --filter-expression "QUAL < 20.0" \
+--filter-name "Quality" --filter-expression "QUAL < 100.0" \
 --filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
 --create-output-variant-index false && bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf
 
@@ -58,7 +58,7 @@ tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent_pass.vcf.gz
 #biallelic snps
 gatk SelectVariants \
 -V $FILTVCF/${DATASET}_gatk_filtered_stringent_pass.vcf.gz \
--O $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic.vcf.gz \
+-O $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic2.vcf.gz \
 --exclude-filtered TRUE --restrict-alleles-to BIALLELIC \
 --create-output-variant-index false
 
