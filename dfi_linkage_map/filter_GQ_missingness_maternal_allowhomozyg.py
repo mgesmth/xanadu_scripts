@@ -98,10 +98,10 @@ with open(in_vcf) as f:
                     mg_missingness[mg]+=1
                 else:
                     allele=genotype.split(":")[0]
-                    if allele not in mat_alleles:
+                    #if allele not in mat_alleles:
                         #if the genotype is not one of the maternal alleles, set it to missing
-                        genotypes[mg_i]="./.:0,0:.:0:0,0,0"
-                        mg_missingness[mg]+=1
+                    #    genotypes[mg_i]="./.:0,0:.:0:0,0,0"
+                    #    mg_missingness[mg]+=1
                     #else keep MG genotype; not declared as missing
 
 count_list=list(mg_missingness.values())
