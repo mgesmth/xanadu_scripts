@@ -11,9 +11,9 @@ aberrant_counts={}
 total_counts={}
 with open(vcf) as f:
     for line in f:
-        if line.startswith("#") == True:
-            if line.startswith("#CHROM") == True:
-                fields=line.strip().split('\t')
+        if line.startswith("#"):
+            if line.startswith("#CHROM"):
+                fields=line.strip().split("\t")
                 info=fields[0:9]
                 samples=[field for field in fields if field not in info]
                 mat=[samp for samp in samples if "libP1" in samp][0]
@@ -27,7 +27,6 @@ with open(vcf) as f:
                 continue
             else:
                 continue
-
         else:
             fields=line.strip().split("\t")
             info=fields[0:9]
@@ -39,7 +38,6 @@ with open(vcf) as f:
                 mat_gq=0
             else:
                 mat_gq=int(mat.split(":")[3])
-
             if mat_gq >= gq_threshold:
                 if "|" in mat.split(":")[0]:
                     mat_geno=set(mat.split(":")[0].split("|"))
@@ -50,16 +48,13 @@ with open(vcf) as f:
                 if len(mat_geno) > 1:
                     continue
                 else:
-                    #if it's homozygous, we can use it to calculate an aberrant score
                     mat_allele=int(list(mat_geno)[0])
                     mg_genos=[geno for i,geno in enumerate(genotypes) if i not in [mat_i,pat_i]]
-
                     for i,mg in enumerate(mg_genos):
                         if mg.split(":")[3] == ".":
                             gq=0
                         else:
                             gq=int(mg.split(":")[3])
-
                         #if genotype call is good, compare to maternal allele to see if it has an unlikely genotype
                         if gq >= gq_threshold:
                             total_counts[mgs[i]]+=1
