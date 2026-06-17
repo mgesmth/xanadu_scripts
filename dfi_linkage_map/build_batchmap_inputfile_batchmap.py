@@ -63,6 +63,8 @@ with open(vcf) as f, open(raw_tmp, "w") as of:
                     seg_genos.append("a")
                 elif mg_geno == "1":
                     seg_genos.append("b")
+                else:
+                    raise ValueError(f"[E]: Megagametophyte genotype not recognized for marker {marker_counter}")
 
             #ANDDDD put it all together
             marker_name="*" + fields[0] + "_" + fields[1]
