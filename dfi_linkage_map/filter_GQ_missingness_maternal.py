@@ -12,14 +12,13 @@ if __name__ == "__main__":
     snp_missingness_tolerance=float(sys.argv[1])
     ind_missingness_tolerance=float(sys.argv[2])
     gq_threshold=float(sys.argv[3])
-    dp_threshold=float(sys.argv[4])
-    in_vcf=sys.argv[5]
-    out_vcf=sys.argv[6]
+    in_vcf=sys.argv[4]
+    out_vcf=sys.argv[5]
 
 outdir=os.path.dirname(out_vcf)
-inds_passed_filter=os.path.join(outdir,f"inds_passed_filter_gq{gq_threshold}_dp{dp_threshold}.txt")
-out_mg_missing=os.path.join(outdir,f"missingness_per_mg_gq{gq_threshold}_dp{dp_threshold}.tsv")
-out_snp_missing=os.path.join(f"missingness_per_snp_gq{gq_threshold}_dp{dp_threshold}.hist")
+inds_passed_filter=os.path.join(outdir,f"inds_passed_filter_gq{gq_threshold}.txt")
+out_mg_missing=os.path.join(outdir,f"missingness_per_mg_gq{gq_threshold}.tsv")
+out_snp_missing=os.path.join(f"missingness_per_snp_gq{gq_threshold}.hist")
 
 # In[61]:
 
@@ -66,28 +65,23 @@ with open(in_vcf) as f:
             else:
                 mat_gq=float(mat.split(":")[3])
 
-            if mat.split(":")[2] == ".":
-                mat_dp=0
+            if pat.split(":")[3] == ".":
+                pat_gq=0
             else:
-                mat_dp=float(mat.split(":")[2])
+                pat_gq=float(pat.split(":")[3])
 
             #if maternal genotype is less than 20 GQ
-            if mat_gq < gq_threshold or mat_dp < dp_threshold:
+            if mat_gq < gq_threshold:
                 #don't continue with candidate snp
                 continue
             else:
                 mat_alleles=[]
                 if "/" in mat.split(":")[0]:
                     mat_alleles.extend(mat.split(":")[0].split("/"))
-                    mat_geno=set(mat.split(":")[0].split("/"))
                 elif "|" in mat.split(":")[0]:
                     mat_alleles.extend(mat.split(":")[0].split("|"))
-                    mat_geno=set(mat.split(":")[0].split("|"))
                 else:
                     raise ValueError("Maternal genotype separator not recognized. SNP: " + total_recordcounter)
-
-            if len(mat_geno) > 1:
-                    continue
 
             potential_record_counter+=1
             for i,mg_i in enumerate(mgs_i):
@@ -97,11 +91,7 @@ with open(in_vcf) as f:
                     gq=0
                 else:
                     gq=float(genotype.split(":")[3])
-                if genotype.split(":")[2] == ".":
-                    dp=0
-                else:
-                    dp=float(genotype.split(":")[2])
-                if gq < gq_threshold or dp < dp_threshold:
+                if gq < gq_threshold:
                     #if GQ is less than 10, set the genotype to missing
                     #this will catch all the genotypes that are already missing
                     genotypes[mg_i]="./.:0,0:.:0:0,0,0"
