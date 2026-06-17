@@ -42,7 +42,7 @@ with open(vcf) as f, open(good_outfile,"w") as gof, open(bad_outfile,"w") as bof
                 
                 #write headers to outfiles
                 #info fields, then maternal geno, then mgs
-                new_header=["chrom","pos","qual","info",mat]
+                new_header=["chrom","pos","qual","info","format",mat]
                 new_header.extend(mgs)
                 gof.write("\t".join(map(str,new_header)) + "\n")
                 bof.write("\t".join(map(str,new_header)) + "\n")
