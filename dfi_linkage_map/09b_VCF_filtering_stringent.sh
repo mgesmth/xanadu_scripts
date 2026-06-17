@@ -18,7 +18,7 @@ SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 VCF="09b_raw_vcfs"
-FILTVCF="10b_filt_vcfs"
+FILTVCF="10b_filt_vcfs_higheremitconf"
 GENOMEDIR="03_genome"
 GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 echo "STARTING AT $TIMESTAMP"
@@ -38,7 +38,7 @@ gatk VariantFiltration \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 20.0" \
 --filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
---create-output-variant-index false && bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf
+--create-output-variant-index false
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz
 
@@ -93,8 +93,6 @@ bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic_indels.vcf
 rm $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic_indels.vcf.gz
-
-
 
 echo "
 DONE! Check you files"
