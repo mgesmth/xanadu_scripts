@@ -34,7 +34,7 @@ map1 <- map.overlapping.batches(input.seq=LG_cur,
     phase.cores=4,
     overlap=30)
 print(paste0("[M]: Map log-likelihood: ",map1$Map$seq.like))
-write.map(map1$Map,file=file.path(descrip,"unrippled_map.txt"))
+write.map(map1$Map,file=file.path(descrip,"genomic_map.txt"))
 map1$Map$data.name <- outcross_clean
 map1$Map$twopt <- twopt_table
 png(file.path(outdir,paste0(LG,"_genomic_rfheatmap",".png")),

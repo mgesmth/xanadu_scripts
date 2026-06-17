@@ -17,8 +17,8 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-VCF="09b_raw_vcfs"
-FILTVCF="10b_filt_vcfs"
+VCF="09b_raw_vcfs_higheremitconf"
+FILTVCF="10b_filt_vcfs_higheremitconf"
 GENOMEDIR="03_genome"
 GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 echo "STARTING AT $TIMESTAMP"
@@ -27,7 +27,7 @@ begin=`date +%s`
 
 gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
--V $VCF/${DATASET}_gatk_unfiltered.vcf \
+-V $VCF/${DATASET}_gatk_unfiltered.vcf.gz \
 -O $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz \
 --filter-name "AlleleDepth" --filter-expression "DP < 10" \
 --filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
@@ -37,8 +37,7 @@ gatk VariantFiltration \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 20.0" \
---filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
---create-output-variant-index false && bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf
+--create-output-variant-index false
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent.vcf.gz
 
@@ -93,8 +92,6 @@ bgzip $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic_indels.vcf
 rm $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf
 
 tabix -p vcf $FILTVCF/${DATASET}_gatk_filtered_stringent_pass_biallelic_indels.vcf.gz
-
-
 
 echo "
 DONE! Check you files"
