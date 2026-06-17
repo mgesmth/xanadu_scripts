@@ -66,12 +66,10 @@ with open(in_vcf) as f:
             else:
                 mat_gq=float(mat.split(":")[3])
 
-            if pat.split(":")[3] == ".":
-                pat_gq=0
+            if mat.split(":")[2] == ".":
+                mat_dp=0
             else:
-                pat_gq=float(pat.split(":")[3])
-
-            mat_dp=float(mat.split(":")[2])
+                mat_dp=float(mat.split(":")[2])
 
             #if maternal genotype is less than 20 GQ
             if mat_gq < gq_threshold or mat_dp < dp_threshold:
