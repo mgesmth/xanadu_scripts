@@ -74,7 +74,7 @@ with open(in_vcf) as f:
             mat_dp=float(mat.split(":")[2])
 
             #if maternal genotype is less than 20 GQ
-            if mat_gq < gq_threshold or dp < dp_threshold:
+            if mat_gq < gq_threshold or mat_dp < dp_threshold:
                 #don't continue with candidate snp
                 continue
             else:
@@ -90,7 +90,7 @@ with open(in_vcf) as f:
 
             if len(mat_geno) > 1:
                     continue
-                    
+
             potential_record_counter+=1
             for i,mg_i in enumerate(mgs_i):
                 genotype=genotypes[mg_i]
