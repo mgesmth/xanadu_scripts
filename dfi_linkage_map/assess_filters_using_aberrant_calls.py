@@ -7,7 +7,7 @@ import pandas as pd
 if __name__ == "__main__":
 	vcf=sys.argv[1]
 	gq_threshold=sys.argv[2]
-	missingness_threshold
+	missingness_threshold=sys.argv[3]
 
 outdir=os.path.dirname(vcf)
 good_outfile=os.path.join(outdir,f"goodsnp_filterprofile.txt")
