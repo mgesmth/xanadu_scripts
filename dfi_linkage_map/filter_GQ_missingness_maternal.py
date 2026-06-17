@@ -97,7 +97,10 @@ with open(in_vcf) as f:
                     gq=0
                 else:
                     gq=float(genotype.split(":")[3])
-                dp=float(genotype.split(":")[2])
+                if genotype.split(":")[2] == ".":
+                    dp=0
+                else:
+                    dp=float(genotype.split(":")[2])
                 if gq < gq_threshold or dp < dp_threshold:
                     #if GQ is less than 10, set the genotype to missing
                     #this will catch all the genotypes that are already missing
