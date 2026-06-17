@@ -43,6 +43,15 @@ with open(vcf) as f, open(raw_tmp, "w") as of:
             mat=all_genos[mat_i]
             mg_genos=[field for i,field in enumerate(all_genos) if i != mat_i]
 
+            if "|" in mat.split(":")[0]:
+                mat_geno=set(mat.split(":")[0].split("|"))
+            elif "/" in mat.split(":")[0]:
+                mat_geno=set(mat.split(":")[0].split("/"))
+
+            if len(mat_geno) == 1:
+                #if the marker is heterozygous
+                continue
+
             marker_type="D1.11"
             #now get mg genotypes
             seg_genos=[]
