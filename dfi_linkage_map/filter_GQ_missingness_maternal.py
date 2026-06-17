@@ -76,13 +76,15 @@ with open(in_vcf) as f:
                 continue
             else:
                 mat_alleles=[]
-                if "/" in mat.split(":")[0]:
-                    mat_alleles.extend(mat.split(":")[0].split("/"))
-                elif "|" in mat.split(":")[0]:
-                    mat_alleles.extend(mat.split(":")[0].split("|"))
-                else:
-                    raise ValueError("Maternal genotype separator not recognized. SNP: " + total_recordcounter)
+                if "|" in mat.split(":")[0]:
+                    mat_geno=set(mat.split(":")[0].split("|"))
+                elif "/" in mat.split(":")[0]:
+                    mat_geno=set(mat.split(":")[0].split("/"))
+    
+            if len(mat_geno) == 1:
+                    continue
 
+            mat_alleles=list(mat_geno)
             potential_record_counter+=1
             for i,mg_i in enumerate(mgs_i):
                 genotype=genotypes[mg_i]
@@ -92,17 +94,12 @@ with open(in_vcf) as f:
                 else:
                     gq=float(genotype.split(":")[3])
                 if gq < gq_threshold:
-                    #if GQ is less than 10, set the genotype to missing
+                    #if GQ is less than threshold, set the genotype to missing
                     #this will catch all the genotypes that are already missing
                     genotypes[mg_i]="./.:0,0:.:0:0,0,0"
                     mg_missingness[mg]+=1
                 else:
-                    allele=genotype.split(":")[0]
-                    if allele not in mat_alleles:
-                        #if the genotype is not one of the maternal alleles, set it to missing
-                        genotypes[mg_i]="./.:0,0:.:0:0,0,0"
-                        mg_missingness[mg]+=1
-                    #else keep MG genotype; not declared as missing
+                    continue
 
 count_list=list(mg_missingness.values())
 count_list[:] = [x/potential_record_counter for x in count_list]
@@ -183,11 +180,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             else:
                 mat_gq=float(mat.split(":")[3])
 
-            if pat.split(":")[3] == ".":
-                pat_gq=0
-            else:
-                pat_gq=float(pat.split(":")[3])
-
             #if both parent genotypes are less than 20 GQ
             #don't continue with candidate snp
             #if one is bad, that's ok, record that and continue
@@ -195,18 +187,13 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 mat_poor_count+=1
                 continue
             else:
-                if pat_gq < gq_threshold:
-                    genotypes[pat_i] == "./.:0,0:.:0:0,0,0"
-
-                if "/" in mat.split(":")[0]:
-                    mat_alleles=set(mat.split(":")[0].split("/"))
-                elif "|" in mat.split(":")[0]:
-                    mat_alleles=set(mat.split(":")[0].split("|"))
-                else:
-                    raise ValueError(f"Maternal genotype separator not recognized. Genotype: {mat}")
-
-                if len(mat_alleles) == 1:
-                    #if mat_alleles has length one, maternal is homozgyous and site isn't informative
+                mat_alleles=[]
+                if "|" in mat.split(":")[0]:
+                    mat_geno=set(mat.split(":")[0].split("|"))
+                elif "/" in mat.split(":")[0]:
+                    mat_geno=set(mat.split(":")[0].split("/"))
+                if len(mat_geno) == 1:
+                    #if mat_geno has length one, maternal is homozgyous and site isn't informative
                     continue
                 else:
                     #now we filter the MGs in a loop
@@ -223,15 +210,10 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                         if gq < gq_threshold:
                             #if GQ is less than 20, set the genotype to missing
                             #this will catch all the genotypes that are already missing
-                            genotypes[mg_i]=".:0,0:.:0:0,0,0"
+                            genotypes[mg_i]=".:0,0:.:0:0,0"
                             missing_count+=1
                         else:
-                            allele=genotype.split(":")[0]
-
-                        if allele not in mat_alleles:
-                            #if the genotype is not one of the maternal alleles, set it to missing
-                            genotypes[mg_i]=".:0,0:.:0:0,0,0"
-                            missing_count+=1
+                            pass
                         #else keep MG genotype
 
 

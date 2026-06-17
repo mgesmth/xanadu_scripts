@@ -49,7 +49,7 @@ with open(vcf) as f, open(raw_tmp, "w") as of:
                 mat_geno=set(mat.split(":")[0].split("/"))
 
             if len(mat_geno) == 1:
-                #if the marker is heterozygous
+                #if the marker is homozygous
                 continue
 
             marker_type="D1.11"
