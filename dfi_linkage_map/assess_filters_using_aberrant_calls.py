@@ -28,7 +28,7 @@ with open(vcf) as f, open(good_outfile,"w") as gof, open(bad_outfile,"w") as bof
                 header=line.strip().split("\t")
                 #sample names start at field 10
                 infor=header[0:9]
-                relevant_info=[0,1,5,7]
+                relevant_info=[0,1,5,7,8]
                 info=[infor[i] for i in relevant_info]
                 samples=[field for field in header if field not in infor]
                 #all megagametophyte samples have "mg" in name; parents don't
@@ -58,7 +58,7 @@ with open(vcf) as f, open(good_outfile,"w") as gof, open(bad_outfile,"w") as bof
             total_recordcounter+=1
             candidate_snp=line.strip().split('\t')
             infor=candidate_snp[0:9]
-            relevant_info=[0,1,5,7]
+            relevant_info=[0,1,5,7,8]
             info=[infor[i] for i in relevant_info]
             genotypes=[field for field in candidate_snp if field not in infor]
             mat=genotypes[mat_i]
