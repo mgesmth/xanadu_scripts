@@ -30,7 +30,7 @@ export _JAVA_OPTIONS="-Xms2g -Xmx32g "
 
 # Global variables
 BAM="06_bam_files"
-GVCF="07b_gvcfs"
+GVCF="07b_gvcfs_diploid"
 GENOMEFOLDER="03_genome"
 GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 INDGENOME=${GENOME}.fai
@@ -42,9 +42,7 @@ echo " >>> Calling Haplotypes..."
 
 # Fetch filename from the array
 array_name=($(cut -f1 02_info_files/datatable.txt))
-array_ploidy=($(cut -f2 02_info_files/datatable.txt))
 name=${array_name[$SLURM_ARRAY_TASK_ID]}
-ploidy=${array_ploidy[$SLURM_ARRAY_TASK_ID]}
 ploidy=2
 file=${name}_RG.bam
 
