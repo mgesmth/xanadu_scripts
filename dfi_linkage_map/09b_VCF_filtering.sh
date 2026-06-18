@@ -16,8 +16,8 @@ TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 SCRIPT=$0
 NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
-VCF="09b_raw_vcfs_reg"
-FILTVCF="10b_filt_vcfs_reg"
+VCF="09b_raw_vcfs_diploid"
+FILTVCF="10b_filt_vcfs_diploid"
 GENOMEDIR="03_genome"
 GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 echo "STARTING AT $TIMESTAMP"
