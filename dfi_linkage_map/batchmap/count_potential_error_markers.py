@@ -41,7 +41,7 @@ c=0
 weird_marker=0
 with open(file) as f:
 	for line in f:
-		c+1
+		c+=1
 		if c == 1:
 			continue
 
