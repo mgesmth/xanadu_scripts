@@ -46,8 +46,8 @@ with open(file) as f:
 			continue
 
 		chrom=line.strip().split(" ")[0][1:].split("_")[0]
-        pos=int(line.strip().split(" ")[0][1:].split("_")[1])
-        geno=line.strip().split(" ")[2].split(",")
+		pos=int(line.strip().split(" ")[0][1:].split("_")[1])
+		geno=line.strip().split(" ")[2].split(",")
 
 		if chrom != prev_chrom:
 			d=1
