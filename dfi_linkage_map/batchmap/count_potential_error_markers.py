@@ -66,13 +66,23 @@ with open(file) as f:
 			else:
 				right_chrom=chrom
 				right_pos=pos 
-				right_geno=geno 
+				right_geno=geno
+				right_line=line.strip()
 
 			#step 1: eval left and right markers
 
 			right_left_check=potential_cross_over(right_geno,left_geno)
 			if right_left_check:
-				#theres a potential cross over, so the evaluation isn't valid. 
+				#theres a potential cross over, so the evaluation isn't valid. Shift the window.
+				left_chrom=eval_chrom
+				left_pos=eval_pos
+				left_geno=eval_geno
+				left_life=eval_line 
+
+				eval_chrom=right_chrom
+				eval_pos=right_pos
+				eval_geno=right_geno
+				eval_line=right_line
 			else:
 				#no cross over between right and left.
 				left_eval_check=potential_cross_over(left_geno,eval_geno)
