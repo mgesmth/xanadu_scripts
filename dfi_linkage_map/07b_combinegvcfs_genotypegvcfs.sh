@@ -30,13 +30,13 @@ INFO="02_info_files"
 GENOMEFOLDER="03_genome"
 GENOME=$(ls -1 $GENOMEFOLDER/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 INDGENOME=$GENOMEFOLDER/${GENOME}.fai
-GVCF="07b_gvcfs"
+GVCF="07b_gvcfs_diploid"
 DB="08b_db"
-VCF="09b_raw_vcfs"
+VCF="09b_raw_vcfs_diploid"
 # POP="02_info_files/popmap.txt"
 
 sample_gvcfs=$(ls -1 07b_gvcfs/*.vcf | paste -sd " ")
-ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
+ls -1 $GVCF/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
 
     gatk CombineGVCFs \
     -R $GENOMEFOLDER/$GENOME \
@@ -53,6 +53,7 @@ ls -1 07b_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
     -O $VCF/${DATASET}.vcf.gz \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
+    --stand-call-conf 20.0 \
     --create-output-variant-index false
 
 tabix -p vcf $VCF/${scaf}.vcf.gz
