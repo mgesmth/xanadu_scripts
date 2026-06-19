@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH -J build_batchmap
-#SBATCH -p himem
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -c 24
-#SBATCH -D /core/projects/EBP/smith/linkage_maybefixedit/11_batchmap_1kb
-#SBATCH --mem=500G
+#SBATCH -D /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb
+#SBATCH --mem=84G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_maybefixedit/11_batchmap_1kb/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_maybefixedit/11_batchmap_1kb/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb/log/%x.%j.out
+#SBATCH -e /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb/log/%x.%j.err
 
 set -e
 echo `hostname`
