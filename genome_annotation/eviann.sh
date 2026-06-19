@@ -13,7 +13,8 @@ echo "[M]: Host Name: `hostname`"
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-genome=${core}/CBP_assemblyfiles/interior_primary_original_masked.fa
+scratch=/scratch/msmith
+genome=${scratch}/interior_primary_original_masked.fa
 transcript_file=${home}/transcriptome/03_eviann_annotation/evidence_allv.txt
 protein_db=${home}/transcriptome/03_eviann_annotation/conifer_geneSet_protein_v2_150.faa
 workdir=${core}/eviann_original_primary
