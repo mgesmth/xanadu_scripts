@@ -35,7 +35,7 @@ DB="08b_db"
 VCF="09b_raw_vcfs_diploid"
 # POP="02_info_files/popmap.txt"
 
-sample_gvcfs=$(ls -1 07b_gvcfs/*.vcf | paste -sd " ")
+sample_gvcfs=$(ls -1 $GVCF/*.vcf | paste -sd " ")
 ls -1 $GVCF/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
 
     gatk CombineGVCFs \
