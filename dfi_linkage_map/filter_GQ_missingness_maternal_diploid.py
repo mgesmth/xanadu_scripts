@@ -21,7 +21,7 @@ out_mg_missing=os.path.join(outdir,f"missingness_per_mg_gq{gq_threshold}.tsv")
 out_snp_missing=os.path.join(f"missingness_per_snp_gq{gq_threshold}.hist")
 
 
-haploid_gq_threshold=9
+haploid_gq_threshold=10
 
 # In[61]:
 
