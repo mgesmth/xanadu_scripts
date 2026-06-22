@@ -24,6 +24,8 @@ echo "STARTING AT $TIMESTAMP"
 echo $SCRIPT
 begin=`date +%s`
 
+DATASET=$1
+
 gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
 -V $VCF/${DATASET}_gatk_unfiltered.vcf \
