@@ -88,7 +88,7 @@ with open(in_vcf) as f:
                 else:
                     gq=float(genotype.split(":")[3])
 
-                if gq < gq_threshold:
+                if gq < haploid_gq_threshold:
                     #if GQ is less than 10, set the genotype to missing
                     #this will catch all the genotypes that are already missing
                     genotypes[mg_i]="./.:0,0:.:0:0,0,0"
