@@ -41,7 +41,7 @@ with open(vcf) as f:
                 continue
             else:
                 mat_allele=int(list(mat_geno)[0])
-                mg_genos=[geno for i,geno in enumerate(genotypes) if i not in [mat_i,pat_i]]
+                mg_genos=[geno for i,geno in enumerate(genotypes) if i != mat_i]
                 for i,mg in enumerate(mg_genos):
                     gq=int(mg.split(":")[3])
                     #if genotype call is good, compare to maternal allele to see if it has an unlikely genotype
