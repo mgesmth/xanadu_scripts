@@ -50,7 +50,7 @@ ls -1 $GVCF/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
     gatk GenotypeGVCFs \
     -R $GENOMEFOLDER/$GENOME \
     -V $GVCF/${DATASET}.g.vcf \
-    -O $VCF/${DATASET}.vcf.gz \
+    -O $VCF/${DATASET}_gatk_unfiltered.vcf.gz \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --stand-call-conf 20.0 \
