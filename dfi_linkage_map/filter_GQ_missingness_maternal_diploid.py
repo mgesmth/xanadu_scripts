@@ -143,7 +143,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
 
                 #all megagametophyte samples have "mg" in name; parents don't
                 mat_i=[i for i,sample in enumerate(samples_filt) if "libP1" in sample][0]
-                pat_i=[i for i,sample in enumerate(samples_filt) if "libP2" in sample][0]
                 #prepare sample names and their indices separately for better access in loop
                 mgs=[sample for sample in samples_filt if "mg" in sample]
                 mgs_i=[i for i,sample in enumerate(samples_filt) if sample in mgs]
@@ -168,7 +167,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             x=[field for field in candidate_snp if field not in info]
             genotypes=[geno for i,geno in enumerate(x) if i not in blacklist_indices]
             mat=genotypes[mat_i]
-            pat=genotypes[pat_i]
 
 
             #get genotype qualities for mother tree (and for father, to set it to missing if need be)
@@ -177,11 +175,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             else:
                 mat_gq=float(mat.split(":")[3])
 
-            if pat.split(":")[3] == ".":
-                pat_gq=0
-            else:
-                pat_gq=float(pat.split(":")[3])
-
             #if both parent genotypes are less than 20 GQ
             #don't continue with candidate snp
             #if one is bad, that's ok, record that and continue
@@ -189,8 +182,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 mat_poor_count+=1
                 continue
             else:
-                if pat_gq < gq_threshold:
-                    genotypes[pat_i] == "./.:0,0:.:0:0,0,0"
 
                 if "/" in mat.split(":")[0]:
                     mat_alleles=set(mat.split(":")[0].split("/"))
@@ -210,14 +201,14 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                     if gq < gq_threshold:
                         #if GQ is less than 20, set the genotype to missing
                         #this will catch all the genotypes that are already missing
-                        genotypes[mg_i]=".:0,0:.:0:0,0,0"
+                        genotypes[mg_i]="./.:0,0:.:0:0,0,0"
                         missing_count+=1
                     else:
                         allele=genotype.split(":")[0]
 
                     if allele not in mat_alleles:
                             #if the genotype is not one of the maternal alleles, set it to missing
-                            genotypes[mg_i]=".:0,0:.:0:0,0,0"
+                            genotypes[mg_i]="./.:0,0:.:0:0,0,0"
                             missing_count+=1
                         #else keep MG genotype
 
