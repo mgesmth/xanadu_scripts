@@ -28,7 +28,7 @@ DATASET=$1
 
 gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
--V $VCF/${DATASET}_gatk_unfiltered.vcf \
+-V $VCF/${DATASET}_gatk_unfiltered.vcf.gz \
 -O $FILTVCF/${DATASET}_gatk_filtered_std_nomaf.vcf.gz \
 --filter-name "AlleleDepth" --filter-expression "DP < 10" \
 --filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
