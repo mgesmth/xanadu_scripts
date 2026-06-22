@@ -20,6 +20,9 @@ inds_passed_filter=os.path.join(outdir,f"inds_passed_filter_gq{gq_threshold}.txt
 out_mg_missing=os.path.join(outdir,f"missingness_per_mg_gq{gq_threshold}.tsv")
 out_snp_missing=os.path.join(f"missingness_per_snp_gq{gq_threshold}.hist")
 
+
+haploid_gq_threshold=9
+
 # In[61]:
 
 
@@ -198,18 +201,17 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                     else:
                         gq=float(genotype.split(":")[3])
 
-                    if gq < gq_threshold:
-                        #if GQ is less than 20, set the genotype to missing
-                        #this will catch all the genotypes that are already missing
+                    if gq < haploid_gq_threshold:
                         genotypes[mg_i]="./.:0,0:.:0:0,0,0"
                         missing_count+=1
                     else:
-                        allele=genotype.split(":")[0]
+                        #allele=genotype.split(":")[0]
+                        pass
 
-                    if allele not in mat_alleles:
-                            #if the genotype is not one of the maternal alleles, set it to missing
-                            genotypes[mg_i]="./.:0,0:.:0:0,0,0"
-                            missing_count+=1
+                    #if allele not in mat_alleles:
+                    #        #if the genotype is not one of the maternal alleles, set it to missing
+                    #        genotypes[mg_i]="./.:0,0:.:0:0,0,0"
+                    #        missing_count+=1
                         #else keep MG genotype
 
 
