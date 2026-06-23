@@ -61,11 +61,11 @@ with open(in_vcf) as f:
             #get genotype qualities
             if mat.split(":")[3] == ".":
                 mat_gq=0
+                mat_depth=0
             else:
                 mat_gq=float(mat.split(":")[3])
-
-            #maternal genotype depth
-            mat_depth=int(mat.split(":")[2])
+                mat_depth=int(mat.split(":")[2])
+            
 
             #if maternal genotype is less than threshold and depth is less than 3 (won't happen for the maternal)
             if mat_gq < gq_threshold or mat_depth <= 3:
@@ -84,11 +84,12 @@ with open(in_vcf) as f:
             for i,mg_i in enumerate(mgs_i):
                 genotype=genotypes[mg_i]
                 mg=mgs[i]
-                depth=int(genotype.split(":")[2])
                 if genotype.split(":")[3] == ".":
                     gq=0
+                    depth=0
                 else:
                     gq=float(genotype.split(":")[3])
+                    depth=int(genotype.split(":")[2])
                 if gq < gq_threshold or depth <= 3:
                     #if GQ is less than 10, set the genotype to missing
                     #this will catch all the genotypes that are already missing
@@ -177,15 +178,15 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             #get genotype qualities for mother tree (and for father, to set it to missing if need be)
             if mat.split(":")[3] == ".":
                 mat_gq=0
+                mat_depth=0
             else:
                 mat_gq=float(mat.split(":")[3])
+                mat_depth=int(mat.split(":")[2])
 
             if pat.split(":")[3] == ".":
                 pat_gq=0
             else:
                 pat_gq=float(pat.split(":")[3])
-
-            mat_depth=int(mat.split(":")[2])
 
             #if maternal genotype is less than threshold
             #don't continue with candidate snp
@@ -206,11 +207,12 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 missing_count=0
                 for i,mg_i in enumerate(mgs_i):
                     genotype=genotypes[mg_i]
-                    depth=int(genotype.split(":")[2])
                     if genotype.split(":")[3] == ".":
                         gq=0
+                        depth=0
                     else:
                         gq=float(genotype.split(":")[3])
+                        depth=int(genotype.split(":")[2])
 
                     if gq < gq_threshold or depth <= 3:
                         #if GQ is less than 20, set the genotype to missing
