@@ -57,7 +57,6 @@ with open(in_vcf) as f:
             candidate_snp=line.strip().split('\t')
             genotypes=candidate_snp[9:len(candidate_snp)]
             mat=genotypes[mat_i]
-            pat=genotypes[pat_i]
 
             #get genotype qualities
             if mat.split(":")[3] == ".":
@@ -65,13 +64,11 @@ with open(in_vcf) as f:
             else:
                 mat_gq=float(mat.split(":")[3])
 
-            if pat.split(":")[3] == ".":
-                pat_gq=0
-            else:
-                pat_gq=float(pat.split(":")[3])
+            #maternal genotype depth
+            mat_depth=int(mat.split(":")[2])
 
-            #if maternal genotype is less than 20 GQ
-            if mat_gq < gq_threshold:
+            #if maternal genotype is less than threshold and depth is less than 3 (won't happen for the maternal)
+            if mat_gq < gq_threshold or mat_depth <= 3:
                 #don't continue with candidate snp
                 continue
             else:
@@ -87,11 +84,12 @@ with open(in_vcf) as f:
             for i,mg_i in enumerate(mgs_i):
                 genotype=genotypes[mg_i]
                 mg=mgs[i]
+                depth=int(genotype.split(":")[2])
                 if genotype.split(":")[3] == ".":
                     gq=0
                 else:
                     gq=float(genotype.split(":")[3])
-                if gq < gq_threshold:
+                if gq < gq_threshold or depth <= 3:
                     #if GQ is less than 10, set the genotype to missing
                     #this will catch all the genotypes that are already missing
                     genotypes[mg_i]="./.:0,0:.:0:0,0,0"
@@ -174,7 +172,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             x=[field for field in candidate_snp if field not in info]
             genotypes=[geno for i,geno in enumerate(x) if i not in blacklist_indices]
             mat=genotypes[mat_i]
-            pat=genotypes[pat_i]
 
 
             #get genotype qualities for mother tree (and for father, to set it to missing if need be)
@@ -188,10 +185,11 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             else:
                 pat_gq=float(pat.split(":")[3])
 
-            #if both parent genotypes are less than 20 GQ
+            mat_depth=int(mat.split(":")[2])
+
+            #if maternal genotype is less than threshold
             #don't continue with candidate snp
-            #if one is bad, that's ok, record that and continue
-            if mat_gq < gq_threshold:
+            if mat_gq < gq_threshold or mat_depth <= 3:
                 mat_poor_count+=1
                 continue
             else:
@@ -208,22 +206,23 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 missing_count=0
                 for i,mg_i in enumerate(mgs_i):
                     genotype=genotypes[mg_i]
+                    depth=int(genotype.split(":")[2])
                     if genotype.split(":")[3] == ".":
                         gq=0
                     else:
                         gq=float(genotype.split(":")[3])
 
-                    if gq < gq_threshold:
+                    if gq < gq_threshold or depth <= 3:
                         #if GQ is less than 20, set the genotype to missing
                         #this will catch all the genotypes that are already missing
-                        genotypes[mg_i]=".:0,0:.:0:0,0,0"
+                        genotypes[mg_i]=".:0,0:.:0:0,0"
                         missing_count+=1
                     else:
                         allele=genotype.split(":")[0]
 
                     if allele not in mat_alleles:
                             #if the genotype is not one of the maternal alleles, set it to missing
-                            genotypes[mg_i]=".:0,0:.:0:0,0,0"
+                            genotypes[mg_i]=".:0,0:.:0:0,0"
                             missing_count+=1
                         #else keep MG genotype
 
