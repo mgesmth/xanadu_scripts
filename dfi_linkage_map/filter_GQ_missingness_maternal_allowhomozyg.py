@@ -68,7 +68,7 @@ with open(in_vcf) as f:
             
 
             #if maternal genotype is less than threshold and depth is less than 3 (won't happen for the maternal)
-            if mat_gq < gq_threshold or mat_depth <= 3:
+            if mat_gq < gq_threshold or mat_depth <= 2:
                 #don't continue with candidate snp
                 continue
             else:
@@ -90,7 +90,7 @@ with open(in_vcf) as f:
                 else:
                     gq=float(genotype.split(":")[3])
                     depth=int(genotype.split(":")[2])
-                if gq < gq_threshold or depth <= 3:
+                if gq < gq_threshold or depth <= 2:
                     #if GQ is less than 10, set the genotype to missing
                     #this will catch all the genotypes that are already missing
                     genotypes[mg_i]="./.:0,0:.:0:0,0,0"
@@ -191,7 +191,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
 
             #if maternal genotype is less than threshold
             #don't continue with candidate snp
-            if mat_gq < gq_threshold or mat_depth <= 3:
+            if mat_gq < gq_threshold or mat_depth <= 2:
                 mat_poor_count+=1
                 continue
             else:
@@ -215,7 +215,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                         gq=float(genotype.split(":")[3])
                         depth=int(genotype.split(":")[2])
 
-                    if gq < gq_threshold or depth <= 3:
+                    if gq < gq_threshold or depth <= 2:
                         #if GQ is less than 20, set the genotype to missing
                         #this will catch all the genotypes that are already missing
                         genotypes[mg_i]=".:0,0:.:0:0,0"
