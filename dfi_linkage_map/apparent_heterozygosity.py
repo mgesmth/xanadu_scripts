@@ -3,7 +3,7 @@
 import sys
 import pandas as pd
 
-if "__name__" == __main__:
+if __name__ == "__main__":
 	file=sys.argv[1]
 
 het_total_mat_hetero=0
