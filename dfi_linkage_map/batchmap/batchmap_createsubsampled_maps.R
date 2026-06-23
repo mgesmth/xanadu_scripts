@@ -7,7 +7,7 @@ LG <- args[3]
 iteration <- as.numeric(args[4])
 
 load("onemap_functions_for_batchmap.RData")
-load("LGs_created_maxrf0.25_LOD12_cleaned.RData")
+load("LGs_created_maxrf0.2_LOD12_cleaned.RData")
 
 create_sampled_map <- function(LG,avail_cores) {
 	if (avail_cores >= 10) {
