@@ -13,7 +13,7 @@ set -e
 
 LG=$1
 outdir="${LG}_subsamples"
-if [[ ! -d "$outdir" ]] ;; then
+if [[ ! -d "$outdir" ]] ; then
 	mkdir $outdir
 fi
 subsamp_script=$(pwd)/scripts/batchmap_createsubsampled_maps.R
