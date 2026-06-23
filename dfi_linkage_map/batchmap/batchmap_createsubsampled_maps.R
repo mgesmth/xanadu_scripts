@@ -36,7 +36,7 @@ create_sampled_map <- function(LG,avail_cores) {
 		overlap=30,
 		size=size,
 		fun.order=ripple.ord,
-		ripple.cores=round(avail_cores/2)
+		ripple.cores=round(avail_cores/2),
 		ws=10,
 		verbosity=c("batch","order"),
 		optimize="likelihood",
