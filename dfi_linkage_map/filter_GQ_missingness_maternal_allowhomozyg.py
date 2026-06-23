@@ -173,6 +173,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             x=[field for field in candidate_snp if field not in info]
             genotypes=[geno for i,geno in enumerate(x) if i not in blacklist_indices]
             mat=genotypes[mat_i]
+            pat=genotypes[pat_i]
 
 
             #get genotype qualities for mother tree (and for father, to set it to missing if need be)
