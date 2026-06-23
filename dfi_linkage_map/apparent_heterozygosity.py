@@ -1,6 +1,7 @@
 #!/bin/env python
 
 import sys
+import pandas as pd
 
 if "__name__" == __main__:
 	file=sys.argv[1]
@@ -16,6 +17,7 @@ meg_gq_threshold=10
 mat_gq_threshold=20
 
 mg_hetero={}
+mg_total={}
 
 with open(file) as f:
     for line in f:
@@ -29,6 +31,7 @@ with open(file) as f:
                 mgs_i=[i for i,samp in enumerate(samples) if "libP1" not in samp]
                 for i in mgs_i:
                     mg_hetero[i]=0
+                    mg_total[i]=0
                 continue
             else:
                 continue
@@ -57,6 +60,7 @@ with open(file) as f:
                         else:
                             gq=int(meg.split(":")[3])
                         if gq >= meg_gq_threshold:
+                            mg_total[i]+=1
                             if "|" in mat.split(":")[0]:
                                 meg_geno=set(meg.split(":")[0].split("|"))
                             else:
@@ -64,6 +68,7 @@ with open(file) as f:
                             if len(meg_geno) > 1:
                                 het_total_mat_hetero+=1
                                 mg_hetero[i]+=1
+                                
                             else:
                                 homo_total_mat_hetero+=1
                         else:
@@ -76,12 +81,14 @@ with open(file) as f:
                         else:
                             gq=int(meg.split(":")[3])
                         if gq >= meg_gq_threshold:
+                            mg_total[i]+=1
                             if "|" in mat.split(":")[0]:
                                 meg_geno=set(meg.split(":")[0].split("|"))
                             else:
                                 meg_geno=set(meg.split(":")[0].split("/"))
                             if len(meg_geno) > 1:
                                 het_total_mat_homo+=1
+                                mg_hetero[i]+=1
                             else:
                                 homo_total_mat_homo+=1
                         else:
@@ -98,3 +105,10 @@ print("total megagametophyte homozgyous genotypes (mat hetero): ",homo_total_mat
 print("total megagametophyte homozygous genotypes: (mat homo): ",homo_total_mat_homo)
 
 print(mg_hetero)
+print(mg_t)
+het_df=pd.DataFrame({'sample_index' : list(mg_hetero.keys()),
+	'het_calls' : list(mg_hetero.values()),
+	'total_calls' : list(mg_total.values())})
+het_df['prop']=het_df['het_calls']/het_df['total_calls']
+
+print(het_df)
