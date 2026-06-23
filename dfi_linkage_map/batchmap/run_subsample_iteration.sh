@@ -18,9 +18,5 @@ iter=$4
 batchmap=/core/projects/EBP/smith/bin/batchmap.sif 
 cores=$SLURM_CPUS_PER_TASK
 
-run=$(basename ${subsample_script})
-if [[ ! -f "$run" ]] ; then
-	cp $subsample_script .
-fi
-singularity exec $batchmap Rscript $run \
+singularity exec $batchmap Rscript $subsample_script \
 $cores $outdir $LG $iter 

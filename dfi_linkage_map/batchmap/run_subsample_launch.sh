@@ -16,7 +16,11 @@ outdir="${LG}_subsamples"
 if [[ ! -d "$outdir" ]] ; then
 	mkdir $outdir
 fi
-subsamp_script=$(pwd)/scripts/batchmap_createsubsampled_maps.R
+subsamp_script=batchmap_createsubsampled_maps.R
+if [[ ! -f "$subsamp_script" ]] ; then
+	cp scripts/${subsamp_script} .
+fi
+
 
 for i in $(seq 1 10); do
 	sbatch scripts/run_subsample_iteration.sh \
