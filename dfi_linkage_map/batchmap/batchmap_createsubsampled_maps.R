@@ -24,6 +24,12 @@ create_sampled_map <- function(LG,avail_cores) {
 		size=100,
 		replace=F))
 	rec=record.parallel(samp,times=30,cores=reccore)
+	if tail(rec$seq.num,n=1) < head(rec$seq.num,n=1) {
+		#rec built the order in reverse
+		rev=make.seq(twopt_table,rev(rec$seq.num))
+		rec=rev
+	}
+
 	size=pick.batch.sizes(rec,size=50,overlap=30,around=10)
 	rec.map=map.overlapping.batches(
 		input.seq=rec,
