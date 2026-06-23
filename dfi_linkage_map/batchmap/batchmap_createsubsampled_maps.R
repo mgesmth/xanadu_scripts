@@ -53,7 +53,7 @@ create_sampled_map <- function(LG,avail_cores) {
 print(paste0("[M]: Creating subsampled map for ",LG,", iteration ",iteration))
 
 out <- paste(LG,iteration,sep="_")
-assign(paste0(out,"_obj", create_sampled_map(LG,ncore)))
+assign(paste0(out,"_obj"), create_sampled_map(LG,ncore))
 save(paste0(out,"_obj"),file.path(outdir,paste0(out,".RData")))
 
 
