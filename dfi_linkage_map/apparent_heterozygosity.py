@@ -104,8 +104,6 @@ print("total megagametophyte heterozygous genotypes: (mat homo): ",het_total_mat
 print("total megagametophyte homozgyous genotypes (mat hetero): ",homo_total_mat_hetero)
 print("total megagametophyte homozygous genotypes: (mat homo): ",homo_total_mat_homo)
 
-print(mg_hetero)
-print(mg_t)
 het_df=pd.DataFrame({'sample_index' : list(mg_hetero.keys()),
 	'het_calls' : list(mg_hetero.values()),
 	'total_calls' : list(mg_total.values())})
