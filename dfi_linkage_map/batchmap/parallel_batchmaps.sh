@@ -13,11 +13,7 @@
 
 set -e
 echo `hostname`
-#hi
-touch linkage_groups.txt
-for i in $(seq 1 13); do
-	echo "LG_${i}" >> linkage_groups.txt
-done
+
 array=($(cat linkage_groups.txt))
 LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 core=/core/projects/EBP/smith
