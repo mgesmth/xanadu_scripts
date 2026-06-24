@@ -57,7 +57,7 @@ map2 <- map.overlapping.batches(input.seq=LG_rec,
                                min.tries=2,
                                optimize="likelihood",
                                verbosity=c("batch"),
-                               method=one)
+                               method="one")
 
 print(paste0("[M]: Map log-likelihood: ",map2$Map$seq.like))
 write.map(map2$Map,file=file.path(descrip,"recomb_map.txt"))
