@@ -30,7 +30,7 @@ mark2=${mark1%.txt}_segpass.txt
 num_samp=100
 max_rf=$2
 LOD=$3
-
+#hi
 echo -e "\n[M]: Finding linkage groups..."
 
 cp ${scripts}/batchmap_createLGs.R .
