@@ -2,29 +2,30 @@
 #SBATCH -J build_batchmap
 #SBATCH -p general
 #SBATCH -q general
-#SBATCH -c 24
-#SBATCH -D /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb
-#SBATCH --mem=84G
+#SBATCH -c 20
+#SBATCH --array=[0-12]
+#SBATCH -D /core/projects/EBP/smith/linkage_actually/11_batchmap_gq99_alldepth
+#SBATCH --mem=64G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
-#SBATCH -o /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb/log/%x.%j.out
-#SBATCH -e /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb/log/%x.%j.err
+#SBATCH -o /core/projects/EBP/smith/linkage_actually/11_batchmap_gq99_alldepth/log/%x.%A.%a.out
+#SBATCH -e /core/projects/EBP/smith/linkage_actually/11_batchmap_gq99_alldepth/log/%x.%A.%a.err
 
 set -e
 echo `hostname`
 
-#array=($(cat linkage_groups.txt))
-#LG_num=${array[$SLURM_ARRAY_TASK_ID]}
-LG_num=$1
-ripple_tries=$2
-ws=$3
-method=$4
+touch linkage_groups.txt
+for i in $(seq 1 13); do
+	echo "LG_${i}" >> linkage_groups.txt
+done
+array=($(cat linkage_groups.txt))
+LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 core=/core/projects/EBP/smith
-dir=${core}/linkage_maybefixedit/11_batchmap_1kb
+dir=${core}/linkage_actually/11_batchmap_gq99_alldepth
 batchmap=${core}/bin/batchmap.sif
 ncore=$SLURM_CPUS_PER_TASK
 scripts=${dir}/scripts
 
 cp scripts/batchmap_createmap_perLG.R .
 singularity exec ${batchmap} Rscript batchmap_createmap_perLG.R \
-${dir} ${LG_num} ${ncore} ${ripple_tries} ${ws} ${method}
+${LG_num} ${ncore}
