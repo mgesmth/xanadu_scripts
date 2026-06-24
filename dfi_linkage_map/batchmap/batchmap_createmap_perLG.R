@@ -4,7 +4,6 @@ args <- commandArgs(trailingOnly = TRUE)
 LG <- args[1]
 cores <- as.numeric(args[2])
 
-setwd(wd)
 descrip=paste0(LG,"_maps")
 dir.create(descrip)
 outdir=descrip
