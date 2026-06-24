@@ -91,7 +91,7 @@ with open(in_vcf) as f:
                     gq=float(genotype.split(":")[3])
                     allele_depths=list(map(int,genotype.split(":")[1].split(",")))
 
-                if gq >= gq_threshold and depth <= 2 and 0 in allele_depths and abs(allele_depths[0]-allele_depths[2]) >= 4:
+                if gq >= gq_threshold and 0 in allele_depths and abs(allele_depths[0]-allele_depths[2]) >= 4:
                     allele=genotype.split(":")[0]
                 else:
                     genotypes[mg_i]=".:0,0:.:0:0,0"
@@ -209,7 +209,7 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                         gq=float(genotype.split(":")[3])
                         allele_depths=list(map(int,genotype.split(":")[1].split(",")))
 
-                    if gq >= gq_threshold and depth <= 2 and 0 in allele_depths and abs(allele_depths[0]-allele_depths[2]) >= 4:
+                    if gq >= gq_threshold and 0 in allele_depths and abs(allele_depths[0]-allele_depths[2]) >= 4:
                         allele=genotype.split(":")[0]
                         if allele not in mat_alleles:
                             #if the genotype is not one of the maternal alleles, set it to missing
