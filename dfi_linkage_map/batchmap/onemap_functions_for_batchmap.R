@@ -1,6 +1,55 @@
 library(BatchMap)
 
 #test segregation and select seg type and allow an outcross object
+filter_missing=function (onemap.obj = NULL, threshold = 0.25, by = "markers", 
+    verbose = TRUE) 
+{
+    if (!inherits(onemap.obj, "outcross")) {
+        stop("onemap.obj should be of class outcross\n")
+    }
+    if (by == "markers") {
+        perc.mis <- apply(onemap.obj$geno, 2, function(x) sum(x == 
+            0)/length(x))
+        idx <- which(!perc.mis > threshold)
+        new.onemap.obj <- onemap.obj
+        new.onemap.obj$geno <- onemap.obj$geno[, idx]
+        new.onemap.obj$n.mar <- length(idx)
+        new.onemap.obj$segr.type <- onemap.obj$segr.type[idx]
+        new.onemap.obj$segr.type.num <- onemap.obj$segr.type.num[idx]
+        #if (!is.null(onemap.obj$CHROM)) 
+        #    new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
+        #if (!is.null(onemap.obj$POS)) 
+        #    new.onemap.obj$POS <- onemap.obj$POS[idx]
+        #if (!is.null(onemap.obj$ref_alt_alleles)) 
+        #    new.onemap.obj$ref_alt_alleles <- onemap.obj$ref_alt_alleles[idx, 
+        #        ]
+        new.onemap.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind - 
+            1)) * onemap.obj$n.mar, each = length(idx)), ]
+        if (verbose) 
+            cat("Number of markers removed from the onemap object: ", 
+                length(which(perc.mis > threshold)), "\n")
+    }
+    else if (by == "individuals") {
+        perc.mis <- apply(onemap.obj$geno, 1, function(x) sum(x == 
+            0)/length(x))
+        idx <- which(!perc.mis > threshold)
+        new.onemap.obj <- onemap.obj
+        new.onemap.obj$geno <- onemap.obj$geno[idx, ]
+        new.onemap.obj$n.ind <- length(idx)
+        #new.onemap.obj$error <- onemap.obj$error[1:onemap.obj$n.mar + 
+        #    rep((idx - 1) * onemap.obj$n.mar, each = onemap.obj$n.mar), 
+        #    ]
+        if (verbose) 
+            cat("Number of indiduals removed from the onemap object: ", 
+                length(which(perc.mis > threshold)), "\n")
+    }
+    else {
+        stop("Input for argument by is not defined. Please choose between `markers` or `individuals` options.")
+    }
+    return(new.onemap.obj)
+}
+
+
 
 test.segregation_outcross=function(x) {
     if (is(x, "outcross")) {
