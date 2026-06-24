@@ -13,7 +13,7 @@
 
 set -e
 echo `hostname`
-
+#hi
 touch linkage_groups.txt
 for i in $(seq 1 13); do
 	echo "LG_${i}" >> linkage_groups.txt
