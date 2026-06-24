@@ -86,22 +86,16 @@ with open(in_vcf) as f:
                 mg=mgs[i]
                 if genotype.split(":")[3] == ".":
                     gq=0
-                    depth=0
+                    allele_depths=[0,0]
                 else:
                     gq=float(genotype.split(":")[3])
-                    depth=int(genotype.split(":")[2])
-                if gq < gq_threshold or depth <= 2:
-                    #if GQ is less than 10, set the genotype to missing
-                    #this will catch all the genotypes that are already missing
-                    genotypes[mg_i]="./.:0,0:.:0:0,0,0"
-                    mg_missingness[mg]+=1
-                else:
+                    allele_depths=list(map(int,genotype.split(":")[1].split(",")))
+
+                if gq >= gq_threshold and depth <= 2 and 0 in allele_depths and abs(allele_depths[0]-allele_depths[2]) >= 4:
                     allele=genotype.split(":")[0]
-                    #if allele not in mat_alleles:
-                        #if the genotype is not one of the maternal alleles, set it to missing
-                    #    genotypes[mg_i]="./.:0,0:.:0:0,0,0"
-                    #    mg_missingness[mg]+=1
-                    #else keep MG genotype; not declared as missing
+                else:
+                    genotypes[mg_i]=".:0,0:.:0:0,0"
+                    mg_missingness[mg]+=1
 
 count_list=list(mg_missingness.values())
 count_list[:] = [x/potential_record_counter for x in count_list]
@@ -210,26 +204,21 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                     genotype=genotypes[mg_i]
                     if genotype.split(":")[3] == ".":
                         gq=0
-                        depth=0
+                        allele_depths=[0,0]
                     else:
                         gq=float(genotype.split(":")[3])
-                        depth=int(genotype.split(":")[2])
+                        allele_depths=list(map(int,genotype.split(":")[1].split(",")))
 
-                    if gq < gq_threshold or depth <= 2:
-                        #if GQ is less than 20, set the genotype to missing
-                        #this will catch all the genotypes that are already missing
-                        genotypes[mg_i]=".:0,0:.:0:0,0"
-                        missing_count+=1
-                    else:
+                    if gq >= gq_threshold and depth <= 2 and 0 in allele_depths and abs(allele_depths[0]-allele_depths[2]) >= 4:
                         allele=genotype.split(":")[0]
-
-                    if allele not in mat_alleles:
+                        if allele not in mat_alleles:
                             #if the genotype is not one of the maternal alleles, set it to missing
                             genotypes[mg_i]=".:0,0:.:0:0,0"
                             missing_count+=1
-                        #else keep MG genotype
-
-
+                    else:
+                        genotypes[mg_i]=".:0,0:.:0:0,0"
+                        missing_count+=1
+                        
                 # place missingness for this SNP in the missingness by snp histogram
                 for i,high in enumerate(snp_missingness_breaks, start=0):
                     if high == 0.01:
