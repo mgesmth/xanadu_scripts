@@ -14,6 +14,10 @@ load("onemap_functions_for_batchmap.RData")
 
 LG_cur<-LG_list_clean[[LG]]
 LG_rec=record.parallel(LG_cur,times=20,cores=20)
+if (as.numeric(tail(LG_rec$seq.num,n=1)) < as.numeric(head(LG_rec$seq.num,n=1))) {
+    LG_rec1=LG_rec
+    LG_rec=make.seq(twopt_table,rev(LG_rec1$seq.num))
+}
 
 print("[M]: Getting a batch size...")
 #get a batch size
