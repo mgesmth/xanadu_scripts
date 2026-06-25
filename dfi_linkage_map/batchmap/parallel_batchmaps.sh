@@ -14,6 +14,8 @@
 set -e
 echo `hostname`
 
+module load singularity/3.9.2
+
 iteration=$1
 
 array=($(cat linkage_groups.txt))
