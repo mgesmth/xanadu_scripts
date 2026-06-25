@@ -3,8 +3,9 @@ library(BatchMap)
 args <- commandArgs(trailingOnly = TRUE)
 LG <- args[1]
 cores <- as.numeric(args[2])
+iteration <- as.numeric(args[3])
 
-descrip=paste0(LG,"_maps")
+descrip=paste0(LG,"_maps_",iteration)
 dir.create(descrip)
 outdir=descrip
 

@@ -14,6 +14,8 @@
 set -e
 echo `hostname`
 
+iteration=$1
+
 array=($(cat linkage_groups.txt))
 LG_num=${array[$SLURM_ARRAY_TASK_ID]}
 core=/core/projects/EBP/smith
@@ -22,6 +24,8 @@ batchmap=${core}/bin/batchmap.sif
 ncore=$SLURM_CPUS_PER_TASK
 scripts=${dir}/scripts
 
+echo "[M]: Creating map for ${LG_num}..."
+
 cp scripts/batchmap_createmap_perLG.R .
 singularity exec ${batchmap} Rscript batchmap_createmap_perLG.R \
-${LG_num} ${ncore}
+${LG_num} ${ncore} $iteration
