@@ -9,7 +9,7 @@ dir.create(descrip)
 outdir=descrip
 
 #load up linkage group data
-load("LGs_created_maxrf0.35_LOD8_cleaned.RData")
+load("LGs_created_maxrf0.25_LOD8_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
 
 LG_cur<-LG_list_clean[[LG]]
