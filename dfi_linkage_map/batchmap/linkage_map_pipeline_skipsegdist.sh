@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J create_LGs
-#SBATCH -p general
-#SBATCH -q general
+#SBATCH -p himem
+#SBATCH -q himem
 #SBATCH -D /core/projects/EBP/smith/linkage_actually/11_batchmap_gq99_alldepth
 #SBATCH -c 24
-#SBATCH --mem=128G
+#SBATCH --mem=500G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
 #SBATCH -o /core/projects/EBP/smith/linkage_actually/11_batchmap_gq99_alldepth/log/%x.%j.out
