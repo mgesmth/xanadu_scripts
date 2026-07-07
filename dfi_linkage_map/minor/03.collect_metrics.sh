@@ -3,7 +3,7 @@
 #SBATCH -J 03.Metrics
 #SBATCH -o 98_log_files/%x_%A_%a.out
 #SBATCH -e 98_log_files/%x_%A_%a.err
-#SBATCH -c=1
+#SBATCH -c 1
 #SBATCH --mem=10G
 
 set -e
