@@ -47,3 +47,4 @@ else
 		echo "[M]: Sequence dictionary created."
 
 	echo "[M] All indices found and/or created."
+fi
