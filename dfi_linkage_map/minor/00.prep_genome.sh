@@ -26,6 +26,7 @@ else
 		echo "[M]: Done FAI"
 	else
 		echo "[M]: FAI found."
+	fi
 
 	if [[ ! -f "${GENOME}.bwt" ]] ; then
 		echo "[M]: BWA indices not found. Indexing..."
@@ -34,6 +35,7 @@ else
 		echo "[M]: BWA indices created."
 	else
 		echo "[M]: BWA indices found."
+	fi
 
 	suf=$(echo "$GENOME" | awk '{n=split($1,m,".") ; print "." m[n]}')
 	nosuf=$(echo "$GENOME" | sed "s/${suf}$//")
@@ -45,6 +47,7 @@ else
 		echo "[M]: Sequence dictionary created."
 	else
 		echo "[M]: Sequence dictionary created."
+	fi
 
 	echo "[M] All indices found and/or created."
 fi
