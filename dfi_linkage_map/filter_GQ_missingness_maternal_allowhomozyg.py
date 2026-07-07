@@ -44,9 +44,7 @@ with open(in_vcf) as f:
                 #prepare sample names and their indices separately for better access in loop
                 mgs=[sample for sample in samples if "mg" in sample]
                 mgs_i=[i for i,sample in enumerate(samples) if "mg" in sample]
-                #parents=[(i,sample) for i,sample in enumerate(samples) if "mg" not in sample]
                 mat_i=[i for i,sample in enumerate(samples) if "libP1" in sample][0]
-                pat_i=[i for i,sample in enumerate(samples) if "libP2" in sample][0]
                 #initialize a list to contain missingness values
                 for mg in mgs:
                     mg_missingness[mg] = 0
@@ -140,9 +138,8 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 #create a list of blacklisted indices so we know what to remove in the SNP lines
                 blacklist_indices=[i for i,mg in enumerate(samples) if mg in mg_blacklist]
 
-                #all megagametophyte samples have "mg" in name; parents don't
+                #all megagametophyte samples have "mg" in name; parent doesn't
                 mat_i=[i for i,sample in enumerate(samples_filt) if "libP1" in sample][0]
-                pat_i=[i for i,sample in enumerate(samples_filt) if "libP2" in sample][0]
                 #prepare sample names and their indices separately for better access in loop
                 mgs=[sample for sample in samples_filt if "mg" in sample]
                 mgs_i=[i for i,sample in enumerate(samples_filt) if sample in mgs]
@@ -167,7 +164,6 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
             x=[field for field in candidate_snp if field not in info]
             genotypes=[geno for i,geno in enumerate(x) if i not in blacklist_indices]
             mat=genotypes[mat_i]
-            pat=genotypes[pat_i]
 
 
             #get genotype qualities for mother tree (and for father, to set it to missing if need be)
@@ -178,19 +174,12 @@ with open(in_vcf) as f, open(out_vcf,"w") as of:
                 mat_gq=float(mat.split(":")[3])
                 mat_depth=int(mat.split(":")[2])
 
-            if pat.split(":")[3] == ".":
-                pat_gq=0
-            else:
-                pat_gq=float(pat.split(":")[3])
-
             #if maternal genotype is less than threshold
             #don't continue with candidate snp
             if mat_gq < gq_threshold or mat_depth <= 2:
                 mat_poor_count+=1
                 continue
             else:
-                if pat_gq < gq_threshold:
-                    genotypes[pat_i] == "./.:0,0:.:0:0,0,0"
 
                 if "/" in mat.split(":")[0]:
                     mat_alleles=set(mat.split(":")[0].split("/"))
