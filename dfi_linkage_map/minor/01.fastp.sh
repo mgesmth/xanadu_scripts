@@ -1,6 +1,4 @@
 #!/bin/bash
-# 6 CPUs
-# 10 Go
 
 #SBATCH -J 01.fastp
 #SBATCH -o 98_log_files/%x_%A_%a.out
@@ -9,21 +7,12 @@
 #SBATCH --mem=10G
 
 set -e
-# Load up fastp
 module load fastp/0.23.4
-
-#cd $SLURM_SUBMIT_DIR
-
-##Keep some info. about the run/script
-TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
-SCRIPT=$0
-NAME=$(basename $0)
 
 # Variables
 INDIR="04_raw_data"
 OUTDIR="05_trimmed_data"
 LOG="98_log_files"
-TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 if [[ $SLURM_ARRAY_TASK_ID == 0 ]] ; then
 mkdir $OUTDIR/01_reports
 fi

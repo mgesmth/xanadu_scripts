@@ -1,20 +1,13 @@
 #!/bin/bash
-# 1 CPU
-# 10 Go
 
 #SBATCH -J 03.Metrics
 #SBATCH -o 98_log_files/%x_%A_%a.out
 #SBATCH -e 98_log_files/%x_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem 10G
-#SBATCH --time=0-12:00:00
+#SBATCH -c=1
+#SBATCH --mem=10G
 
 set -e
-
-# Load modules
-module load picard/3.1.1
+module load picard/3.1.1 singularity/3.9.2
 
 # Global variables
 GENOMEFOLDER="03_genome"
@@ -24,11 +17,6 @@ METRICSFOLDER="99_metrics"
 ALIGN="CollectAlignmentSummaryMetrics"
 INSERT="CollectInsertSizeMetrics"
 COVERAGE="CollectWgsMetricsWithNonZeroCoverage"
-
-# Copy script to log folder
-TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
-SCRIPT=$0
-SCRIPTNAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 
     # Fetch filename from the array
@@ -56,4 +44,4 @@ LOG_FOLDER="98_log_files"
         OUTPUT=$METRICSFOLDER/${name}_collect_wgs_metrics.txt\
         CHART=$METRICSFOLDER/${name}_collect_wgs_metrics.pdf
 
-    echo \n">>> DONE! <<<"\n
+echo \n">>> DONE! <<<"\n

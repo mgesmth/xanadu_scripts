@@ -3,34 +3,21 @@
 #SBATCH -J 05.RG
 #SBATCH -o 98_log_files/%x_%A_%a.out
 #SBATCH -e 98_log_files/%x_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH -c 16
 #SBATCH --mem=50G
 
 set -e
 
-#cd $SLURM_SUBMIT_DIR
+module load picard/3.1.1 java/22 samtools/1.19 singularity/3.9.2
 
-# Copy script to log folder
-TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
-SCRIPT=$0
-NAME=$(basename $0)
-LOG_FOLDER="98_log_files"
-
-# Load needed modules - ComputeCanada clusters
-module load picard/3.1.1
-module load java/22
-module load samtools/1.19
-
-export JAVA_TOOL_OPTIONS="-Xms2g -Xmx50g "
-export _JAVA_OPTIONS="-Xms2g -Xmx50g "
+export JAVA_TOOL_OPTIONS="-Xms2000M -Xmx${SLURM_MEM_PER_NODE}M "
+export _JAVA_OPTIONS="-Xms2000M -Xmx${SLURM_MEM_PER_NODE}M "
 
 # Global variables
+LOG_FOLDER="98_log_files"
 INBAM="06_bam_files"
 OUTBAM="06_bam_files"
 ADDRG="AddOrReplaceReadGroups"
-#PICARD=$EBROOTPICARD/picard.jar
 DATATABLE=02_info_files/datatable.txt
 
 # Remove duplicates from bam alignments
@@ -62,7 +49,5 @@ new_RGSM=${name}
             "
         samtools index -c $INBAM/${name}_RG.bam
 
-echo " >>> Cleaning a bit...
-"
 echo "
 DONE! Check your files"

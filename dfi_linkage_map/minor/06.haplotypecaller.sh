@@ -1,31 +1,19 @@
 #!/bin/bash
-# 1 CPU
-# 30 Go
 
 #SBATCH -J "06.HaplotypeCaller"
-#SBATCH -o 98_log_files/%x_%A_array%a.out
-#SBATCH -e 98_log_files/%x_%A_array%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=12
+#SBATCH -o 98_log_files/%x_%A_%a.out
+#SBATCH -e 98_log_files/%x_%A_%a.err
+#SBATCH -c 12
 #SBATCH --mem=32G
 
 set -e
 
-module load singularity/3.9.2
+module load singularity/3.9.2 samtools/1.19
 
-# Copy script to log folder
-TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
-SCRIPT=$0
-NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 
-# Load needed modules
-module load samtools/1.19
-
-# Uncomment these for big genomes
-export JAVA_TOOL_OPTIONS="-Xms2g -Xmx32g "
-export _JAVA_OPTIONS="-Xms2g -Xmx32g "
+export JAVA_TOOL_OPTIONS="-Xms2000M -Xmx${SLURM_MEM_PER_NODE}M "
+export _JAVA_OPTIONS="-Xms2000M -Xmx${SLURM_MEM_PER_NODE}M "
 
 # Global variables
 BAM="06_bam_files"
@@ -39,7 +27,7 @@ DATATABLE=02_info_files/datatable.txt
 echo " >>> Calling Haplotypes..."
 
 
-# Fetch filename from the array
+# Fetch filename and ploidy from the array
 array_name=($(cut -f1 02_info_files/datatable.txt))
 array_ploidy=($(cut -f2 02_info_files/datatable.txt))
 name=${array_name[$SLURM_ARRAY_TASK_ID]}

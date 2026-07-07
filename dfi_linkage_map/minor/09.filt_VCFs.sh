@@ -1,32 +1,25 @@
 #!/bin/bash
 
-#SBATCH --job-name="08.FiltVCF"
+#SBATCH --job-name="09b.FiltVCF"
 #SBATCH -o 98_log_files/%x_%j.out
 #SBATCH -e 98_log_files/%x_%j.err
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH -c 8
 #SBATCH --mem=16G
+
+set -e
 
 module load vcftools/0.1.16 bcftools/1.23.1 bedtools/2.31.1 tabix/0.2.6 GATK/4.5.0.0 singularity/3.9.2
 
-cd $SLURM_SUBMIT_DIR
-
-TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
-SCRIPT=$0
-NAME=$(basename $0)
 LOG_FOLDER="98_log_files"
 VCF="08_raw_vcfs"
-FILTVCF="09_filt_vcfs"
+FILTVCF="9_filt_vcfs"
 GENOMEDIR="03_genome"
 GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
-echo "STARTING AT $TIMESTAMP"
-echo $SCRIPT
-begin=`date +%s`
+DATASET=$1
 
 gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
--V $VCF/${DATASET}_unfiltered.vcf \
+-V $VCF/${DATASET}_unfiltered.vcf.gz \
 -O $FILTVCF/${DATASET}_filtered.vcf.gz \
 --filter-name "AlleleDepth" --filter-expression "DP < 10" \
 --filter-name "QualitybyDepth" --filter-expression "QD < 2.0" \
@@ -36,10 +29,10 @@ gatk VariantFiltration \
 --filter-name "MQRankSumTest" --filter-expression "MQRankSum < -12.5" \
 --filter-name "ReadPosRankSum" --filter-expression "ReadPosRankSum < -8.0" \
 --filter-name "Quality" --filter-expression "QUAL < 20.0" \
---filter-name "AlleleFrequency" --filter-expression "AF < 0.25" \
 --create-output-variant-index false
 
 tabix -p vcf $FILTVCF/${DATASET}_filtered.vcf.gz
+
 
 #only move forward with variants that pass
 zcat $FILTVCF/${DATASET}_filtered.vcf.gz | awk -F "\t" -v OFS="\t" '{
@@ -89,13 +82,10 @@ bedtools window -v -a $FILTVCF/${DATASET}_filtered_pass_biallelic.snp.recode.vcf
 #put filtered records and header together
 cat $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf > $FILTVCF/${DATASET}_filtered_pass_biallelic_indels.vcf
 bgzip $FILTVCF/${DATASET}_filtered_pass_biallelic_indels.vcf
-rm $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf $FILTVCF/${DATASET}_filtered_pass_biallelic.snp.recode.vcf.gz
+rm $FILTVCF/header.txt $FILTVCF/variant.rm_indel_mark.vcf $FILTVCF/${DATASET}_filtered_pass_biallelic.indel.recode.vcf.gz $FILTVCF/${DATASET}_filtered_pass_biallelic.snp.recode.vcf.gz
 
 tabix -p vcf $FILTVCF/${DATASET}_filtered_pass_biallelic_indels.vcf.gz
 
 echo "
 DONE! Check you files"
 
-end=`date +%s`
-elapsed=`expr $end - $begin`
-echo Time taken: $elapsed
