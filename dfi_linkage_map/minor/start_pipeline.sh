@@ -8,7 +8,7 @@ core=/core/projects/EBP/smith
 # Name of general working directory
 MAIN=${core}
 # Name of directory where snp calling is happening
-DATASET="linkage_snp_calling_unsplit"
+DATASET="linkage_snp_calling_minorscaffolds"
 SPECIES_DIR=$MAIN/$DATASET
 cd $SPECIES_DIR
 
@@ -22,21 +22,14 @@ DATATABLE=$SPECIES_DIR/02_info_files/datatable.txt
 EMAIL="meg8130@student.ubc.ca"
 
 LR_PARTITION="general"
-HR_PARTITION="himem"
 LR_QOS="general"
-HR_QOS="himem"
-
-
-# How many samples are there?
-#FASTQ_N=$( ls $SPECIES_DIR/04_raw_data/*fastq.gz | wc -l )
-#  FILE_ARRAY=$(( $(($FASTQ_N / 2))-1 ))
 
 job00=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 -D $SPECIES_DIR \
 --mail-type=ALL \
 --mail-user=$EMAIL \
 --parsable \
-$PIPE_DIR/00a_prep_genome.sh)
+$PIPE_DIR/00.prep_genome.sh)
 
 '''
 ##########################
@@ -46,29 +39,25 @@ $PIPE_DIR/00a_prep_genome.sh)
 
 arrlen=$(($(cat 02_info_files/datatable.txt | wc -l)-1))
 
-
 # Trim
 job01=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job00} \
---array=[0-${arrlen}] \
+--array=[0-${arrlen}]%20 \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/01_fastp.sh)
+   $PIPE_DIR/01.fastp.sh)
 
-# Index reference & Align reads to reference
-# Note - If fastq files include .1 and .2 suffixes, bwa will fail. Lines in script 02 can be commented out to handle this
+# Align
 job02=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---array=[0-${arrlen}]\
+--array=[0-${arrlen}]%20\
    --dependency=afterok:${job01} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/02_bwa_alignments_redo.sh)
-
-
+   $PIPE_DIR/02.bwa_alignments.sh)
 
 # Collect sample data metrics
 job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
@@ -78,13 +67,7 @@ job03=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/03_collect_metrics.sh)
-
-'''
-##########################
-# Part 2 of the pipeline #
-##########################
-'''
+   $PIPE_DIR/03.collect_metrics.sh)
 
 # Remove duplicates
 job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
@@ -94,8 +77,7 @@ job04=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/04_remove_duplicates.sh)
-
+   $PIPE_DIR/04.remove_duplicates.sh)
 
 # Change bam files RG
 job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
@@ -105,34 +87,24 @@ job05=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/05_change_RG.sh)
+   $PIPE_DIR/05.change_RG.sh)
 
-'''
-##########################
-# Part 3 of the pipeline #
-##########################
-'''
-
-# New step here now to merge BAM files over samples...
-# Count the number of unique samples in $DATATABLE
-
-# Haplotype Caller
+# Call variants
 job06=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---array=[0-${arrlen}] \
+--array=[0-${arrlen}]%20 \
 --dependency=afterok:${job05} \
    -D $SPECIES_DIR \
    --mail-type=ALL \
    --mail-user=$EMAIL \
    --parsable \
-   $PIPE_DIR/06b_haplotypecaller_redo.sh)
+   $PIPE_DIR/06.haplotypecaller.sh)
 
 '''
 ##########################
-# Part 4 of the pipeline #
+# Part 2 of the pipeline #
 ##########################
 '''
 
-##### Set up scaffold input files to fit with Compute Canada max jobs
 # How many scaffolds are in the genome...
 SCAFF_N=$(cat $SPECIES_DIR/03_genome/*fai | wc -l)
 SPLIT_N=200
@@ -167,53 +139,36 @@ cd ..
 
 ##########################
 # Call SNPs
-export DATASET=$DATASET
+
+ls -1 07_gvcfs/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
 job07=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
-   --array=0-${SCAFF_ARRAY} \
+   --array=[0-${SCAFF_ARRAY}]%20 \
    --dependency=afterok:${job06} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
-   --export DATASET \
    --parsable \
-   $PIPE_DIR/07b_genomicsdb_genotypegvcfs.sh)
+   $PIPE_DIR/07.combinegvcfs_genotypegvcfs.sh $DATASET)
 
 # Concatenate VCFs
-export DATASET=$DATASET
 job08=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
    --mail-type=ALL \
    --dependency=afterok:$job07 \
    --mail-user=$EMAIL \
-   --export DATASET \
    --parsable \
-   $PIPE_DIR/08b_concat_VCFs.sh)
+   $PIPE_DIR/08.concat_VCFs.sh $DATASET)
 
 # FILTER
-export DATASET=$DATASET
-job09_1=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
+job09=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
 --dependency=afterok:${job08} \
    --mail-type=ALL \
    --mail-user=$EMAIL \
-   --export DATASET \
    --parsable \
-   $PIPE_DIR/09b_VCF_filtering_stringent.sh)
+   $PIPE_DIR/09b.filt_VCFs.sh $DATASET)
 
-# FILTER
-export DATASET=$DATASET
-job09_2=$(sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---dependency=afterok:${job08} \
-  --mail-type=ALL \
-  --mail-user=$EMAIL \
-  --export DATASET \
-  --parsable \
-  $PIPE_DIR/09b_VCF_filtering.sh)
-
-
-#Final filtering
-export DATASET=$DATASET
+#build batchmap file
 sbatch -p ${LR_PARTITION} -q ${LR_QOS} \
---dependency=afterok:${job09_1},afterok:${job09_2} \
+--dependency=afterok:${job09} \
   --mail-type=ALL \
   --mail-user=$EMAIL \
-  --export DATASET \
-  $PIPE_DIR/10b_batchmapfile.sh
+  $PIPE_DIR/10.batchmap_file.sh $DATASET
 ##########################
