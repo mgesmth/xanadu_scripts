@@ -13,19 +13,6 @@ outdir=descrip
 load("LGs_created_maxrf0.25_LOD8_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
 
-find_repulsion_markers <- function(map) {
-    rf <- map$Map$seq.rf
-    num <- map$Map$seq.rf
-    remove <- c()
-    for (i in 1:length(rf)) {
-        frac=rf[i]
-        if (frac == 0.0000010000) {
-            remove <- append(remove,num[i])
-        }
-    }
-    return(remove)
-}
-
 LG_cur<-LG_list_clean[[LG]]
 
 print("[M]: Getting a batch size...")
@@ -34,18 +21,6 @@ batch_size <- pick.batch.sizes(LG_cur,
                  size = 50, 
                  overlap = 30, 
                  around = 10)
-
-#create original genomic map to find repulsion markers
-map0 <- map.overlapping.batches(input.seq=LG_cur,
-    size=batch_size,
-    phase.cores=4,
-    overlap=30)
-remove <- find_repulsion_markers(map0)
-if (length(remove) > 0) {
-    x <- LG_cur
-    LG_cur <- drop.marker(x,remove)
-    rm(x)
-}
 
 #order by recombination information
 LG_rec=record.parallel(LG_cur,times=20,cores=20)
