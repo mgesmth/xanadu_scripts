@@ -13,12 +13,20 @@ outdir=descrip
 load("LGs_created_maxrf0.25_LOD8_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
 
-LG_cur<-LG_list_clean[[LG]]
-LG_rec=record.parallel(LG_cur,times=20,cores=20)
-if (as.numeric(tail(LG_rec$seq.num,n=1)) < as.numeric(head(LG_rec$seq.num,n=1))) {
-    LG_rec1=LG_rec
-    LG_rec=make.seq(twopt_table,rev(LG_rec1$seq.num))
+find_repulsion_markers <- function(map) {
+    rf <- map$Map$seq.rf
+    num <- map$Map$seq.rf
+    remove <- c()
+    for (i in 1:length(rf)) {
+        frac=rf[i]
+        if (frac == 0.0000010000) {
+            remove <- append(remove,num[i])
+        }
+    }
+    return(remove)
 }
+
+LG_cur<-LG_list_clean[[LG]]
 
 print("[M]: Getting a batch size...")
 #get a batch size
@@ -27,12 +35,33 @@ batch_size <- pick.batch.sizes(LG_cur,
                  overlap = 30, 
                  around = 10)
 
+#create original genomic map to find repulsion markers
+map0 <- map.overlapping.batches(input.seq=LG_cur,
+    size=batch_size,
+    phase.cores=4,
+    overlap=30)
+remove <- find_repulsion_markers(map0)
+if (length(remove) > 0) {
+    x <- LG_cur
+    LG_cur <- drop.marker(x,remove)
+    rm(x)
+}
+
+#order by recombination information
+LG_rec=record.parallel(LG_cur,times=20,cores=20)
+if (as.numeric(tail(LG_rec$seq.num,n=1)) < as.numeric(head(LG_rec$seq.num,n=1))) {
+    LG_rec1=LG_rec
+    LG_rec=make.seq(twopt_table,rev(LG_rec1$seq.num))
+}
+
 print("[M]: Now making the maps!")
-print("[M]: Building denomic map...")
+print("[M]: Building genomic map...")
 map1 <- map.overlapping.batches(input.seq=LG_cur,
     size=batch_size,
     phase.cores=4,
     overlap=30)
+
+
 print(paste0("[M]: Map log-likelihood: ",map1$Map$seq.like))
 write.map(map1$Map,file=file.path(descrip,"genomic_map.txt"))
 map1$Map$data.name <- outcross_clean
