@@ -15,8 +15,8 @@ ALIGNEDFOLDER="06_bam_files"
 METRICSFOLDER="99_metrics"
 LOG_FOLDER="98_log_files"
 
-export JAVA_TOOL_OPTIONS="-Xms2g -Xmx${$SLURM_MEM_PER_NODE}M"
-export _JAVA_OPTIONS="-Xms2g -Xmx${SLURM_MEM_PER_NODE}M"
+export JAVA_TOOL_OPTIONS="-Xms2g -Xmx${SLURM_MEM_PER_NODE}M "
+export _JAVA_OPTIONS="-Xms2g -Xmx${SLURM_MEM_PER_NODE}M "
 
 # Fetch filename from the array
 array=($(cut -f1 02_info_files/datatable.txt))
