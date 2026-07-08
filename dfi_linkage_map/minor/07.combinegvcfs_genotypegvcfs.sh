@@ -3,8 +3,8 @@
 #SBATCH -J "07b.combinegvcfs_genotypegvcf"
 #SBATCH -o 98_log_files/%x_%A_%a.out
 #SBATCH -e 98_log_files/%x_%A_%a.err
-#SBATCH -c 16
-#SBATCH --mem=84G
+#SBATCH -c 12
+#SBATCH --mem=48G
 
 DATASET=$1
 
