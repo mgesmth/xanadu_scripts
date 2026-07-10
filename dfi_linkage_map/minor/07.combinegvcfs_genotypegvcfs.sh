@@ -47,6 +47,8 @@ for scaff in $(cut -f1 $REGION_FILE) ; do
 tabix -p vcf $VCF/${scaff}.vcf.gz
 bgzip $GVCF/${DATASET}.g.vcf
 
+done
+
 end=`date +%s`
 elapsed=`expr $end - $begin`
 echo Time taken: $elapsed
