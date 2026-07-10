@@ -28,7 +28,7 @@ REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
 sample_gvcfs=$(ls -1 $GVCF/*.vcf | paste -sd " ")
 #ls -1 $GVCF/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
 
-for scaff in $(cut -f1 $REGION_FILE) ; do
+for scaff in $(cat $REGION_FILE) ; do
 
     gatk CombineGVCFs \
     -R $GENOMEFOLDER/$GENOME \
