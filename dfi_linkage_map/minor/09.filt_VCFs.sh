@@ -90,6 +90,7 @@ snp_missingness=0.25
 gq=99
 in_vcf=$FILTVCF/${DATASET}_filtered_pass_biallelic_indels.vcf
 out_vcf=$FILTVCF/${DATASET}_filtered_pass_biallelic_indels_missingness${snp_missingness}_gq${gq}.vcf
+source /home/FCAM/msmith/python_venv/bin/activate
 
 python3 ${scripts}/filter_GQ_missingness_maternal_allowhomozyg.py \
 ${snp_missingness} ${ind_missingness} ${gq_std} "$in_vcf" "$out_vcf"
