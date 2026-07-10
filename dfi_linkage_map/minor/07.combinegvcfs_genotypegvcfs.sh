@@ -47,7 +47,7 @@ for scaff in $(cut -f1 $REGION_FILE) ; do
     --create-output-variant-index false
 
 tabix -p vcf $VCF/${scaff}.vcf.gz
-bgzip $GVCF/${DATASET}.g.vcf
+bgzip $GVCF/${scaff}.g.vcf
 
 done
 
