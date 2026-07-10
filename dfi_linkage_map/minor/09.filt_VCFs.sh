@@ -94,8 +94,8 @@ source /home/FCAM/msmith/python_venv/bin/activate
 
 python3 ${scripts}/filter_GQ_missingness_maternal_allowhomozyg.py \
 ${snp_missingness} ${ind_missingness} ${gq} "$in_vcf" "$out_vcf"
-mv missingness_per* ${FILTVCF}/
-mv inds_passed* ${FILTVCF}/
+#mv missingness_per* ${FILTVCF}/
+#mv inds_passed* ${FILTVCF}/
 
 bgzip $FILTVCF/${DATASET}_filtered_pass_biallelic_indels.vcf
 tabix -p vcf $FILTVCF/${DATASET}_filtered_pass_biallelic_indels.vcf.gz
