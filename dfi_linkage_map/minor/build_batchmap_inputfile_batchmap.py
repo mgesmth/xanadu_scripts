@@ -26,11 +26,8 @@ with open(vcf) as f, open(txt_tmp, "w") as of:
                 #sample names start at field 10
                 info=header[0:9]
                 samples=[field for field in header if field not in info]
-                pat=[sample for sample in samples if "libP2" in sample][0]
-                pat_i=[i for i,sample in enumerate(samples) if "libP2" in sample][0]
-                samples_nopat=[sample for sample in samples if sample != pat]
-                mat=[sample for sample in samples_nopat if "libP1" in sample][0]
-                mat_i=[i for i,sample in enumerate(samples_nopat) if "libP1" in sample][0]
+                mat=[sample for sample in samples if "libP1" in sample][0]
+                mat_i=[i for i,sample in enumerate(samples) if "libP1" in sample][0]
 
 
             else:
@@ -41,9 +38,7 @@ with open(vcf) as f, open(txt_tmp, "w") as of:
             info=fields[0:9]
             chrom=info[0]
             pos=int(info[1])
-            x=[field for field in fields if field not in info]
-            #exclude paternal genotype
-            all_genos=[geno for i,geno in enumerate(x) if i != pat_i]
+            all_genos=[field for field in fields if field not in info]
             mat=all_genos[mat_i]
             mg_genos=[field for i,field in enumerate(all_genos) if i != mat_i]
 
