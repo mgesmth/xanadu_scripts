@@ -22,13 +22,8 @@ INDGENOME=$GENOMEFOLDER/${GENOME}.fai
 GVCF="07_gvcfs"
 VCF="08_raw_vcfs"
 
-ARRAY=($(cat 02_info_files/pos.txt))
-REGION_FILE=02_info_files/${ARRAY[$SLURM_ARRAY_TASK_ID]}
-
-sample_gvcfs=$(ls -1 $GVCF/*.vcf | paste -sd " ")
-#ls -1 $GVCF/*.vcf | awk '{print "-V",$1}' > argument_file.tmp
-
-for scaff in $(cat $REGION_FILE) ; do
+ARRAY=($(cut -f1 $GENOMEFOLDER/$GENOME.fai))
+scaff=${ARRAY[$SLURM_ARRAY_TASK_ID]}
 
     gatk CombineGVCFs \
     -R $GENOMEFOLDER/$GENOME \
@@ -48,8 +43,6 @@ for scaff in $(cat $REGION_FILE) ; do
 
 tabix -p vcf $VCF/${scaff}.vcf.gz
 bgzip $GVCF/${scaff}.g.vcf
-
-done
 
 end=`date +%s`
 elapsed=`expr $end - $begin`
