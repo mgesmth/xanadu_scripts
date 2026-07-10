@@ -6,6 +6,8 @@
 #SBATCH -c 12
 #SBATCH --mem=48G
 
+set -e
+
 DATASET=$1
 
 # Load needed modules
