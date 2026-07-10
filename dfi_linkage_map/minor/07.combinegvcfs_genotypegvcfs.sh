@@ -4,7 +4,7 @@
 #SBATCH -o 98_log_files/%x_%A_%a.out
 #SBATCH -e 98_log_files/%x_%A_%a.err
 #SBATCH -c 12
-#SBATCH --mem=48G
+#SBATCH --mem=64G
 
 set -e
 
