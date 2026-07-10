@@ -16,6 +16,7 @@ FILTVCF="09_filt_vcfs"
 GENOMEDIR="03_genome"
 GENOME=$(ls -1 $GENOMEDIR/*{fasta,fa,fasta.gz,fa.gz} | xargs -n 1 basename)
 DATASET=$1
+scripts="01_scripts"
 
 gatk VariantFiltration \
 -R $GENOMEDIR/$GENOME \
