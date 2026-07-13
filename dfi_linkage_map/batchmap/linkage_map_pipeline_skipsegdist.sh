@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J create_LGs
-#SBATCH -p himem
-#SBATCH -q himem
+#SBATCH -p general
+#SBATCH -q general
 #SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_minorscaffolds/10_batchmap
 #SBATCH -c 24
-#SBATCH --mem=500G
+#SBATCH --mem=82G
 #SBATCH --mail-user=meg8130@student.ubc.ca
 #SBATCH --mail-type=ALL
 #SBATCH -o /core/projects/EBP/smith/linkage_snp_calling_minorscaffolds/10_batchmap/log/%x.%j.out
