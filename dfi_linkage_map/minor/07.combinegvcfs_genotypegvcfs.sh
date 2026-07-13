@@ -43,7 +43,3 @@ scaff=${ARRAY[$SLURM_ARRAY_TASK_ID]}
 
 tabix -p vcf $VCF/${scaff}.vcf.gz
 bgzip $GVCF/${scaff}.g.vcf
-
-end=`date +%s`
-elapsed=`expr $end - $begin`
-echo Time taken: $elapsed
