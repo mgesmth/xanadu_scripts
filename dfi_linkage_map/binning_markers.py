@@ -8,8 +8,7 @@ if __name__ == "__main__":
     outfile=sys.argv[2]
     misstol=float(sys.argv[3])
 
-outdir=os.path.dirname(outfile)
-logfile=os.path.join(outdir,f"marker_binning_info_miss{misstol}.txt")
+logfile=f"marker_binning_info_miss{misstol}.txt"
 
 def create_repulsion(geno):
     x=["c" if g == "a" else g for g in geno]
