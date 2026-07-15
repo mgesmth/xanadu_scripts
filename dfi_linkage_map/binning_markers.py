@@ -57,7 +57,6 @@ stage=0
 count=-1
 with open(infile) as f, open("write.tmp","w") as of, open(logfile,"w") as lf:
     for line in f:
-        count+=1
         if stage == 0:
             stage=1
             continue
@@ -75,6 +74,7 @@ with open(infile) as f, open("write.tmp","w") as of, open(logfile,"w") as lf:
                 cross=potential_crossover(prev_geno,geno)
                 if cross:
                     prev_line=["_".join(prev_mark),"D1.11",",".join(prev_geno)]
+                    count+=1
                     of.write(" ".join(prev_line) + '\n')
                     lf.write("\t".join(map(str,[bin_number,"_".join(prev_mark)])) + '\n')
                     bin_number+=1 #we're now in a new bin
@@ -102,6 +102,7 @@ with open(infile) as f, open("write.tmp","w") as of, open(logfile,"w") as lf:
             else:
                 #we're in a new chr, we need to write out the marker stored as previous
                 prev_line=["_".join(prev_mark),"D1.11",",".join(prev_geno)]
+                count+=1
                 of.write(" ".join(prev_line) + '\n')
                 lf.write("\t".join(map(str,[bin_number,"_".join(prev_mark)])) + '\n')
                 bin_number+=1
