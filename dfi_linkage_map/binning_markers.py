@@ -54,8 +54,10 @@ def potential_crossover(prev_geno,geno):
 prev_chrom="dummy"
 bin_number=1
 stage=0
-with open(infile) as f, open(outfile,"w") as of, open(logfile,"w") as lf:
+count=-1
+with open(infile) as f, open("write.tmp","w") as of, open(logfile,"w") as lf:
     for line in f:
+        count+=1
         if stage == 0:
             stage=1
             continue
@@ -107,4 +109,13 @@ with open(infile) as f, open(outfile,"w") as of, open(logfile,"w") as lf:
                 prev_mark=line.strip().split(" ")[0].split("_")
                 stage=2
                 continue
+
+with open("write.tmp") as f, open(outfile,"w") as of:
+    header=[100,count,0]
+    of.write(" ".join(map(str,header)) + '\n')
+
+    for line in f:
+        of.write(line.strip() + '\n')
+
+os.remove("write.tmp")
         
