@@ -6,7 +6,7 @@ import os
 if __name__ == "__main__":
     infile=sys.argv[1]
     outfile=sys.argv[2]
-    misstol=int(sys.argv[3])
+    misstol=float(sys.argv[3])
 
 outdir=os.path.dirname(outfile)
 logfile=os.path.join(outdir,f"marker_binning_info_miss{misstol}.txt")
