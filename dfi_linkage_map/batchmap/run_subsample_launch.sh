@@ -4,7 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 1
 #SBATCH --mem=1G
-#SBATCH -D /core/projects/EBP/smith/linkage_actually/11_batchmap_10kb
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_minorscaffolds/10_batchmap
 #SBATCH -o log/%x.%j.out
 #SBATCH -e log/%x.%j.err
 
@@ -12,7 +12,7 @@ echo `hostname`
 set -e
 
 LG=$1
-outdir="${LG}_subsamples"
+outdir="${LG}_maps"
 if [[ ! -d "$outdir" ]] ; then
 	mkdir $outdir
 fi
