@@ -9,7 +9,7 @@ iteration <- as.numeric(args[4])
 load("onemap_functions_for_batchmap.RData")
 load("LGs_created_manbin_clean.RData")
 
-create_sampled_map <- function(LG,avail_cores) {
+create_maps <- function(LG,avail_cores) {
 	if (avail_cores >= 10) {
 		reccore=10
 	} else {
@@ -19,11 +19,7 @@ create_sampled_map <- function(LG,avail_cores) {
 	max.dist=kosambi(0.2)
 	LG_cur=LG_list_clean[[LG]]
 
-	samp=make.seq(twopt_table,sample(
-		LG_cur$seq.num,
-		size=100,
-		replace=F))
-	rec=record.parallel(samp,times=20,cores=reccore)
+	rec=record.parallel(LG_cur,times=20,cores=reccore)
 	if (tail(rec$seq.num,n=1) < head(rec$seq.num,n=1)) {
 		#rec built the order in reverse
 		rev=make.seq(twopt_table,rev(rec$seq.num))
@@ -51,7 +47,8 @@ create_sampled_map <- function(LG,avail_cores) {
 		max.tries=10)
 
 	list=list()
-	list[["map"]]=rip.map
+	list[["rec"]]=rec.map
+	list[["rip"]]=rip.map
 	return(list)
 
 }
