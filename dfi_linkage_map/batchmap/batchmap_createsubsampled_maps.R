@@ -16,30 +16,30 @@ create_sampled_map <- function(LG,avail_cores) {
 		stop("[E]: Not enough cores supplied. Need at least 10.")
 	}
 
-	max.dist=kosambi(0.25)
+	max.dist=kosambi(0.2)
 	LG_cur=LG_list_clean[[LG]]
 
 	samp=make.seq(twopt_table,sample(
 		LG_cur$seq.num,
 		size=100,
 		replace=F))
-	rec=record.parallel(samp,times=30,cores=reccore)
+	rec=record.parallel(samp,times=20,cores=reccore)
 	if (tail(rec$seq.num,n=1) < head(rec$seq.num,n=1)) {
 		#rec built the order in reverse
 		rev=make.seq(twopt_table,rev(rec$seq.num))
 		rec=rev
 	}
 
-	size=pick.batch.sizes(rec,size=50,overlap=30,around=10)
+	size=pick.batch.sizes(rec,size=30,overlap=10,around=5)
 	rec.map=map.overlapping.batches(
 		input.seq=rec,
 		phase.cores=2,
-		overlap=30,
+		overlap=10,
 		size=size)
 	rip.map=map.overlapping.batches(
 		input.seq=rec,
 		phase.cores=2,
-		overlap=30,
+		overlap=10,
 		size=size,
 		fun.order=ripple.ord,
 		ripple.cores=round(avail_cores/2),
@@ -58,9 +58,9 @@ create_sampled_map <- function(LG,avail_cores) {
 
 print(paste0("[M]: Creating subsampled map for ",LG,", iteration ",iteration))
 
-out <- paste(LG,iteration,sep="_")
-assign(paste0(out,"_obj"), create_sampled_map(LG,ncore))
-save(paste0(out,"_obj"),file.path(outdir,paste0(out,".RData")))
+map_list <- create_sampled_map(LG,ncore)
+out <- paste("map",LG,iteration,sep="_")
+save.image(file.path(outdir,paste0(out,".RData")))
 
 
 
