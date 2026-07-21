@@ -16,14 +16,14 @@ outdir="${LG}_maps"
 if [[ ! -d "$outdir" ]] ; then
 	mkdir $outdir
 fi
-subsamp_script=batchmap_createsubsampled_maps.R
+subsamp_script=batchmap_createmap_perLG.R
 if [[ ! -f "$subsamp_script" ]] ; then
 	cp scripts/${subsamp_script} .
 fi
 
 
 for i in $(seq 1 5); do
-	sbatch scripts/run_subsample_iteration.sh \
+	sbatch scripts/run_map_iteration.sh \
 	${outdir} $subsamp_script $LG $i
 	echo "iteration $i submitted"
 done

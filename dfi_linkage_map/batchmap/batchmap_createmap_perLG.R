@@ -1,87 +1,63 @@
 library(BatchMap)
 
-args <- commandArgs(trailingOnly = TRUE)
-LG <- args[1]
-cores <- as.numeric(args[2])
-iteration <- as.numeric(args[3])
+args <- commandArgs(trailingOnly=TRUE)
+ncore <- as.numeric(args[1])
+outdir=args[2]
+LG <- args[3]
+iteration <- as.numeric(args[4])
 
-descrip=paste0(LG,"_maps_",iteration)
-dir.create(descrip)
-outdir=descrip
-
-#load up linkage group data
-load("LGs_created_maxrf0.25_LOD8_cleaned.RData")
 load("onemap_functions_for_batchmap.RData")
+load("LGs_created_manbin_clean.RData")
 
-LG_cur<-LG_list_clean[[LG]]
+create_maps <- function(LG,avail_cores) {
+	if (avail_cores >= 10) {
+		reccore=10
+	} else {
+		stop("[E]: Not enough cores supplied. Need at least 10.")
+	}
 
-print("[M]: Getting a batch size...")
-#get a batch size
-batch_size <- pick.batch.sizes(LG_cur, 
-                 size = 50, 
-                 overlap = 30, 
-                 around = 10)
+	max.dist=kosambi(0.2)
+	LG_cur=LG_list_clean[[LG]]
 
-#order by recombination information
-LG_rec=record.parallel(LG_cur,times=20,cores=20)
-if (as.numeric(tail(LG_rec$seq.num,n=1)) < as.numeric(head(LG_rec$seq.num,n=1))) {
-    LG_rec1=LG_rec
-    LG_rec=make.seq(twopt_table,rev(LG_rec1$seq.num))
+	rec=record.parallel(LG_cur,times=20,cores=reccore)
+	if (tail(rec$seq.num,n=1) < head(rec$seq.num,n=1)) {
+		#rec built the order in reverse
+		rev=make.seq(twopt_table,rev(rec$seq.num))
+		rec=rev
+	}
+
+	size=pick.batch.sizes(rec,size=30,overlap=10,around=5)
+	rec.map=map.overlapping.batches(
+		input.seq=rec,
+		phase.cores=2,
+		overlap=10,
+		size=size)
+	rip.map=map.overlapping.batches(
+		input.seq=rec,
+		phase.cores=2,
+		overlap=10,
+		size=size,
+		fun.order=ripple.ord,
+		ripple.cores=round(avail_cores/2),
+		ws=10,
+		verbosity=c("batch","order"),
+		optimize="likelihood",
+		max.dist=max.dist,
+		min.tries=3,
+		max.tries=10)
+
+	list=list()
+	list[["rec"]]=rec.map
+	list[["rip"]]=rip.map
+	return(list)
+
 }
 
-print("[M]: Now making the maps!")
-print("[M]: Building genomic map...")
-map1 <- map.overlapping.batches(input.seq=LG_cur,
-    size=batch_size,
-    phase.cores=4,
-    overlap=30)
+print(paste0("[M]: Creating subsampled map for ",LG,", iteration ",iteration))
+
+map_list <- create_sampled_map(LG,ncore)
+out <- paste("map",LG,iteration,sep="_")
+save.image(file.path(outdir,paste0(out,".RData")))
 
 
-print(paste0("[M]: Map log-likelihood: ",map1$Map$seq.like))
-write.map(map1$Map,file=file.path(descrip,"genomic_map.txt"))
-map1$Map$data.name <- outcross_clean
-map1$Map$twopt <- twopt_table
-png(file.path(outdir,paste0(LG,"_genomic_rfheatmap",".png")),
-    width=960,height=960)
-rf_graph_table(input.seq=map1$Map, display=FALSE, 
-    lab.xy=c(paste0("Marker (n=",length(map1$Map$seq.num),")"),
-        paste0("Marker (n=",length(map1$Map$seq.num),")")),
-    mrk.axis="none",base.size=22)
-dev.off()
-map1$Map$data.name <- "outcross_clean"
-map1$Map$twopt <- "twopt_table"
 
-print("[M]: Building record and rippled map...")
-max.dist=kosambi(0.1)
-rip.cores <- round(cores/2)
-map2 <- map.overlapping.batches(input.seq=LG_rec,
-                               size=batch_size,
-                               overlap=30,
-                               fun.order=ripple.ord,
-                               phase.cores=2,
-                               ripple.cores=rip.cores,
-                               ws=10,
-                               max.dist = max.dist,
-                               max.tries=10,
-                               min.tries=2,
-                               optimize="likelihood",
-                               verbosity=c("batch"),
-                               method="one")
-
-print(paste0("[M]: Map log-likelihood: ",map2$Map$seq.like))
-write.map(map2$Map,file=file.path(descrip,"recomb_map.txt"))
-map2$Map$data.name <- outcross_clean
-map2$Map$twopt <- twopt_table
-png(file.path(outdir,paste0(LG,"_recomb_rfheatmap",".png")),
-    width=960,height=960)
-rf_graph_table(input.seq=map2$Map, display=FALSE, 
-    lab.xy=c(paste0("Marker (n=",length(map2$Map$seq.num),")"),
-        paste0("Marker (n=",length(map2$Map$seq.num),")")),
-    mrk.axis="none",base.size=22)
-dev.off()
-
-map2$Map$data.name <- "outcross_clean"
-map2$Map$twopt <- "twopt_table"
-
-save.image(file=file.path(outdir,
-    paste(descrip,"DFI_Rippled_Map.RData",sep="_")))
