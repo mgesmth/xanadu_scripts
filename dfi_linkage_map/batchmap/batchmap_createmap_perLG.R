@@ -3,7 +3,7 @@ library(BatchMap)
 args <- commandArgs(trailingOnly=TRUE)
 ncore <- as.numeric(args[1])
 outdir=args[2]
-LG <- args[3]
+LG <- as.numeric(args[3])
 iteration <- as.numeric(args[4])
 
 load("onemap_functions_for_batchmap.RData")
