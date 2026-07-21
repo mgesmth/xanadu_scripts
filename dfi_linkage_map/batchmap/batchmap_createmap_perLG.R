@@ -55,7 +55,7 @@ create_maps <- function(LG,avail_cores) {
 
 print(paste0("[M]: Creating subsampled map for ",LG,", iteration ",iteration))
 
-map_list <- create_sampled_map(LG,ncore)
+map_list <- create_maps(LG,ncore)
 out <- paste("map",LG,iteration,sep="_")
 save.image(file.path(outdir,paste0(out,".RData")))
 
