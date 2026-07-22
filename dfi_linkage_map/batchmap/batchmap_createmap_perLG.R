@@ -35,7 +35,7 @@ rip.map=map.overlapping.batches(
 	overlap=10,
 	size=size,
 	fun.order=ripple.ord,
-	ripple.cores=round(avail_cores/2),
+	ripple.cores=round(ncore/2),
 	ws=10,
 	verbosity=c("batch","order"),
 	optimize="likelihood",
@@ -44,6 +44,19 @@ rip.map=map.overlapping.batches(
     max.tries=10)
 
 out <- paste("map",LG,iteration,sep="_")
+write.map(rip.map$Map,file=file.path(paste0("map_LG",LG,"_iteration",iteration,".txt"))
+write.map(rip.map$Map,file=file.path(paste0("map_LG",LG,"_iteration",iteration,".txt"))
+rip.map$Map$data.name <- outcross_clean
+rip.map$Map$twopt <- twopt_table
+png(file.path(outdir,paste0("LG",LG,"_iteration",iteration,"_rfheatmap",".png")),
+    width=960,height=960)
+rf_graph_table(input.seq=rip.map$Map, display=FALSE, 
+    lab.xy=c(paste0("Marker (n=",length(rip.map$Map$seq.num),")"),
+        paste0("Marker (n=",length(rip.map$Map$seq.num),")")),
+    mrk.axis="none",base.size=22)
+dev.off()
+rip.map$Map$data.name <- "outcross_clean"
+rip.map$Map$twopt <- "twopt_table"
 save.image(file=file.path(outdir,paste0(out,".RData")))
 
 
