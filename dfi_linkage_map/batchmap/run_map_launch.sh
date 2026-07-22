@@ -21,10 +21,6 @@ if [[ ! -f "$subsamp_script" ]] ; then
 	cp scripts/${subsamp_script} .
 fi
 
-
-for i in $(seq 1 5); do
-	sbatch scripts/run_map_iteration.sh \
-	${outdir} $subsamp_script $LG $i
-	echo "iteration $i submitted"
-done
+sbatch --array=[0-4] scripts/run_map_iteration.sh \
+${outdir} $subsamp_script $LG
 

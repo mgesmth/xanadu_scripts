@@ -11,7 +11,6 @@ load("LGs_created_manbin_clean.RData")
 
 print(paste0("[M]: Creating map for LG ",LG,", iteration ",iteration))
 
-
 if (ncore >= 10) {
 	reccore=10
 } else {
@@ -44,11 +43,10 @@ rip.map=map.overlapping.batches(
     max.tries=10)
 
 out <- paste("map",LG,iteration,sep="_")
-write.map(rip.map$Map,file=file.path(paste0("map_LG",LG,"_iteration",iteration,".txt"))
-write.map(rip.map$Map,file=file.path(paste0("map_LG",LG,"_iteration",iteration,".txt"))
+write.map(rip.map$Map,file=file.path(paste0(out,".txt")))
 rip.map$Map$data.name <- outcross_clean
 rip.map$Map$twopt <- twopt_table
-png(file.path(outdir,paste0("LG",LG,"_iteration",iteration,"_rfheatmap",".png")),
+png(file.path(outdir,paste0(out,"_rfheatmap",".png")),
     width=960,height=960)
 rf_graph_table(input.seq=rip.map$Map, display=FALSE, 
     lab.xy=c(paste0("Marker (n=",length(rip.map$Map$seq.num),")"),
