@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J subsampled_map_iter
+#SBATCH -J map_iter
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 10

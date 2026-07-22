@@ -12,7 +12,7 @@ load("LGs_created_manbin_clean.RData")
 print(paste0("[M]: Creating map for LG ",LG,", iteration ",iteration))
 
 
-if (ncores >= 10) {
+if (ncore >= 10) {
 	reccore=10
 } else {
 	stop("[E]: Not enough cores supplied. Need at least 10.")

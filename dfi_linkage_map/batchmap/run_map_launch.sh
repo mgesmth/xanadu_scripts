@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J subsample_launch
+#SBATCH -J map_launch
 #SBATCH -p general
 #SBATCH -q general
 #SBATCH -c 1
