@@ -4,7 +4,7 @@
 #SBATCH -q general
 #SBATCH -c 1
 #SBATCH --mem=1G
-#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_minorscaffolds/10_batchmap
+#SBATCH -D /core/projects/EBP/smith/linkage_snp_calling_minorscaffolds/10_batchmap_nobin
 #SBATCH -o log/%x.%j.out
 #SBATCH -e log/%x.%j.err
 
