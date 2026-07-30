@@ -12,7 +12,7 @@ core=/core/projects/EBP/smith
 scratch=/scratch/msmith
 asm=${core}/final_genome/psme_glauca_primary_minorscaffolds.fasta
 #just running on the minor scaffolds - was running out of memory and just going to assume no mtDNA made it into major scaffs
-outdir=${home}/mitohifi/contigs_evenmorestringent
+outdir=${home}/mitohifi/mitogenome
 if [[ ! -d ${outdir} ]] ; then
 mkdir ${outdir}
 fi
