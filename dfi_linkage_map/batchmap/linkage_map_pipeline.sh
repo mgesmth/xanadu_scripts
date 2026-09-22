@@ -42,9 +42,9 @@ rm batchmap_segdist.R
 
 echo -e "\n[M]: Removing segregation distorters...\n"
 
-head -n1 seg_passed_markers_binned_miss0.15.tsv > seg_passed_markers_binned_miss0.15.s.tsv
-for chr in $(awk 'NR==1 { next } { print }' seg_passed_markers_binned_miss0.15.tsv | cut -f1 -d "_" | sort | uniq) ; do
-  grep "${chr}_" seg_passed_markers_binned_miss0.15.tsv | sort -g -t "_" -k2,2 >> seg_passed_markers_binned_miss0.15.s.tsv
+head -n1 seg_passed_markers_notbinned.tsv > seg_passed_markers_notbinned.s.tsv
+for chr in $(awk 'NR==1 { next } { print }' seg_passed_markers_notbinned.tsv | cut -f1 -d "_" | sort | uniq) ; do
+  grep "${chr}_" seg_passed_markers_notbinned.tsv | sort -g -t "_" -k2,2 >> seg_passed_markers_notbinned.s.tsv
 done
 
 
@@ -69,7 +69,7 @@ awk 'NR==FNR{
     #if the header line
     next
   }
-}' seg_passed_markers_binned_miss0.15.s.tsv ${mark1} > marks.tmp
+}' seg_passed_markers_notbinned.s.tsv ${mark1} > marks.tmp
 
 num_marks=$(cat marks.tmp | wc -l)
 echo "100 ${num_marks} 0" > ${mark2}

@@ -107,7 +107,6 @@ rm(i)
 genes <- filter(genes,chr %in% chrs)
 
 #create a windowed df
-
 windows <- data.frame(chr=c(),win_start=c(),win_end=c())
 for (i in 1:nrow(genome)){
   chr=genome$chr[i]
