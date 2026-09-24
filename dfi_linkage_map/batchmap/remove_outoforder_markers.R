@@ -8,7 +8,7 @@ ok_order <- c()
 for (i in 1:length(revised_order)) {
 	rev=revised_order[i]
 	sor=sorted_order[i]
-	diff=rev-sort
+	diff=rev-sor
 	if (diff == 0) {
 		ok_order=append(ok_order,rev)
 		next
