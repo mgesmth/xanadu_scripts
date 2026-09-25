@@ -16,7 +16,7 @@ for (i in 1:length(revised_order)) {
 		next
 	}
 }
-colin.marks <- make.seq(twopot_table,ok_order)
+colin.marks <- make.seq(twopt_table,ok_order)
 size.colin <- pick.batch.sizes(colin.marks,size=30,overlap=10,around=5)
 colin.map <- map.overlapping.batches(colin.marks,size=size.colin,overlap=10,phase.cores=4)
 print(paste0("Log-likelihood revised map: ",reord.map$Map$seq.like))
