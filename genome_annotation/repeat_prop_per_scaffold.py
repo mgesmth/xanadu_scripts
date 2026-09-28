@@ -31,7 +31,7 @@ for s,l in fai.items():
                     
 
 reform={
-    'scaffold': prop_repeat.keys()
+    'scaffold': prop_repeat.keys(),
     'repeat_prop': prop_repeat.values()
 }
     
