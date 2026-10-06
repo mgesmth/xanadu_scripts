@@ -133,7 +133,8 @@ gt gff3 -sort yes -retainids yes -addintrons yes \
 tmp_parsed_annotation.gff > "${out_gff_introns}" && rm tmp_parsed_annotation.gff 
 
 #remove blacklisted transcripts and proteins
-awk 'BEGIN { skip=0 }
+awk 'BEGIN { 
+  skip=0
 } FNR==NR {
   blacklist[$1]=1
   next
@@ -153,7 +154,8 @@ awk 'BEGIN { skip=0 }
   next
 }' ${mrna} > ${out_mrna}
 
-awk 'BEGIN { skip=0 }
+awk 'BEGIN { 
+  skip=0
 } FNR==NR {
   blacklist[$1]=1
   next
