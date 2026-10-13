@@ -5,10 +5,10 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/minigraph
-bed_filt=${mg_dir}/final_finalpangenome_filtered.bed
+mg_dir=${home}/minigraph
+bed_filt=${mg_dir}/lastpangenome_filtered1_unbroken.bed
 #there's one more filtering step in cat_svs, so this file has the full correct coordinates
-svs_cat=${mg_dir}/svs_categorized.tsv
+svs_cat=${mg_dir}/svs_categorized_unbroken.tsv
 threshold=$1
 
 module load bedtools/2.29.0
@@ -17,9 +17,9 @@ cd ${mg_dir}
 
 cut -f1-3 ${svs_cat} > filtered2_coordinates.bed
 #apply the second filter to the bed file
-bedtools intersect -F 1 -wa -a ${bed_filt} -b filtered2_coordinates.bed > final_finalpangenome_filtered2.bed
+bedtools intersect -F 1 -wa -a ${bed_filt} -b filtered2_coordinates.bed > lastpangenome_filtered2_unbroken.bed
 #reset bedfile
-bed_filt=${mg_dir}/final_finalpangenome_filtered2.bed
+bed_filt=${mg_dir}/lastpangenome_filtered2_unbroken.bed
 
 cd repeat_masker_dir
 

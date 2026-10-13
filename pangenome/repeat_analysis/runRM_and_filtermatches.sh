@@ -37,7 +37,7 @@ echo ""
 
 #Run
 singularity exec $tetools \
-RepeatMasker -frag 60000000 -pa 6 -q -dir ${workdir}/byscaffold_svs_${threshold} -lib "${db}/primary-families.fa" "${fasta}"
+RepeatMasker -pa 6 -q -dir ${workdir}/byscaffold_svs_${threshold} -lib "${db}/primary-families.fa" "${fasta}"
 #remove masked sequence - don't need it, just the reports
 rm ${fasta}.cat* ${fasta}.masked*
 #move tbl to extra_and_error - leave just the out file

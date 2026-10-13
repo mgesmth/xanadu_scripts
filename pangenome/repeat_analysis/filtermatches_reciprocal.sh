@@ -15,7 +15,7 @@ module load python/3.8.1
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/minigraph
+mg_dir=${home}/minigraph
 workdir=${mg_dir}/repeat_masker_dir
 pgscripts=${home}/scripts/pangenome/repeat_analysis
 threshold=$1
