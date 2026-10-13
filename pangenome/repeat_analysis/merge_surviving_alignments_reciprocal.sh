@@ -12,10 +12,10 @@ set -e
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/minigraph
+mg_dir=${home}/minigraph
 workdir=${mg_dir}/repeat_masker_dir
 threshold=$1
-outfile=${workdir}/final_finalpangenome_TEs_${threshold}_reciprocal.out
+outfile=${workdir}/lastpangenome_TEs_${threshold}_reciprocal.out
 
 cd ${workdir}/byscaffold_svs_${threshold}
 ls -1 *filtered*.out | grep "reciprocal" | sort -t "_" -g -k 3 > fasta_files_filt_reciprocal.iterator
