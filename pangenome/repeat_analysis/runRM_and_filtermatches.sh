@@ -15,10 +15,10 @@ module load python/3.8.1
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
 scratch=/scratch/msmith
-mg_dir=${core}/minigraph
-bed_filt=${mg_dir}/final_finalpangenome_filtered2.bed
+mg_dir=${home}/minigraph
+bed_filt=${mg_dir}/lastpangenome_filtered2_unbroken.bed
 workdir=${mg_dir}/repeat_masker_dir
-db=${home}/repeats/primary_db
+db=${home}/repeats_round2/primary_db
 tetools=${core}/bin/dfam-tetools-latest.sif
 pgscripts=${home}/scripts/pangenome/repeat_analysis
 threshold=$1

@@ -33,7 +33,10 @@ ${pgscripts}/extract_insertedalleles.sh ${threshold}
 
 workdir=${mg_dir}/repeat_masker_dir
 byscaffdir=${workdir}/byscaffold_svs_${threshold}
-cd ${byscaffdir}
+array_num=$(echo $(($(cat ${mg_dir}/repeat_masker_dir/byscaffold_svs_${threshold}/fasta_files.iterator | wc -l)-1)))
+cd $log
+sbatch --array=[0-${array_num}] ${pgscripts}/runRM_and_filtermatches.sh ${threshold} | cut -d ' ' -f4 > rmjid.tmp
+
 
 ls -1 *.out | grep -v "filtered" > RMout_unfiltered.iterator
 
