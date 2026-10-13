@@ -11,7 +11,7 @@ set -e
 
 home=/home/FCAM/msmith
 core=/core/projects/EBP/smith
-mg_dir=${core}/minigraph
+mg_dir=${home}/minigraph
 pgscripts=${home}/scripts/pangenome/repeat_analysis
 #if you want to change the stringency threshold, change it here:
 threshold=0.85
