@@ -30,18 +30,14 @@ fi
 
 workdir=${mg_dir}/repeat_masker_dir
 byscaffdir=${workdir}/byscaffold_svs_${threshold}
-cd ${byscaffdir}
 
-ls -1 *.out | grep -v "filtered" > RMout_unfiltered.iterator
-
-array_num=$(echo $(($(cat RMout_unfiltered.iterator | wc -l)-1)))
+cd $mg_dir
+${pgscripts}/extract_insertedalleles.sh ${threshold}
+array_num=$(echo $(($(cat ${mg_dir}/repeat_masker_dir/byscaffold_svs_${threshold}/fasta_files.iterator | wc -l)-1)))
 
 #Run analysis pipeline as an array per scaffold (at an 0.85 threshold)
 cd ${log}
-sbatch --array=[0-${array_num}] ${pgscripts}/filtermatches_reciprocal.sh ${threshold} | cut -d ' ' -f4 > rmjid.tmp
-rmjid=$(tr -d '\n' < rmjid.tmp)
+rmjid=$(sbatch --parsable --array=[0-${array_num}] ${pgscripts}/filtermatches_reciprocal.sh ${threshold})
 
 #Merge surviving matches
 sbatch -d afterok:${rmjid} ${pgscripts}/merge_surviving_alignments_reciprocal.sh ${threshold}
-
-rm rmjid.tmp
