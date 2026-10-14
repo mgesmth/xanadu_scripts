@@ -12,19 +12,25 @@ def write_tmp_chr(chrom,line,of):
 
 for i in range(1,14):
 	chrom="chr" + str(i)
+	tetmp=chrom + "_te.tmp"
+	bedtmp=chrom + "_bed.tmp"
 	with open(te) as f1, open("te.tmp","w") as of1:
 		for line in f1:
 			write_tmp_chr(chrom,line,of1)
 	with open(bed) as f2, open("bed.tmp","w") as of2:
 		for line in f2:
 			write_tmp_chr(chrom,line,of2)
-			
-	with open("te.tmp") as f, open("insertions_potentialTE_genomiccoord.tsv","w") as of:
+	
+for i in range(1,14):
+	chrom="chr" + str(i)
+	tetmp=chrom + "_te.tmp"
+	bedtmp=chrom + "_bed.tmp"
+	with open(tetmp) as f, open("insertions_potentialTE_genomiccoord.tsv","w") as of:
 		for line1 in f:
 			fields1=line1.strip().split("\t")
 			sv=int(fields1[1][2:])
 			j=0
-			with open("bed.tmp") as bed:
+			with open(bedtmp) as bed:
 				for line2 in bed:
 					j+=1
 					if j == sv:
@@ -35,5 +41,5 @@ for i in range(1,14):
 					else:
 						continue
 
-	os.remove("bed.tmp")
-	os.remove("te.tmp")
+	os.remove(tetmp)
+	os.remove(bedtmp)
