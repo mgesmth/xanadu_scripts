@@ -25,7 +25,7 @@ for i in range(1,14):
 	chrom="chr" + str(i)
 	tetmp=chrom + "_te.tmp"
 	bedtmp=chrom + "_bed.tmp"
-	with open(tetmp) as f, open("insertions_potentialTE_genomiccoord.tsv","w") as of:
+	with open(tetmp) as f, open("insertions_potentialTE_genomiccoord.tsv","a") as of:
 		for line1 in f:
 			fields1=line1.strip().split("\t")
 			sv=int(fields1[1][2:])
