@@ -9,8 +9,6 @@ def write_tmp_chr(chrom,line,of):
 	fields=line.strip().split("\t")
 	if fields[0] == chrom:
 		of.write("\t".join(fields) + '\n')
-	else:
-		continue
 
 for i in range(1,14):
 	chrom="chr" + str(i)
