@@ -12,7 +12,7 @@ def write_tmp_chr(chrom,line,of):
 	else:
 		continue
 
-for i in 1:13:
+for i in range(1,14):
 	chrom="chr" + str(i)
 	with open(te) as f1, open("te.tmp","w") as of1:
 		for line in f1:
