@@ -14,10 +14,10 @@ for i in range(1,14):
 	chrom="chr" + str(i)
 	tetmp=chrom + "_te.tmp"
 	bedtmp=chrom + "_bed.tmp"
-	with open(te) as f1, open("te.tmp","w") as of1:
+	with open(te) as f1, open(tetmp,"w") as of1:
 		for line in f1:
 			write_tmp_chr(chrom,line,of1)
-	with open(bed) as f2, open("bed.tmp","w") as of2:
+	with open(bed) as f2, open(bedtmp,"w") as of2:
 		for line in f2:
 			write_tmp_chr(chrom,line,of2)
 	
