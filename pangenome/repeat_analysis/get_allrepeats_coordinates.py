@@ -1,6 +1,6 @@
 #!/bin/env python
 
-rep="repeat_masker_dir/byscaffold_svs_0.85/all_svs.fasta.out.parsed"
+rep="repeat_masker_dir/byscaffold_svs_0.85/all_svs.fasta.out"
 bed="lastpangenome_filtered2_unbroken.bed"
 
 idx={}
@@ -23,6 +23,25 @@ with open(bed) as f:
 with open(rep) as f, open("insertions_all_genomiccoord_new.tsv","w") as of:
 	for line in f:
 		fields=line.strip().split()
+		if len(fields) == 16:
+			continue
+
+		#check if element is intact LTR
+		if ("LTR" in fields[10]):
+			start=int(fields[11].strip("()"))
+			end=int(fields[12].strip("()"))
+			back_left=int(fields[13].strip("()"))
+			if start == 0:
+				front_left=0
+			else:
+				front_left=start-1
+			total_left=front_left+left
+			align_length=end-start
+			total_length=total_left+length
+			prop_covered=align_length/total_length
+			if (prop_covered == 1):
+				fields[10]=fields[10] + "_intact"
+
 		id=fields[0] + "_" + fields[1]
 		coords=idx[id].split(",")
 		newline=[fields[0],fields[1],coords[0],coords[1],fields[4]]
