@@ -42,7 +42,7 @@ with open(rep) as f, open("insertions_all_genomiccoord_new.tsv","w") as of:
 			if (prop_covered == 1):
 				fields[10]=fields[10] + "_intact"
 
-		id=fields[0] + "_" + fields[1]
+		id=fields[4]
 		coords=idx[id].split(",")
 		newline=[fields[0],fields[1],coords[0],coords[1],fields[4]]
 		of.write("\t".join(map(str,newline)) + '\n')
