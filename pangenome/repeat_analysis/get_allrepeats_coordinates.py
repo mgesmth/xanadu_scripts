@@ -44,7 +44,7 @@ with open(rep) as f, open("insertions_all_genomiccoord_new.tsv","w") as of:
 
 		id=fields[4]
 		coords=idx[id].split(",")
-		newline=[fields[4].split("_")[0],coords[0],coords[1],fields[10]]
+		newline=[fields[4].split("_")[0],coords[0],coords[1],fields[5],fields[6],fields[10]]
 		of.write("\t".join(map(str,newline)) + '\n')
 		continue
 
