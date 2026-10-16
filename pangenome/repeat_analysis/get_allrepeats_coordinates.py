@@ -37,7 +37,7 @@ with open(rep) as f, open("insertions_all_genomiccoord_new.tsv","w") as of:
 				front_left=start-1
 			total_left=front_left+back_left
 			align_length=end-start
-			total_length=total_left+length
+			total_length=total_left+align_length
 			prop_covered=align_length/total_length
 			if (prop_covered == 1):
 				fields[10]=fields[10] + "_intact"
