@@ -35,7 +35,7 @@ with open(rep) as f, open("insertions_all_genomiccoord_new.tsv","w") as of:
 				front_left=0
 			else:
 				front_left=start-1
-			total_left=front_left+left
+			total_left=front_left+back_left
 			align_length=end-start
 			total_length=total_left+length
 			prop_covered=align_length/total_length
