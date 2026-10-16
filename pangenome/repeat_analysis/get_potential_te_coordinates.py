@@ -5,41 +5,28 @@ import os
 te="repeat_masker_dir/byscaffold_svs_0.85/insertions_potentialTE.tsv"
 bed="lastpangenome_filtered2_unbroken.bed"
 
-def write_tmp_chr(chrom,line,of):
-	fields=line.strip().split("\t")
-	if fields[0] == chrom:
-		of.write("\t".join(fields) + '\n')
+idx={}
+prevchrom="dummy"
+with open(bed) as f:
+	for line in f:
+		fields=line.strip().split()
+		chrom=fields[0]
+		if chrom != prevchrom:
+			j=1
+		else:
+			j+=1
 
-for i in range(1,14):
-	chrom="chr" + str(i)
-	tetmp=chrom + "_te.tmp"
-	bedtmp=chrom + "_bed.tmp"
-	with open(te) as f1, open(tetmp,"w") as of1:
-		for line in f1:
-			write_tmp_chr(chrom,line,of1)
-	with open(bed) as f2, open(bedtmp,"w") as of2:
-		for line in f2:
-			write_tmp_chr(chrom,line,of2)
-	
-for i in range(1,14):
-	chrom="chr" + str(i)
-	tetmp=chrom + "_te.tmp"
-	bedtmp=chrom + "_bed.tmp"
-	with open(tetmp) as f, open("insertions_potentialTE_genomiccoord.tsv","a") as of:
-		for line1 in f:
-			fields1=line1.strip().split("\t")
-			sv=int(fields1[1][2:])
-			j=0
-			with open(bedtmp) as bed:
-				for line2 in bed:
-					j+=1
-					if j == sv:
-						fields2=line2.strip().split("\t")
-						newline=[chrom,fields2[1],fields2[2],fields1[4]]
-						of.write("\t".join(map(str,newline)) + '\n')
-						break
-					else:
-						continue
+		id=chrom + "_sv" + str(j)
+		coord=fields[1] + "," + fields[2]
+		idx[id]=coord
+		prevchrom=chrom
+		continue
 
-	os.remove(tetmp)
-	os.remove(bedtmp)
+with open(te) as f, open("insertions_potentialTE_genomiccoord_new.tsv","w") as of:
+	for line in f:
+		fields=line.strip().split()
+		id=fields[0] + "_" + fields[1]
+		coords=idx[id].split(",")
+		newline=[fields[0],fields[1],coords[0],coords[1],fields[4]]
+		of.write("\t".join(map(str,newline)) + '\n')
+		continue
