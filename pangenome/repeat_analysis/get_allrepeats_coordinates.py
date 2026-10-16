@@ -20,6 +20,8 @@ for i in range(1,14):
 	with open(bed) as f2, open(bedtmp,"w") as of2:
 		for line in f2:
 			write_tmp_chr(chrom,line,of2)
+
+for i in range(1,14)
 	with open(reptmp) as f, open("insertions_all_genomiccoord.tsv","a") as of:
 		for line1 in f:
 			fields1=line1.strip().split("\t")
